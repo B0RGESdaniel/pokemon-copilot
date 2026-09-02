@@ -19,9 +19,15 @@
       "name": "Base Environment",
       "data": {
         "base_url": "http://localhost:3333",
-        "pokemon_id": ""
+        "pokemon_id": "",
+        "poke_api_id": "25",
+        "move_name": "thunder-shock",
+        "item_name": "oran-berry",
+        "item_search": "berry"
       },
-      "dataPropertyOrder": { "&": ["base_url", "pokemon_id"] },
+      "dataPropertyOrder": {
+        "&": ["base_url", "pokemon_id", "poke_api_id", "move_name", "item_name", "item_search"]
+      },
       "color": null,
       "isPrivate": false,
       "metaSortKey": 0
@@ -33,6 +39,14 @@
       "name": "Pokémon",
       "description": "",
       "metaSortKey": 100
+    },
+    {
+      "_id": "fld_pokeapi",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "PokeAPI",
+      "description": "Endpoints curados sobre a PokeAPI, com cache persistente no SQLite.",
+      "metaSortKey": 200
     },
     {
       "_id": "req_health",
@@ -152,6 +166,68 @@
       "headers": [],
       "authentication": {},
       "metaSortKey": 600,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_species",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Get species",
+      "description": "GET /api/species/:pokeApiId\n\nInclui learnableMoves (moveset da espécie, direto do payload já cacheado de /pokemon/{id}).",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/species/{{ _.poke_api_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_move",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Get move",
+      "description": "GET /api/moves/:name\n\nDetalhe de um move específico (tipo, power, accuracy, pp). Não existe busca global — moves são consultados a partir de species.learnableMoves.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/moves/{{ _.move_name }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_item",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Get item",
+      "description": "GET /api/items/:name",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/items/{{ _.item_name }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_search_items",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Search items",
+      "description": "GET /api/items?search=\n\nPra autocomplete na hora de escolher heldItem. Limitado a 20 resultados.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/items",
+      "body": {},
+      "parameters": [
+        { "name": "search", "value": "{{ _.item_search }}" }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 400,
       "isPrivate": false
     }
   ]
