@@ -97,3 +97,14 @@ export async function updatePokemon(id: string, input: UpdatePokemonInput): Prom
     throw err;
   }
 }
+
+export async function deletePokemon(id: string): Promise<void> {
+  try {
+    await prisma.pokemon.delete({ where: { id } });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      throw new HttpError(404, `Pokemon ${id} not found`);
+    }
+    throw err;
+  }
+}
