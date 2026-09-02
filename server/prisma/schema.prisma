@@ -23,3 +23,11 @@ model Pokemon {
 
   @@unique([location, slotPosition])
 }
+
+// Cache persistente de respostas da PokeAPI (dados essencialmente estáticos:
+// espécie, move e item não mudam). Sem TTL de propósito — ver src/lib/pokeapi/cache.ts.
+model PokeApiCacheEntry {
+  key       String   @id
+  payload   String
+  fetchedAt DateTime @default(now())
+}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { SpeciesDTO } from "../pokeapi/pokeapi.types.js";
 
 export const POKEMON_LOCATIONS = ["PARTY", "PC"] as const;
 
@@ -42,6 +43,7 @@ export type PokemonDTO = {
   location: PokemonLocation;
   slotPosition: number | null;
   moves: string[];
+  species: SpeciesDTO | null;
   createdAt: Date;
   updatedAt: Date;
 };

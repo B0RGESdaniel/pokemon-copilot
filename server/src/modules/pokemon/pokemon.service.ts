@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { Pokemon } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../middlewares/errorHandler.js";
+import { getSpecies } from "../pokeapi/pokeapi.service.js";
 import {
   MAX_PARTY_SIZE,
   type CreatePartyPokemonInput,
@@ -11,11 +12,17 @@ import {
   type UpdatePokemonInput,
 } from "./pokemon.types.js";
 
-function toDTO(pokemon: Pokemon): PokemonDTO {
+// A espécie vem da PokeAPI (cacheada) só pra enriquecer a resposta. Se a
+// PokeAPI estiver fora do ar, não queremos que isso derrube o CRUD do
+// nosso próprio dado — devolve species: null nesse caso.
+async function toDTO(pokemon: Pokemon): Promise<PokemonDTO> {
+  const species = await getSpecies(pokemon.pokeApiId).catch(() => null);
+
   return {
     ...pokemon,
     location: pokemon.location as PokemonLocation,
     moves: JSON.parse(pokemon.moves) as string[],
+    species,
   };
 }
 
@@ -25,7 +32,7 @@ export async function getParty(): Promise<PokemonDTO[]> {
     orderBy: { slotPosition: "asc" },
   });
 
-  return party.map(toDTO);
+  return Promise.all(party.map(toDTO));
 }
 
 export async function getPC(): Promise<PokemonDTO[]> {
@@ -34,7 +41,7 @@ export async function getPC(): Promise<PokemonDTO[]> {
     orderBy: { createdAt: "asc" },
   });
 
-  return pc.map(toDTO);
+  return Promise.all(pc.map(toDTO));
 }
 
 async function resolveSlotPosition(requestedSlot: number | undefined): Promise<number> {
