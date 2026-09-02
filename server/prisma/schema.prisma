@@ -1,0 +1,25 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite não suporta enum nem Json nativamente no Prisma.
+// `location` é validado na aplicação como "PARTY" | "PC" (ver pokemon.types.ts).
+// `moves` guarda um array de strings serializado em JSON (texto).
+model Pokemon {
+  id           String   @id @default(cuid())
+  pokeApiId    Int
+  nickname     String?
+  level        Int
+  heldItem     String?
+  location     String
+  slotPosition Int?
+  moves        String   @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([location, slotPosition])
+}
