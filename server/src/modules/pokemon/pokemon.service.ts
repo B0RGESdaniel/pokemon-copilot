@@ -1,6 +1,14 @@
+import { Prisma } from "@prisma/client";
 import type { Pokemon } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
-import type { PokemonDTO, PokemonLocation } from "./pokemon.types.js";
+import { HttpError } from "../../middlewares/errorHandler.js";
+import {
+  MAX_PARTY_SIZE,
+  type CreatePartyPokemonInput,
+  type PokemonDTO,
+  type PokemonLocation,
+  type UpdatePokemonInput,
+} from "./pokemon.types.js";
 
 function toDTO(pokemon: Pokemon): PokemonDTO {
   return {
@@ -17,4 +25,75 @@ export async function getParty(): Promise<PokemonDTO[]> {
   });
 
   return party.map(toDTO);
+}
+
+async function resolveSlotPosition(requestedSlot: number | undefined): Promise<number> {
+  const occupiedSlots = await prisma.pokemon.findMany({
+    where: { location: "PARTY" },
+    select: { slotPosition: true },
+  });
+  const occupied = new Set(occupiedSlots.map((p) => p.slotPosition));
+
+  if (requestedSlot !== undefined) {
+    if (occupied.has(requestedSlot)) {
+      throw new HttpError(409, `Slot ${requestedSlot} is already occupied in the party`);
+    }
+    return requestedSlot;
+  }
+
+  if (occupied.size >= MAX_PARTY_SIZE) {
+    throw new HttpError(409, `Party is full (max ${MAX_PARTY_SIZE} pokemon)`);
+  }
+
+  for (let slot = 1; slot <= MAX_PARTY_SIZE; slot++) {
+    if (!occupied.has(slot)) {
+      return slot;
+    }
+  }
+
+  throw new HttpError(409, `Party is full (max ${MAX_PARTY_SIZE} pokemon)`);
+}
+
+export async function addToParty(input: CreatePartyPokemonInput): Promise<PokemonDTO> {
+  const slotPosition = await resolveSlotPosition(input.slotPosition);
+
+  try {
+    const created = await prisma.pokemon.create({
+      data: {
+        pokeApiId: input.pokeApiId,
+        nickname: input.nickname ?? null,
+        level: input.level,
+        heldItem: input.heldItem ?? null,
+        location: "PARTY",
+        slotPosition,
+        moves: JSON.stringify(input.moves),
+      },
+    });
+
+    return toDTO(created);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      throw new HttpError(409, `Slot ${slotPosition} is already occupied in the party`);
+    }
+    throw err;
+  }
+}
+
+export async function updatePokemon(id: string, input: UpdatePokemonInput): Promise<PokemonDTO> {
+  const data: Prisma.PokemonUpdateInput = {};
+
+  if (input.nickname !== undefined) data.nickname = input.nickname;
+  if (input.level !== undefined) data.level = input.level;
+  if (input.heldItem !== undefined) data.heldItem = input.heldItem;
+  if (input.moves !== undefined) data.moves = JSON.stringify(input.moves);
+
+  try {
+    const updated = await prisma.pokemon.update({ where: { id }, data });
+    return toDTO(updated);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      throw new HttpError(404, `Pokemon ${id} not found`);
+    }
+    throw err;
+  }
 }
