@@ -26,6 +26,13 @@ export const updatePokemonSchema = z.object({
 
 export type UpdatePokemonInput = z.infer<typeof updatePokemonSchema>;
 
+export const movePokemonSchema = z.object({
+  to: z.enum(POKEMON_LOCATIONS),
+  slotPosition: z.number().int().min(1).max(MAX_PARTY_SIZE).optional(),
+});
+
+export type MovePokemonInput = z.infer<typeof movePokemonSchema>;
+
 export type PokemonDTO = {
   id: string;
   pokeApiId: number;

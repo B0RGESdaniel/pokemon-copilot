@@ -5,6 +5,7 @@ import { HttpError } from "../../middlewares/errorHandler.js";
 import {
   MAX_PARTY_SIZE,
   type CreatePartyPokemonInput,
+  type MovePokemonInput,
   type PokemonDTO,
   type PokemonLocation,
   type UpdatePokemonInput,
@@ -93,6 +94,37 @@ export async function updatePokemon(id: string, input: UpdatePokemonInput): Prom
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
       throw new HttpError(404, `Pokemon ${id} not found`);
+    }
+    throw err;
+  }
+}
+
+export async function movePokemon(id: string, input: MovePokemonInput): Promise<PokemonDTO> {
+  const existing = await prisma.pokemon.findUnique({ where: { id } });
+  if (!existing) {
+    throw new HttpError(404, `Pokemon ${id} not found`);
+  }
+
+  if (existing.location === input.to) {
+    throw new HttpError(400, `Pokemon is already in ${input.to}`);
+  }
+
+  const data: Prisma.PokemonUpdateInput =
+    input.to === "PARTY"
+      ? { location: "PARTY", slotPosition: await resolveSlotPosition(input.slotPosition) }
+      : { location: "PC", slotPosition: null };
+
+  try {
+    const updated = await prisma.pokemon.update({ where: { id }, data });
+    return toDTO(updated);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === "P2002") {
+        throw new HttpError(409, "Slot is already occupied in the party");
+      }
+      if (err.code === "P2025") {
+        throw new HttpError(404, `Pokemon ${id} not found`);
+      }
     }
     throw err;
   }
