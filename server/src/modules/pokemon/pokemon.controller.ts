@@ -1,10 +1,15 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { addToParty, deletePokemon, getParty, movePokemon, updatePokemon } from "./pokemon.service.js";
+import { addToParty, deletePokemon, getPC, getParty, movePokemon, updatePokemon } from "./pokemon.service.js";
 import { createPartyPokemonSchema, movePokemonSchema, updatePokemonSchema } from "./pokemon.types.js";
 
 export async function listParty(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
   const party = await getParty();
   reply.send(party);
+}
+
+export async function listPC(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  const pc = await getPC();
+  reply.send(pc);
 }
 
 export async function createPartyPokemon(

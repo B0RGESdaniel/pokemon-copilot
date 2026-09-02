@@ -28,6 +28,15 @@ export async function getParty(): Promise<PokemonDTO[]> {
   return party.map(toDTO);
 }
 
+export async function getPC(): Promise<PokemonDTO[]> {
+  const pc = await prisma.pokemon.findMany({
+    where: { location: "PC" },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return pc.map(toDTO);
+}
+
 async function resolveSlotPosition(requestedSlot: number | undefined): Promise<number> {
   const occupiedSlots = await prisma.pokemon.findMany({
     where: { location: "PARTY" },
