@@ -1,0 +1,158 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-02T19:00:00.000Z",
+  "__export_source": "pokemon-copilot:manual-export",
+  "resources": [
+    {
+      "_id": "wrk_pokemon_copilot",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Pokémon Copilot API",
+      "description": "Backend do Pokémon Copilot (party + PC)",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "pokemon_id": ""
+      },
+      "dataPropertyOrder": { "&": ["base_url", "pokemon_id"] },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 0
+    },
+    {
+      "_id": "fld_pokemon",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Pokémon",
+      "description": "",
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Health check",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 0,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_list_party",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "List party",
+      "description": "GET /api/party",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/party",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_create_party",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "Add pokemon to party",
+      "description": "POST /api/party\n\nslotPosition é opcional (auto-atribui o primeiro slot livre se omitido).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/party",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": 390,\n  \"nickname\": \"Chimmy\",\n  \"level\": 12,\n  \"heldItem\": \"oran-berry\",\n  \"moves\": [\"scratch\", \"leer\"],\n  \"slotPosition\": 1\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_patch_pokemon",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "Update pokemon (level/item/moves/nickname)",
+      "description": "PATCH /api/pokemon/:id\n\nAtualize a variável de ambiente pokemon_id com um id real (ex: pegue o retorno do 'Add pokemon to party').",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/pokemon/{{ _.pokemon_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"level\": 13,\n  \"nickname\": \"Chimchamp\",\n  \"moves\": [\"ember\", \"leer\", \"taunt\", \"flamethrower\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_move_pokemon",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "Move pokemon (party <-> PC)",
+      "description": "POST /api/pokemon/:id/move\n\n\"to\" é \"PARTY\" ou \"PC\". slotPosition é opcional, só usado quando to=\"PARTY\".",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/pokemon/{{ _.pokemon_id }}/move",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"to\": \"PC\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 400,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_delete_pokemon",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "Delete pokemon",
+      "description": "DELETE /api/pokemon/:id",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/pokemon/{{ _.pokemon_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 500,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_list_pc",
+      "_type": "request",
+      "parentId": "fld_pokemon",
+      "name": "List PC",
+      "description": "GET /api/pc",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/pc",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 600,
+      "isPrivate": false
+    }
+  ]
+}
