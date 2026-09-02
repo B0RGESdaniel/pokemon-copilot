@@ -1,14 +1,10 @@
-import express from "express";
+import Fastify from "fastify";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import { notFound } from "./middlewares/notFound.js";
+import { notFoundHandler } from "./middlewares/notFound.js";
 
-export const app = express();
+export const app = Fastify({ logger: true });
 
-app.use(express.json());
+app.get("/health", async () => ({ status: "ok" }));
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
-
-app.use(notFound);
-app.use(errorHandler);
+app.setNotFoundHandler(notFoundHandler);
+app.setErrorHandler(errorHandler);

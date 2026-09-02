@@ -1,5 +1,5 @@
-import type { Request, Response } from "express";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
-export function notFound(req: Request, res: Response): void {
-  res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` });
+export function notFoundHandler(request: FastifyRequest, reply: FastifyReply): void {
+  reply.status(404).send({ error: `Route not found: ${request.method} ${request.url}` });
 }
