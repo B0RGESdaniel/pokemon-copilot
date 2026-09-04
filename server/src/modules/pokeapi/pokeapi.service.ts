@@ -1,8 +1,10 @@
 import { cachedFetch } from "../../lib/pokeapi/cache.js";
 import { fetchFromPokeApi } from "../../lib/pokeapi/client.js";
 import type {
+  GenerationSpeciesDTO,
   ItemDTO,
   MoveDTO,
+  RawGeneration,
   RawItem,
   RawMove,
   RawNamedResourceList,
@@ -14,6 +16,16 @@ const NAME_LIST_LIMIT = 4000; // maior que o total de moves/items da PokeAPI hoj
 
 function baseStat(stats: RawPokemon["stats"], name: string): number {
   return stats.find((s) => s.stat.name === name)?.base_stat ?? 0;
+}
+
+// URLs de Named APIResource da PokeAPI têm o formato .../resource/{id}/ —
+// não tem outro jeito de extrair o id sem essa convenção.
+function idFromUrl(url: string): number {
+  const match = /\/(\d+)\/?$/.exec(url);
+  if (!match) {
+    throw new Error(`Cannot extract id from PokeAPI url: ${url}`);
+  }
+  return Number(match[1]);
 }
 
 function toSpeciesDTO(raw: RawPokemon): SpeciesDTO {
@@ -76,6 +88,29 @@ export async function getItem(name: string): Promise<ItemDTO> {
     fetchFromPokeApi<RawItem>(`/item/${key}`),
   );
   return toItemDTO(raw);
+}
+
+async function getGenerationRaw(generation: number): Promise<RawGeneration> {
+  return cachedFetch<RawGeneration>(`generation:${generation}`, () =>
+    fetchFromPokeApi<RawGeneration>(`/generation/${generation}`),
+  );
+}
+
+// `/generation/{n}` só devolve espécies introduzidas NAQUELA geração (ex:
+// generation 4 não inclui Bulbasaur). Um save de Platinum (Gen 4) pode ter
+// Pokémon de Gen 1 a 4, então aqui unimos todas as gerações de 1 até a
+// pedida — cada uma cacheada individualmente e para sempre, então depois
+// da primeira vez isso é só leitura local.
+export async function getSpeciesByGeneration(generation: number): Promise<GenerationSpeciesDTO[]> {
+  const generations = await Promise.all(
+    Array.from({ length: generation }, (_, i) => getGenerationRaw(i + 1)),
+  );
+
+  const species = generations.flatMap((gen) =>
+    gen.pokemon_species.map((s) => ({ pokeApiId: idFromUrl(s.url), name: s.name })),
+  );
+
+  return species.sort((a, b) => a.pokeApiId - b.pokeApiId);
 }
 
 // Só items têm busca global — moves são sempre consultados no contexto de

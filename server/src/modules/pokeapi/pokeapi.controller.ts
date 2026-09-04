@@ -1,6 +1,12 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { HttpError } from "../../middlewares/errorHandler.js";
-import { getItem, getMove, getSpecies, searchItemNames } from "./pokeapi.service.js";
+import {
+  getItem,
+  getMove,
+  getSpecies,
+  getSpeciesByGeneration,
+  searchItemNames,
+} from "./pokeapi.service.js";
 
 export async function getSpeciesHandler(
   request: FastifyRequest<{ Params: { pokeApiId: string } }>,
@@ -12,6 +18,19 @@ export async function getSpeciesHandler(
   }
 
   const species = await getSpecies(pokeApiId);
+  reply.send(species);
+}
+
+export async function getSpeciesByGenerationHandler(
+  request: FastifyRequest<{ Params: { generation: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const generation = Number(request.params.generation);
+  if (!Number.isInteger(generation) || generation <= 0) {
+    throw new HttpError(400, "generation must be a positive integer");
+  }
+
+  const species = await getSpeciesByGeneration(generation);
   reply.send(species);
 }
 

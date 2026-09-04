@@ -39,6 +39,14 @@ export type RawNamedResourceList = {
   results: { name: string; url: string }[];
 };
 
+// `pokemon_species` aqui são só as espécies introduzidas NESSA geração
+// específica (não cumulativo) — ver getSpeciesByGeneration.
+export type RawGeneration = {
+  id: number;
+  name: string;
+  pokemon_species: { name: string; url: string }[];
+};
+
 // DTOs curados, devolvidos pela nossa API.
 
 export type SpeciesDTO = {
@@ -71,4 +79,9 @@ export type ItemDTO = {
   sprite: string | null;
   category: string;
   shortEffect: string | null;
+};
+
+export type GenerationSpeciesDTO = {
+  pokeApiId: number;
+  name: string;
 };
