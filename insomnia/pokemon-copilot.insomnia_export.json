@@ -21,14 +21,29 @@
         "base_url": "http://localhost:3333",
         "save_id": "",
         "pokemon_id": "",
+        "active_pokemon_id": "",
         "poke_api_id": "25",
         "generation": "4",
+        "opponent_poke_api_id": "95",
+        "opponent_level": "10",
         "move_name": "thunder-shock",
         "item_name": "oran-berry",
         "item_search": "berry"
       },
       "dataPropertyOrder": {
-        "&": ["base_url", "save_id", "pokemon_id", "poke_api_id", "generation", "move_name", "item_name", "item_search"]
+        "&": [
+          "base_url",
+          "save_id",
+          "pokemon_id",
+          "active_pokemon_id",
+          "poke_api_id",
+          "generation",
+          "opponent_poke_api_id",
+          "opponent_level",
+          "move_name",
+          "item_name",
+          "item_search"
+        ]
       },
       "color": null,
       "isPrivate": false,
@@ -57,6 +72,22 @@
       "name": "PokeAPI",
       "description": "Endpoints curados sobre a PokeAPI, com cache persistente no SQLite.",
       "metaSortKey": 200
+    },
+    {
+      "_id": "fld_validation",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Validation",
+      "description": "Valida se uma espécie + moves são legais pra geração/jogo do save.",
+      "metaSortKey": 250
+    },
+    {
+      "_id": "fld_battle",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Battle",
+      "description": "Menu de batalha: estado persistido em BattleSession (1 por save). Rode 'Start battle' antes dos outros requests desse grupo.",
+      "metaSortKey": 300
     },
     {
       "_id": "req_health",
@@ -320,6 +351,96 @@
         { "name": "search", "value": "{{ _.item_search }}" }
       ],
       "headers": [],
+      "authentication": {},
+      "metaSortKey": 400,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_validate_pokemon",
+      "_type": "request",
+      "parentId": "fld_validation",
+      "name": "Validate pokemon",
+      "description": "POST /api/saves/:saveId/validate-pokemon\n\nValida se a espécie existe até a generation do save (cumulativo) e se cada move é aprendível pela espécie no version_group exato do save.game. Exemplo válido: Bulbasaur (id 1) com tackle/razor-leaf num save de Platinum. Pra ver falhar, troque pokeApiId por 658 (Greninja, fora da Gen 4) ou um move como \"roar-of-time\" (signature do Dialga).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/validate-pokemon",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": 1,\n  \"moves\": [\"tackle\", \"razor-leaf\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_start_battle",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Start battle",
+      "description": "POST /api/saves/:saveId/battle\n\nDefine o Pokémon do slot 1 da party como ativo e limpa o adversário. 409 se o slot 1 estiver vazio.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_set_opponent",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Set opponent",
+      "description": "PUT /api/saves/:saveId/battle/opponent\n\nDefine/troca o adversário e recalcula o matchup do meu Pokémon ativo contra ele. 409 se a batalha não tiver sido iniciada ainda.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle/opponent",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": {{ _.opponent_poke_api_id }},\n  \"level\": {{ _.opponent_level }}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_swap_suggestions",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Get swap suggestions",
+      "description": "GET /api/saves/:saveId/battle/suggestions\n\nRanking do time inteiro contra o adversário atual, do melhor pro pior matchup de tipo. 409 se o adversário ainda não tiver sido definido.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle/suggestions",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_set_active_pokemon",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Set active pokemon",
+      "description": "PUT /api/saves/:saveId/battle/active\n\nTroca meu Pokémon ativo (precisa estar na party desse save) e recalcula o matchup contra o adversário atual. Atualize active_pokemon_id com o id de um Pokémon da party.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle/active",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokemonId\": \"{{ _.active_pokemon_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
       "authentication": {},
       "metaSortKey": 400,
       "isPrivate": false
