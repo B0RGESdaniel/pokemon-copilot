@@ -19,18 +19,28 @@
       "name": "Base Environment",
       "data": {
         "base_url": "http://localhost:3333",
+        "save_id": "",
         "pokemon_id": "",
         "poke_api_id": "25",
+        "generation": "4",
         "move_name": "thunder-shock",
         "item_name": "oran-berry",
         "item_search": "berry"
       },
       "dataPropertyOrder": {
-        "&": ["base_url", "pokemon_id", "poke_api_id", "move_name", "item_name", "item_search"]
+        "&": ["base_url", "save_id", "pokemon_id", "poke_api_id", "generation", "move_name", "item_name", "item_search"]
       },
       "color": null,
       "isPrivate": false,
       "metaSortKey": 0
+    },
+    {
+      "_id": "fld_save",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Save",
+      "description": "Save = contexto de jogo/geração (ex: Platinum, Gen 4). Todo Pokémon de party/PC pertence a um save.",
+      "metaSortKey": 50
     },
     {
       "_id": "fld_pokemon",
@@ -64,15 +74,67 @@
       "isPrivate": false
     },
     {
+      "_id": "req_create_save",
+      "_type": "request",
+      "parentId": "fld_save",
+      "name": "Create save",
+      "description": "POST /api/saves\n\nAtualize a variável de ambiente save_id com o id retornado — os requests de party/PC dependem dele.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Minha run de Platinum\",\n  \"game\": \"platinum\",\n  \"generation\": 4\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_list_saves",
+      "_type": "request",
+      "parentId": "fld_save",
+      "name": "List saves",
+      "description": "GET /api/saves",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/saves",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_save",
+      "_type": "request",
+      "parentId": "fld_save",
+      "name": "Get save",
+      "description": "GET /api/saves/:id",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false
+    },
+    {
       "_id": "req_list_party",
       "_type": "request",
       "parentId": "fld_pokemon",
       "name": "List party",
-      "description": "GET /api/party",
+      "description": "GET /api/party?saveId=\n\nsaveId é obrigatório (rode 'Create save' antes e atualize a variável save_id).",
       "method": "GET",
       "url": "{{ _.base_url }}/api/party",
       "body": {},
-      "parameters": [],
+      "parameters": [
+        { "name": "saveId", "value": "{{ _.save_id }}" }
+      ],
       "headers": [],
       "authentication": {},
       "metaSortKey": 100,
@@ -83,12 +145,12 @@
       "_type": "request",
       "parentId": "fld_pokemon",
       "name": "Add pokemon to party",
-      "description": "POST /api/party\n\nslotPosition é opcional (auto-atribui o primeiro slot livre se omitido).",
+      "description": "POST /api/party\n\nsaveId é obrigatório. slotPosition é opcional (auto-atribui o primeiro slot livre se omitido).",
       "method": "POST",
       "url": "{{ _.base_url }}/api/party",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"pokeApiId\": 390,\n  \"nickname\": \"Chimmy\",\n  \"level\": 12,\n  \"heldItem\": \"oran-berry\",\n  \"moves\": [\"scratch\", \"leer\"],\n  \"slotPosition\": 1\n}"
+        "text": "{\n  \"saveId\": \"{{ _.save_id }}\",\n  \"pokeApiId\": 390,\n  \"nickname\": \"Chimmy\",\n  \"level\": 12,\n  \"heldItem\": \"oran-berry\",\n  \"moves\": [\"scratch\", \"leer\"],\n  \"slotPosition\": 1\n}"
       },
       "parameters": [],
       "headers": [
@@ -158,11 +220,13 @@
       "_type": "request",
       "parentId": "fld_pokemon",
       "name": "List PC",
-      "description": "GET /api/pc",
+      "description": "GET /api/pc?saveId=\n\nsaveId é obrigatório (rode 'Create save' antes e atualize a variável save_id).",
       "method": "GET",
       "url": "{{ _.base_url }}/api/pc",
       "body": {},
-      "parameters": [],
+      "parameters": [
+        { "name": "saveId", "value": "{{ _.save_id }}" }
+      ],
       "headers": [],
       "authentication": {},
       "metaSortKey": 600,
@@ -181,6 +245,36 @@
       "headers": [],
       "authentication": {},
       "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_species_by_generation",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Get species by generation",
+      "description": "GET /api/generations/:generation/species\n\nCumulativo: generation=4 devolve todas as espécies de Gen 1 a 4 (não só as introduzidas na Gen 4). Cacheado por geração — primeira chamada bate na PokeAPI, as seguintes são locais.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/generations/{{ _.generation }}/species",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 150,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_get_type_chart_by_generation",
+      "_type": "request",
+      "parentId": "fld_pokeapi",
+      "name": "Get type chart by generation",
+      "description": "GET /api/generations/:generation/type-chart\n\nSó tipos que já existiam naquela geração (ex: generation=4 não tem fairy). Relações de dano usam past_damage_relations quando aplicável (ex: dragon só é fraco pra fairy a partir da Gen 6). Cacheado por tipo — primeira chamada busca todos os tipos da PokeAPI, as seguintes são locais.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/generations/{{ _.generation }}/type-chart",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 175,
       "isPrivate": false
     },
     {
