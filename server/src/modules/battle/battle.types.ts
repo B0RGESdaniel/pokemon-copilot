@@ -32,6 +32,7 @@ export type MatchupDTO = {
 };
 
 export type BattleStateDTO = {
+  status: "active";
   saveId: string;
   activePokemon: PokemonDTO;
   opponent: OpponentDTO | null;
@@ -59,3 +60,28 @@ export type LevelUpResultDTO = {
   pokemon: PokemonDTO;
   moveEvaluation: LearnMoveResultDTO | null;
 };
+
+export const END_BATTLE_REASONS = ["opponent_fainted", "fled"] as const;
+
+export type EndBattleReason = (typeof END_BATTLE_REASONS)[number];
+
+export const endBattleSchema = z.object({
+  reason: z.enum(END_BATTLE_REASONS),
+});
+
+export type EndBattleInput = z.infer<typeof endBattleSchema>;
+
+export type EndedBattleDTO = {
+  status: "ended";
+  saveId: string;
+  endReason: EndBattleReason;
+  endedAt: Date;
+  activePokemon: PokemonDTO;
+  opponent: OpponentDTO | null;
+};
+
+export type NotStartedBattleDTO = {
+  status: "not_started";
+};
+
+export type BattleStatusDTO = BattleStateDTO | EndedBattleDTO | NotStartedBattleDTO;

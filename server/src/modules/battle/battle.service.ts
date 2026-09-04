@@ -8,14 +8,21 @@ import { getParty, getPokemonById, updatePokemon } from "../pokemon/pokemon.serv
 import { getSaveOrThrow } from "../save/save.service.js";
 import type {
   BattleStateDTO,
+  BattleStatusDTO,
+  EndBattleInput,
+  EndBattleReason,
+  EndedBattleDTO,
   LevelUpInput,
   LevelUpResultDTO,
   MatchupDTO,
+  OpponentDTO,
   PartyMatchupDTO,
   SetActivePokemonInput,
   SetOpponentInput,
   SwapSuggestionsDTO,
 } from "./battle.types.js";
+
+const BATTLE_NOT_ACTIVE_MESSAGE = "Battle not started for this save — call POST /battle first";
 
 // Multiplicador de dano de `attackingType` contra a combinação (1 ou 2
 // tipos) de `defendingTypes`, segundo o type chart da geração do save.
@@ -53,29 +60,48 @@ function computeMatchup(myTypes: string[], opponentTypes: string[], chart: TypeC
 // A espécie do adversário usa o tipo ATUAL (não histórico) — mesma
 // simplificação que o resto do app já assume (ex: getSpecies em
 // pokemon.service.ts). Um Clefairy num save de Gen 4 aparece como Fairy
-// mesmo sendo Normal naquela época de verdade.
-async function toBattleStateDTO(session: BattleSession, generation: number): Promise<BattleStateDTO> {
-  const activePokemon = await getPokemonById(session.activePokemonId);
-
-  if (session.opponentPokeApiId === null || session.opponentLevel === null) {
-    return { saveId: session.saveId, activePokemon, opponent: null, matchup: null };
+// mesmo sendo Normal naquela época de verdade. Se a PokeAPI estiver fora
+// do ar, species vem null em vez de derrubar o estado da batalha.
+async function toOpponentDTO(pokeApiId: number | null, level: number | null): Promise<OpponentDTO | null> {
+  if (pokeApiId === null || level === null) {
+    return null;
   }
+  const species = await getSpecies(pokeApiId).catch(() => null);
+  return { pokeApiId, level, species };
+}
 
-  const [opponentSpecies, chart] = await Promise.all([
-    getSpecies(session.opponentPokeApiId).catch(() => null),
-    getTypeChartByGeneration(generation),
+async function toBattleStateDTO(session: BattleSession, generation: number): Promise<BattleStateDTO> {
+  const [activePokemon, opponent] = await Promise.all([
+    getPokemonById(session.activePokemonId),
+    toOpponentDTO(session.opponentPokeApiId, session.opponentLevel),
   ]);
 
+  if (!opponent) {
+    return { status: "active", saveId: session.saveId, activePokemon, opponent: null, matchup: null };
+  }
+
+  const chart = await getTypeChartByGeneration(generation);
   const matchup =
-    activePokemon.species && opponentSpecies
-      ? computeMatchup(activePokemon.species.types, opponentSpecies.types, chart)
+    activePokemon.species && opponent.species
+      ? computeMatchup(activePokemon.species.types, opponent.species.types, chart)
       : null;
 
+  return { status: "active", saveId: session.saveId, activePokemon, opponent, matchup };
+}
+
+async function toEndedBattleDTO(session: BattleSession): Promise<EndedBattleDTO> {
+  const [activePokemon, opponent] = await Promise.all([
+    getPokemonById(session.activePokemonId),
+    toOpponentDTO(session.opponentPokeApiId, session.opponentLevel),
+  ]);
+
   return {
+    status: "ended",
     saveId: session.saveId,
+    endReason: session.endReason as EndBattleReason,
+    endedAt: session.endedAt as Date,
     activePokemon,
-    opponent: { pokeApiId: session.opponentPokeApiId, level: session.opponentLevel, species: opponentSpecies },
-    matchup,
+    opponent,
   };
 }
 
@@ -93,7 +119,14 @@ export async function startBattle(saveId: string): Promise<BattleStateDTO> {
   const session = await prisma.battleSession.upsert({
     where: { saveId },
     create: { saveId, activePokemonId: slotOne.id },
-    update: { activePokemonId: slotOne.id, opponentPokeApiId: null, opponentLevel: null },
+    update: {
+      activePokemonId: slotOne.id,
+      opponentPokeApiId: null,
+      opponentLevel: null,
+      status: "active",
+      endReason: null,
+      endedAt: null,
+    },
   });
 
   return toBattleStateDTO(session, save.generation);
@@ -103,8 +136,8 @@ export async function setOpponent(saveId: string, input: SetOpponentInput): Prom
   const save = await getSaveOrThrow(saveId);
 
   const existing = await prisma.battleSession.findUnique({ where: { saveId } });
-  if (!existing) {
-    throw new HttpError(409, "Battle not started for this save — call POST /battle first");
+  if (!existing || existing.status !== "active") {
+    throw new HttpError(409, BATTLE_NOT_ACTIVE_MESSAGE);
   }
 
   const session = await prisma.battleSession.update({
@@ -119,8 +152,8 @@ export async function setActivePokemon(saveId: string, input: SetActivePokemonIn
   const save = await getSaveOrThrow(saveId);
 
   const existing = await prisma.battleSession.findUnique({ where: { saveId } });
-  if (!existing) {
-    throw new HttpError(409, "Battle not started for this save — call POST /battle first");
+  if (!existing || existing.status !== "active") {
+    throw new HttpError(409, BATTLE_NOT_ACTIVE_MESSAGE);
   }
 
   const candidate = await getPokemonById(input.pokemonId);
@@ -144,8 +177,8 @@ export async function getSwapSuggestions(saveId: string): Promise<SwapSuggestion
   const save = await getSaveOrThrow(saveId);
 
   const session = await prisma.battleSession.findUnique({ where: { saveId } });
-  if (!session) {
-    throw new HttpError(409, "Battle not started for this save — call POST /battle first");
+  if (!session || session.status !== "active") {
+    throw new HttpError(409, BATTLE_NOT_ACTIVE_MESSAGE);
   }
   if (session.opponentPokeApiId === null || session.opponentLevel === null) {
     throw new HttpError(409, "Opponent not set — call PUT /battle/opponent first");
@@ -185,8 +218,8 @@ export async function levelUp(saveId: string, input: LevelUpInput): Promise<Leve
   await getSaveOrThrow(saveId);
 
   const session = await prisma.battleSession.findUnique({ where: { saveId } });
-  if (!session) {
-    throw new HttpError(409, "Battle not started for this save — call POST /battle first");
+  if (!session || session.status !== "active") {
+    throw new HttpError(409, BATTLE_NOT_ACTIVE_MESSAGE);
   }
 
   const updated = await updatePokemon(session.activePokemonId, { level: input.level });
@@ -199,4 +232,40 @@ export async function levelUp(saveId: string, input: LevelUpInput): Promise<Leve
   const pokemon = moveEvaluation.outcome === "learned_directly" ? moveEvaluation.pokemon : updated;
 
   return { pokemon, moveEvaluation };
+}
+
+// Encerra a batalha (adversário desmaiou ou fugiu) sem deletar a linha —
+// vira uma transição de estado. A próxima "iniciar batalha" sobrescreve
+// esses dados (não guardamos histórico de batalhas nesta fase).
+export async function endBattle(saveId: string, input: EndBattleInput): Promise<EndedBattleDTO> {
+  await getSaveOrThrow(saveId);
+
+  const session = await prisma.battleSession.findUnique({ where: { saveId } });
+  if (!session || session.status !== "active") {
+    throw new HttpError(409, BATTLE_NOT_ACTIVE_MESSAGE);
+  }
+
+  const ended = await prisma.battleSession.update({
+    where: { saveId },
+    data: { status: "ended", endReason: input.reason, endedAt: new Date() },
+  });
+
+  return toEndedBattleDTO(ended);
+}
+
+// Leitura pura, sem efeito colateral — pensada pro frontend perguntar "tem
+// batalha rolando?" ao abrir a tela, sem correr o risco de resetar uma
+// batalha ativa (o que POST /battle faria).
+export async function getBattleStatus(saveId: string): Promise<BattleStatusDTO> {
+  const save = await getSaveOrThrow(saveId);
+
+  const session = await prisma.battleSession.findUnique({ where: { saveId } });
+  if (!session) {
+    return { status: "not_started" };
+  }
+  if (session.status === "ended") {
+    return toEndedBattleDTO(session);
+  }
+
+  return toBattleStateDTO(session, save.generation);
 }

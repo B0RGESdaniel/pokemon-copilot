@@ -464,6 +464,21 @@
       "isPrivate": false
     },
     {
+      "_id": "req_get_battle_status",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Get battle status",
+      "description": "GET /api/saves/:saveId/battle\n\nLeitura pura, sem efeito colateral. Três estados possíveis: not_started (nunca iniciou), active (estado completo: ativo/adversário/matchup), ended (endReason/endedAt/quem estava em campo). Use isso pro frontend checar se tem batalha rolando antes de decidir se chama Start battle (que reseta).",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 50,
+      "isPrivate": false
+    },
+    {
       "_id": "req_start_battle",
       "_type": "request",
       "parentId": "fld_battle",
@@ -531,6 +546,26 @@
       ],
       "authentication": {},
       "metaSortKey": 500,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_end_battle",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "End battle",
+      "description": "POST /api/saves/:saveId/battle/end\n\nEncerra a batalha (adversário desmaiou ou você fugiu). Não deleta a linha — marca status=ended e grava reason/endedAt. Depois disso, os outros endpoints de Battle (opponent, suggestions, active, level-up) retornam 409 até uma nova batalha ser iniciada. Troque reason pra \"fled\" pra testar o outro motivo.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle/end",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"reason\": \"opponent_fainted\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 600,
       "isPrivate": false
     },
     {

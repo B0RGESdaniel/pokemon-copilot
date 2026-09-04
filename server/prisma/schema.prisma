@@ -44,16 +44,22 @@ model Pokemon {
 // Estado da batalha em andamento (menu de troca). Uma por save — iniciar
 // uma nova batalha reseta essa mesma linha em vez de criar histórico, já
 // que não guardamos histórico de batalhas nesta fase.
+// `status` é validado na aplicação como "active" | "ended" (mesmo padrão
+// de Pokemon.location). `endReason`/`endedAt` só são preenchidos quando
+// status="ended", e são sobrescritos na próxima vez que a batalha iniciar.
 model BattleSession {
-  id                String   @id @default(cuid())
-  saveId            String   @unique
-  save              Save     @relation(fields: [saveId], references: [id])
+  id                String    @id @default(cuid())
+  saveId            String    @unique
+  save              Save      @relation(fields: [saveId], references: [id])
   activePokemonId   String
-  activePokemon     Pokemon  @relation(fields: [activePokemonId], references: [id])
+  activePokemon     Pokemon   @relation(fields: [activePokemonId], references: [id])
   opponentPokeApiId Int?
   opponentLevel     Int?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  status            String    @default("active")
+  endReason         String?
+  endedAt           DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 // Cache persistente de respostas da PokeAPI (dados essencialmente estáticos:

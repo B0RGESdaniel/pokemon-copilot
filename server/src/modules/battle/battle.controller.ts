@@ -1,6 +1,14 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getSwapSuggestions, levelUp, setActivePokemon, setOpponent, startBattle } from "./battle.service.js";
-import { levelUpSchema, setActivePokemonSchema, setOpponentSchema } from "./battle.types.js";
+import {
+  endBattle,
+  getBattleStatus,
+  getSwapSuggestions,
+  levelUp,
+  setActivePokemon,
+  setOpponent,
+  startBattle,
+} from "./battle.service.js";
+import { endBattleSchema, levelUpSchema, setActivePokemonSchema, setOpponentSchema } from "./battle.types.js";
 
 export async function startBattleHandler(
   request: FastifyRequest<{ Params: { saveId: string } }>,
@@ -35,6 +43,23 @@ export async function levelUpHandler(
   const input = levelUpSchema.parse(request.body);
   const result = await levelUp(request.params.saveId, input);
   reply.send(result);
+}
+
+export async function endBattleHandler(
+  request: FastifyRequest<{ Params: { saveId: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const input = endBattleSchema.parse(request.body);
+  const result = await endBattle(request.params.saveId, input);
+  reply.send(result);
+}
+
+export async function getBattleStatusHandler(
+  request: FastifyRequest<{ Params: { saveId: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const status = await getBattleStatus(request.params.saveId);
+  reply.send(status);
 }
 
 export async function getSwapSuggestionsHandler(
