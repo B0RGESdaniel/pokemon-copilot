@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getSaveOrThrow } from "../save/save.service.js";
-import { buildMoveset, compareMoves, scoreMove } from "./moveset.service.js";
-import { buildMovesetSchema, compareMovesSchema, scoreMoveSchema } from "./moveset.types.js";
+import { buildMoveset, compareMoves, evaluateNewMove, scoreMove } from "./moveset.service.js";
+import { buildMovesetSchema, compareMovesSchema, learnMoveSchema, scoreMoveSchema } from "./moveset.types.js";
 
 export async function scoreMoveHandler(
   request: FastifyRequest<{ Params: { saveId: string } }>,
@@ -20,6 +20,15 @@ export async function buildMovesetHandler(
   const input = buildMovesetSchema.parse(request.body);
   const moveset = await buildMoveset(request.params.saveId, input.pokeApiId);
   reply.send({ pokeApiId: input.pokeApiId, moveset });
+}
+
+export async function learnMoveHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const input = learnMoveSchema.parse(request.body);
+  const result = await evaluateNewMove(request.params.id, input.moveName);
+  reply.send(result);
 }
 
 export async function compareMovesHandler(

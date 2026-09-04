@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { PokemonDTO } from "../pokemon/pokemon.types.js";
 
 export const scoreMoveSchema = z.object({
   pokeApiId: z.number().int().positive(),
@@ -20,6 +21,12 @@ export const compareMovesSchema = z.object({
 });
 
 export type CompareMovesInput = z.infer<typeof compareMovesSchema>;
+
+export const learnMoveSchema = z.object({
+  moveName: z.string().min(1),
+});
+
+export type LearnMoveInput = z.infer<typeof learnMoveSchema>;
 
 export type DamageClass = "physical" | "special" | "status";
 
@@ -44,3 +51,20 @@ export type MoveComparisonDTO = {
   moveB: MoveScoreDTO;
   winner: string | null;
 };
+
+// "learned_directly": menos de 4 moves, sem decisão a fazer — já grava no
+// Pokémon. "suggested_replacement": já tem 4, só sugere (moveA nas
+// comparisons é sempre o move novo) — quem decide aplicar é o usuário via
+// PATCH /pokemon/:id existente.
+export type LearnMoveResultDTO =
+  | {
+      outcome: "learned_directly";
+      pokemon: PokemonDTO;
+      learnedMove: MoveScoreDTO;
+    }
+  | {
+      outcome: "suggested_replacement";
+      newMove: MoveScoreDTO;
+      comparisons: MoveComparisonDTO[];
+      suggestedReplacement: string;
+    };

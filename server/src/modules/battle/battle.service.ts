@@ -1,12 +1,15 @@
 import type { BattleSession } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../middlewares/errorHandler.js";
+import { evaluateNewMove } from "../moveset/moveset.service.js";
 import { getSpecies, getTypeChartByGeneration } from "../pokeapi/pokeapi.service.js";
 import type { TypeChartDTO } from "../pokeapi/pokeapi.types.js";
-import { getParty, getPokemonById } from "../pokemon/pokemon.service.js";
+import { getParty, getPokemonById, updatePokemon } from "../pokemon/pokemon.service.js";
 import { getSaveOrThrow } from "../save/save.service.js";
 import type {
   BattleStateDTO,
+  LevelUpInput,
+  LevelUpResultDTO,
   MatchupDTO,
   PartyMatchupDTO,
   SetActivePokemonInput,
@@ -170,4 +173,30 @@ export async function getSwapSuggestions(saveId: string): Promise<SwapSuggestion
     opponent: { pokeApiId: session.opponentPokeApiId, level: session.opponentLevel, species: opponentSpecies },
     ranking,
   };
+}
+
+// Aviso manual de "subiu de nível" no meio da batalha — sem detecção
+// automática (decisão explícita do Prompt F: nível é só um campo editável,
+// sem lógica acoplada). Sempre atualiza o nível do Pokémon ativo via o
+// mesmo updatePokemon que a tela de Mudar Moves usa; se um move novo foi
+// informado, reaproveita evaluateNewMove (mesma função da tela fora de
+// batalha) pra avaliar/aprender.
+export async function levelUp(saveId: string, input: LevelUpInput): Promise<LevelUpResultDTO> {
+  await getSaveOrThrow(saveId);
+
+  const session = await prisma.battleSession.findUnique({ where: { saveId } });
+  if (!session) {
+    throw new HttpError(409, "Battle not started for this save — call POST /battle first");
+  }
+
+  const updated = await updatePokemon(session.activePokemonId, { level: input.level });
+
+  if (!input.moveName) {
+    return { pokemon: updated, moveEvaluation: null };
+  }
+
+  const moveEvaluation = await evaluateNewMove(session.activePokemonId, input.moveName);
+  const pokemon = moveEvaluation.outcome === "learned_directly" ? moveEvaluation.pokemon : updated;
+
+  return { pokemon, moveEvaluation };
 }

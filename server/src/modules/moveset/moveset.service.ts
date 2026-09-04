@@ -1,7 +1,9 @@
+import { HttpError } from "../../middlewares/errorHandler.js";
 import { getLearnableMovesInVersionGroup, getMove, getSpecies, getVersionGroupForGame } from "../pokeapi/pokeapi.service.js";
 import type { MoveDTO } from "../pokeapi/pokeapi.types.js";
+import { getPokemonById, updatePokemon } from "../pokemon/pokemon.service.js";
 import { getSaveOrThrow } from "../save/save.service.js";
-import type { DamageClass, MoveComparisonDTO, MoveScoreDTO } from "./moveset.types.js";
+import type { DamageClass, LearnMoveResultDTO, MoveComparisonDTO, MoveScoreDTO } from "./moveset.types.js";
 
 const MOVESET_SIZE = 4;
 
@@ -172,4 +174,48 @@ export async function compareMoves(
   const winner = moveA.score === moveB.score ? null : moveA.score > moveB.score ? moveA.move : moveB.move;
 
   return { moveA, moveB, winner };
+}
+
+// Fluxo manual de "aprender move novo" (sem detecção automática de level
+// up) — reaproveitado tanto pela tela de Mudar Moves quanto pelo contexto
+// de batalha (ver battle.service.ts::levelUp). Só recebe pokemonId +
+// moveName; o Pokémon já sabe seu próprio saveId/pokeApiId.
+export async function evaluateNewMove(pokemonId: string, moveName: string): Promise<LearnMoveResultDTO> {
+  const pokemon = await getPokemonById(pokemonId);
+  const save = await getSaveOrThrow(pokemon.saveId);
+  const normalizedMoveName = moveName.toLowerCase();
+
+  const versionGroup = await getVersionGroupForGame(save.game);
+  const learnable = await getLearnableMovesInVersionGroup(pokemon.pokeApiId, versionGroup);
+  if (!learnable.has(normalizedMoveName)) {
+    throw new HttpError(
+      400,
+      `Move "${moveName}" is not learnable by species ${pokemon.pokeApiId} in "${save.game}" (version group "${versionGroup}")`,
+    );
+  }
+
+  if (pokemon.moves.some((m) => m.toLowerCase() === normalizedMoveName)) {
+    throw new HttpError(400, `Pokemon ${pokemonId} already knows move "${moveName}"`);
+  }
+
+  if (pokemon.moves.length < MOVESET_SIZE) {
+    const learnedMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation);
+    const updated = await updatePokemon(pokemonId, { moves: [...pokemon.moves, learnedMove.move] });
+    return { outcome: "learned_directly", pokemon: updated, learnedMove };
+  }
+
+  const newMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation);
+  const comparisons = await Promise.all(
+    pokemon.moves.map((currentMove) =>
+      compareMoves(pokemon.pokeApiId, normalizedMoveName, currentMove, save.generation),
+    ),
+  );
+  const weakest = comparisons.reduce((min, c) => (c.moveB.score < min.moveB.score ? c : min));
+
+  return {
+    outcome: "suggested_replacement",
+    newMove,
+    comparisons,
+    suggestedReplacement: weakest.moveB.move,
+  };
 }

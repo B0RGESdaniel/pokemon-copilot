@@ -384,6 +384,26 @@
       "isPrivate": false
     },
     {
+      "_id": "req_learn_move",
+      "_type": "request",
+      "parentId": "fld_moveset",
+      "name": "Learn move",
+      "description": "POST /api/pokemon/:id/learn-move\n\nFluxo manual de aprender move novo (sem detecção automática de level up). Valida o move contra o movepool legal (Prompt C). Se o Pokémon tem menos de 4 moves, aprende direto (grava). Se já tem 4, só sugere qual substituir (compara contra os 4 atuais, não grava nada). Atualize pokemon_id com um Pokémon real.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/pokemon/{{ _.pokemon_id }}/learn-move",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"moveName\": \"superpower\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 50,
+      "isPrivate": false
+    },
+    {
       "_id": "req_score_move",
       "_type": "request",
       "parentId": "fld_moveset",
@@ -491,6 +511,26 @@
       "headers": [],
       "authentication": {},
       "metaSortKey": 300,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_level_up_battle",
+      "_type": "request",
+      "parentId": "fld_battle",
+      "name": "Level up (in battle)",
+      "description": "PUT /api/saves/:saveId/battle/level-up\n\nAviso manual de 'subiu de nível' durante a batalha — sem detecção automática. Sempre atualiza o nível do Pokémon ativo (mesmo updatePokemon do PATCH normal). moveName é opcional: se informado, reaproveita o mesmo fluxo de 'Learn move' (aprende direto se <4 moves, ou só sugere substituição se já tem 4). Remova moveName do body pra testar só a atualização de nível.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/battle/level-up",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"level\": 12,\n  \"moveName\": \"superpower\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 500,
       "isPrivate": false
     },
     {
