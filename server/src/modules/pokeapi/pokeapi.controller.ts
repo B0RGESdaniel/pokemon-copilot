@@ -1,11 +1,15 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { HttpError } from "../../middlewares/errorHandler.js";
+import { getSaveOrThrow } from "../save/save.service.js";
 import {
+  getEvolutions,
   getItem,
+  getLearnableMovesInVersionGroup,
   getMove,
   getSpecies,
   getSpeciesByGeneration,
   getTypeChartByGeneration,
+  getVersionGroupForGame,
   searchItemNames,
 } from "./pokeapi.service.js";
 
@@ -46,6 +50,34 @@ export async function getTypeChartByGenerationHandler(
 
   const typeChart = await getTypeChartByGeneration(generation);
   reply.send(typeChart);
+}
+
+export async function getEvolutionsHandler(
+  request: FastifyRequest<{ Params: { pokeApiId: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const pokeApiId = Number(request.params.pokeApiId);
+  if (!Number.isInteger(pokeApiId) || pokeApiId <= 0) {
+    throw new HttpError(400, "pokeApiId must be a positive integer");
+  }
+
+  const evolutions = await getEvolutions(pokeApiId);
+  reply.send(evolutions);
+}
+
+export async function getLegalMovesHandler(
+  request: FastifyRequest<{ Params: { saveId: string; pokeApiId: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const pokeApiId = Number(request.params.pokeApiId);
+  if (!Number.isInteger(pokeApiId) || pokeApiId <= 0) {
+    throw new HttpError(400, "pokeApiId must be a positive integer");
+  }
+
+  const save = await getSaveOrThrow(request.params.saveId);
+  const versionGroup = await getVersionGroupForGame(save.game);
+  const learnable = await getLearnableMovesInVersionGroup(pokeApiId, versionGroup);
+  reply.send([...learnable].sort());
 }
 
 export async function getMoveHandler(

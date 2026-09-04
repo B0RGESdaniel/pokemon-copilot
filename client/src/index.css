@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b1120;
+  font-family: "VT323", monospace;
+  -webkit-font-smoothing: none;
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+a {
+  color: #3a6ec0;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #c03830;
+}
+
+button {
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+}
+
+input {
+  font-family: "VT323", monospace;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

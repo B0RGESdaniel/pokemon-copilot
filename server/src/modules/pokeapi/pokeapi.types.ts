@@ -21,6 +21,30 @@ export type RawPokemon = {
   }[];
 };
 
+// Só o campo necessário pra chegar na evolution chain a partir de um id.
+export type RawPokemonSpecies = {
+  evolution_chain: { url: string };
+};
+
+export type RawEvolutionDetail = {
+  min_level: number | null;
+  item: { name: string } | null;
+  trigger: { name: string } | null;
+  min_happiness: number | null;
+  held_item: { name: string } | null;
+  location: { name: string } | null;
+};
+
+export type RawEvolutionChainNode = {
+  species: { name: string; url: string };
+  evolves_to: RawEvolutionChainNode[];
+  evolution_details: RawEvolutionDetail[];
+};
+
+export type RawEvolutionChain = {
+  chain: RawEvolutionChainNode;
+};
+
 // `/version/{name}` — save.game (ex: "platinum") bate direto com o nome
 // desse recurso, o que permite resolver o version_group exato do jogo sem
 // precisar de uma tabela de mapeamento escrita à mão.
@@ -143,4 +167,10 @@ export type TypeChartDTO = {
   generation: number;
   types: string[];
   relations: Record<string, TypeRelationsDTO>;
+};
+
+export type EvolutionOptionDTO = {
+  pokeApiId: number;
+  name: string;
+  method: string;
 };

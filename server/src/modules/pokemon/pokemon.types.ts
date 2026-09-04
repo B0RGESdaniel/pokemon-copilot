@@ -19,11 +19,25 @@ export const createPartyPokemonSchema = z.object({
 
 export type CreatePartyPokemonInput = z.infer<typeof createPartyPokemonSchema>;
 
+export const createPcPokemonSchema = z.object({
+  saveId: z.string().min(1),
+  pokeApiId: z.number().int().positive(),
+  nickname: z.string().min(1).max(50).optional(),
+  level: z.number().int().min(1).max(100),
+  heldItem: z.string().min(1).max(50).optional(),
+  moves: z.array(z.string().min(1)).max(4).default([]),
+});
+
+export type CreatePcPokemonInput = z.infer<typeof createPcPokemonSchema>;
+
 export const updatePokemonSchema = z.object({
   nickname: z.string().min(1).max(50).nullable().optional(),
   level: z.number().int().min(1).max(100).optional(),
   heldItem: z.string().min(1).max(50).nullable().optional(),
   moves: z.array(z.string().min(1)).max(4).optional(),
+  // Só usado pra evolução: troca a espécie do mesmo registro, mantendo
+  // id/nickname/moves/item — ver EvolveView no frontend.
+  pokeApiId: z.number().int().positive().optional(),
 });
 
 export type UpdatePokemonInput = z.infer<typeof updatePokemonSchema>;

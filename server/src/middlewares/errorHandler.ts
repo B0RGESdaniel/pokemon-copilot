@@ -25,6 +25,16 @@ export function errorHandler(
     return;
   }
 
+  // Erros que o próprio Fastify já classificou como 4xx (ex: parsing de
+  // body malformado/vazio) — não faz sentido mascarar isso como 500.
+  if (err instanceof Error && "statusCode" in err) {
+    const statusCode = (err as { statusCode?: unknown }).statusCode;
+    if (typeof statusCode === "number" && statusCode >= 400 && statusCode < 500) {
+      reply.status(statusCode).send({ error: err.message });
+      return;
+    }
+  }
+
   request.log.error(err);
   reply.status(500).send({ error: "Internal server error" });
 }

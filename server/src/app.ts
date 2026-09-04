@@ -1,3 +1,4 @@
+import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFound.js";
@@ -9,6 +10,15 @@ import { saveRoutes } from "./modules/save/save.routes.js";
 import { validationRoutes } from "./modules/validation/validation.routes.js";
 
 export const app = Fastify({ logger: true });
+
+// Libera o dev server do Vite (frontend roda em porta separada da API).
+// methods precisa ser explícito — o default do @fastify/cors só inclui
+// GET/HEAD/POST, o que bloqueava silenciosamente PUT/PATCH/DELETE no
+// preflight (a API usa os quatro).
+await app.register(cors, {
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+});
 
 app.get("/health", async () => ({ status: "ok" }));
 

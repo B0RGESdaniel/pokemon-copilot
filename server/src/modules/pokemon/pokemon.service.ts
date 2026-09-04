@@ -7,6 +7,7 @@ import { getSaveOrThrow } from "../save/save.service.js";
 import {
   MAX_PARTY_SIZE,
   type CreatePartyPokemonInput,
+  type CreatePcPokemonInput,
   type MovePokemonInput,
   type PokemonDTO,
   type PokemonLocation,
@@ -107,6 +108,27 @@ export async function addToParty(input: CreatePartyPokemonInput): Promise<Pokemo
   }
 }
 
+// Registra direto na PC, sem lógica de slot (PC não tem slots) — usado
+// quando a party já está cheia no momento do cadastro.
+export async function addToPc(input: CreatePcPokemonInput): Promise<PokemonDTO> {
+  await getSaveOrThrow(input.saveId);
+
+  const created = await prisma.pokemon.create({
+    data: {
+      saveId: input.saveId,
+      pokeApiId: input.pokeApiId,
+      nickname: input.nickname ?? null,
+      level: input.level,
+      heldItem: input.heldItem ?? null,
+      location: "PC",
+      slotPosition: null,
+      moves: JSON.stringify(input.moves),
+    },
+  });
+
+  return toDTO(created);
+}
+
 export async function updatePokemon(id: string, input: UpdatePokemonInput): Promise<PokemonDTO> {
   const data: Prisma.PokemonUpdateInput = {};
 
@@ -114,6 +136,7 @@ export async function updatePokemon(id: string, input: UpdatePokemonInput): Prom
   if (input.level !== undefined) data.level = input.level;
   if (input.heldItem !== undefined) data.heldItem = input.heldItem;
   if (input.moves !== undefined) data.moves = JSON.stringify(input.moves);
+  if (input.pokeApiId !== undefined) data.pokeApiId = input.pokeApiId;
 
   try {
     const updated = await prisma.pokemon.update({ where: { id }, data });

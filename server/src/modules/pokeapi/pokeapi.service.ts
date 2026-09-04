@@ -1,14 +1,19 @@
 import { cachedFetch } from "../../lib/pokeapi/cache.js";
 import { fetchFromPokeApi } from "../../lib/pokeapi/client.js";
 import type {
+  EvolutionOptionDTO,
   GenerationSpeciesDTO,
   ItemDTO,
   MoveDTO,
+  RawEvolutionChain,
+  RawEvolutionChainNode,
+  RawEvolutionDetail,
   RawGeneration,
   RawItem,
   RawMove,
   RawNamedResourceList,
   RawPokemon,
+  RawPokemonSpecies,
   RawType,
   RawTypeRelations,
   RawVersion,
@@ -234,4 +239,50 @@ export async function searchItemNames(query: string): Promise<string[]> {
     .map((r) => r.name)
     .filter((name) => name.includes(needle))
     .slice(0, 20);
+}
+
+// Descreve o gatilho de evolução em texto legível — mesma lógica que
+// qualquer front-end teria que implementar em cima do payload cru da
+// PokeAPI, centralizada aqui pra não duplicar em cada cliente.
+function describeEvolutionMethod(detail: RawEvolutionDetail | undefined): string {
+  if (!detail) return "Unknown method";
+  if (detail.min_level) return `Level ${detail.min_level}`;
+  if (detail.item) return detail.item.name;
+  if (detail.trigger?.name === "trade") return "Trade with another trainer";
+  if (detail.min_happiness) return "High friendship";
+  if (detail.held_item) return `Holding ${detail.held_item.name}`;
+  if (detail.location) return `Level up in ${detail.location.name}`;
+  return detail.trigger?.name ?? "Unknown method";
+}
+
+function findEvolutionNode(node: RawEvolutionChainNode, speciesName: string): RawEvolutionChainNode | null {
+  if (node.species.name === speciesName) return node;
+  for (const child of node.evolves_to) {
+    const found = findEvolutionNode(child, speciesName);
+    if (found) return found;
+  }
+  return null;
+}
+
+// Cadeia de evolução de uma espécie: busca /pokemon-species pra achar a
+// evolution_chain, depois a árvore inteira, e devolve só os próximos
+// passos possíveis a partir dessa espécie (não a árvore inteira).
+export async function getEvolutions(pokeApiId: number): Promise<EvolutionOptionDTO[]> {
+  const species = await cachedFetch<RawPokemonSpecies>(`species:${pokeApiId}`, () =>
+    fetchFromPokeApi<RawPokemonSpecies>(`/pokemon-species/${pokeApiId}`),
+  );
+  const chainId = idFromUrl(species.evolution_chain.url);
+  const chain = await cachedFetch<RawEvolutionChain>(`evolution-chain:${chainId}`, () =>
+    fetchFromPokeApi<RawEvolutionChain>(`/evolution-chain/${chainId}`),
+  );
+
+  const raw = await getRawPokemon(pokeApiId);
+  const node = findEvolutionNode(chain.chain, raw.name);
+  if (!node) return [];
+
+  return node.evolves_to.map((child) => ({
+    pokeApiId: idFromUrl(child.species.url),
+    name: child.species.name,
+    method: describeEvolutionMethod(child.evolution_details[0]),
+  }));
 }
