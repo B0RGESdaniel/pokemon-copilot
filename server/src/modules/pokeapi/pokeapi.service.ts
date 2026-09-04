@@ -11,6 +11,7 @@ import type {
   RawPokemon,
   RawType,
   RawTypeRelations,
+  RawVersion,
   SpeciesDTO,
   TypeChartDTO,
   TypeRelationsDTO,
@@ -77,11 +78,42 @@ function toItemDTO(raw: RawItem): ItemDTO {
   };
 }
 
-export async function getSpecies(pokeApiId: number): Promise<SpeciesDTO> {
-  const raw = await cachedFetch<RawPokemon>(`pokemon:${pokeApiId}`, () =>
+function getRawPokemon(pokeApiId: number): Promise<RawPokemon> {
+  return cachedFetch<RawPokemon>(`pokemon:${pokeApiId}`, () =>
     fetchFromPokeApi<RawPokemon>(`/pokemon/${pokeApiId}`),
   );
+}
+
+export async function getSpecies(pokeApiId: number): Promise<SpeciesDTO> {
+  const raw = await getRawPokemon(pokeApiId);
   return toSpeciesDTO(raw);
+}
+
+// save.game (ex: "platinum") é o nome de um recurso /version/ na PokeAPI,
+// que aponta pro version_group exato do jogo — mais preciso que validar só
+// pela generation (que agrupa vários jogos, ex: Gen 4 = diamond-pearl,
+// platinum e heartgold-soulsilver, com movesets ligeiramente diferentes).
+export async function getVersionGroupForGame(game: string): Promise<string> {
+  const raw = await cachedFetch<RawVersion>(`version:${game}`, () =>
+    fetchFromPokeApi<RawVersion>(`/version/${game}`),
+  );
+  return raw.version_group.name;
+}
+
+// Aceita qualquer método de aprendizado (level-up, machine/TM, tutor, egg,
+// e eventuais métodos raros de evento) — todos representam formas
+// legítimas de obter o move naquele jogo específico.
+export async function getLearnableMovesInVersionGroup(
+  pokeApiId: number,
+  versionGroup: string,
+): Promise<Set<string>> {
+  const raw = await getRawPokemon(pokeApiId);
+
+  const names = raw.moves
+    .filter((m) => m.version_group_details.some((v) => v.version_group.name === versionGroup))
+    .map((m) => m.move.name);
+
+  return new Set(names);
 }
 
 export async function getMove(name: string): Promise<MoveDTO> {

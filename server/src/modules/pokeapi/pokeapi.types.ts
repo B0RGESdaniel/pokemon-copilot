@@ -15,7 +15,19 @@ export type RawPokemon = {
   };
   types: { slot: number; type: { name: string } }[];
   stats: { base_stat: number; stat: { name: string } }[];
-  moves: { move: { name: string } }[];
+  moves: {
+    move: { name: string };
+    version_group_details: { version_group: { name: string } }[];
+  }[];
+};
+
+// `/version/{name}` — save.game (ex: "platinum") bate direto com o nome
+// desse recurso, o que permite resolver o version_group exato do jogo sem
+// precisar de uma tabela de mapeamento escrita à mão.
+export type RawVersion = {
+  id: number;
+  name: string;
+  version_group: { name: string; url: string };
 };
 
 export type RawMove = {
