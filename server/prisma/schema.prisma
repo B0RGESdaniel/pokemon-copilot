@@ -15,7 +15,8 @@ model Save {
   generation Int
   createdAt  DateTime @default(now())
 
-  pokemons Pokemon[]
+  pokemons      Pokemon[]
+  battleSession BattleSession?
 }
 
 // SQLite não suporta enum nem Json nativamente no Prisma.
@@ -35,7 +36,24 @@ model Pokemon {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  activeInBattles BattleSession[]
+
   @@unique([saveId, location, slotPosition])
+}
+
+// Estado da batalha em andamento (menu de troca). Uma por save — iniciar
+// uma nova batalha reseta essa mesma linha em vez de criar histórico, já
+// que não guardamos histórico de batalhas nesta fase.
+model BattleSession {
+  id                String   @id @default(cuid())
+  saveId            String   @unique
+  save              Save     @relation(fields: [saveId], references: [id])
+  activePokemonId   String
+  activePokemon     Pokemon  @relation(fields: [activePokemonId], references: [id])
+  opponentPokeApiId Int?
+  opponentLevel     Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 // Cache persistente de respostas da PokeAPI (dados essencialmente estáticos:

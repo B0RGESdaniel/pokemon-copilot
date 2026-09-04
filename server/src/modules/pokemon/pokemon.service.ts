@@ -27,6 +27,14 @@ async function toDTO(pokemon: Pokemon): Promise<PokemonDTO> {
   };
 }
 
+export async function getPokemonById(id: string): Promise<PokemonDTO> {
+  const pokemon = await prisma.pokemon.findUnique({ where: { id } });
+  if (!pokemon) {
+    throw new HttpError(404, `Pokemon ${id} not found`);
+  }
+  return toDTO(pokemon);
+}
+
 export async function getParty(saveId: string): Promise<PokemonDTO[]> {
   const party = await prisma.pokemon.findMany({
     where: { saveId, location: "PARTY" },
