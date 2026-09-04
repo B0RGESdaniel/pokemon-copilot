@@ -5,6 +5,7 @@ import {
   getMove,
   getSpecies,
   getSpeciesByGeneration,
+  getTypeChartByGeneration,
   searchItemNames,
 } from "./pokeapi.service.js";
 
@@ -32,6 +33,19 @@ export async function getSpeciesByGenerationHandler(
 
   const species = await getSpeciesByGeneration(generation);
   reply.send(species);
+}
+
+export async function getTypeChartByGenerationHandler(
+  request: FastifyRequest<{ Params: { generation: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const generation = Number(request.params.generation);
+  if (!Number.isInteger(generation) || generation <= 0) {
+    throw new HttpError(400, "generation must be a positive integer");
+  }
+
+  const typeChart = await getTypeChartByGeneration(generation);
+  reply.send(typeChart);
 }
 
 export async function getMoveHandler(

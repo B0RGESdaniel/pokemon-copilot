@@ -47,6 +47,30 @@ export type RawGeneration = {
   pokemon_species: { name: string; url: string }[];
 };
 
+export type RawTypeRelations = {
+  no_damage_to: { name: string; url: string }[];
+  half_damage_to: { name: string; url: string }[];
+  double_damage_to: { name: string; url: string }[];
+  no_damage_from: { name: string; url: string }[];
+  half_damage_from: { name: string; url: string }[];
+  double_damage_from: { name: string; url: string }[];
+};
+
+// `damage_relations` é sempre a relação ATUAL (mais recente). Mudanças
+// históricas ficam em `past_damage_relations`, onde `generation` é a
+// última geração em que aquelas relações valeram (mesma convenção do
+// PokemonTypePast da PokeAPI) — ver getTypeChartByGeneration.
+export type RawType = {
+  id: number;
+  name: string;
+  generation: { name: string; url: string };
+  damage_relations: RawTypeRelations;
+  past_damage_relations: {
+    generation: { name: string; url: string };
+    damage_relations: RawTypeRelations;
+  }[];
+};
+
 // DTOs curados, devolvidos pela nossa API.
 
 export type SpeciesDTO = {
@@ -84,4 +108,19 @@ export type ItemDTO = {
 export type GenerationSpeciesDTO = {
   pokeApiId: number;
   name: string;
+};
+
+export type TypeRelationsDTO = {
+  doubleDamageTo: string[];
+  halfDamageTo: string[];
+  noDamageTo: string[];
+  doubleDamageFrom: string[];
+  halfDamageFrom: string[];
+  noDamageFrom: string[];
+};
+
+export type TypeChartDTO = {
+  generation: number;
+  types: string[];
+  relations: Record<string, TypeRelationsDTO>;
 };

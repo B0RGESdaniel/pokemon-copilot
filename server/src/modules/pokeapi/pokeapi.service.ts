@@ -9,10 +9,20 @@ import type {
   RawMove,
   RawNamedResourceList,
   RawPokemon,
+  RawType,
+  RawTypeRelations,
   SpeciesDTO,
+  TypeChartDTO,
+  TypeRelationsDTO,
 } from "./pokeapi.types.js";
 
 const NAME_LIST_LIMIT = 4000; // maior que o total de moves/items da PokeAPI hoje, então traz tudo numa página só.
+
+// "unknown" (o tipo ???, removido depois da Gen 5) e "shadow" (só existe em
+// Colosseum/XD, fora dos jogos principais) aparecem na lista de tipos da
+// PokeAPI mas não são tipos reais de jogo principal — não fazem sentido
+// num type chart por geração.
+const NON_GAME_TYPES = new Set(["unknown", "shadow"]);
 
 function baseStat(stats: RawPokemon["stats"], name: string): number {
   return stats.find((s) => s.stat.name === name)?.base_stat ?? 0;
@@ -111,6 +121,68 @@ export async function getSpeciesByGeneration(generation: number): Promise<Genera
   );
 
   return species.sort((a, b) => a.pokeApiId - b.pokeApiId);
+}
+
+async function getTypeNames(): Promise<string[]> {
+  const list = await cachedFetch<RawNamedResourceList>("type-list", () =>
+    fetchFromPokeApi<RawNamedResourceList>(`/type?limit=${NAME_LIST_LIMIT}`),
+  );
+  return list.results.map((r) => r.name).filter((name) => !NON_GAME_TYPES.has(name));
+}
+
+async function getTypeRaw(name: string): Promise<RawType> {
+  return cachedFetch<RawType>(`type:${name}`, () => fetchFromPokeApi<RawType>(`/type/${name}`));
+}
+
+// `past_damage_relations[].generation` é "a última geração em que essas
+// relações valeram" (mesma convenção do PokemonTypePast da PokeAPI). Então
+// pra achar as relações válidas numa geração alvo, pegamos a entrada de
+// past_damage_relations com a MENOR generation que ainda seja >= à
+// pedida (a revisão histórica mais próxima que cobre esse ponto no tempo).
+// Se nenhuma cobrir, a geração alvo é posterior a todas as revisões
+// históricas, então usamos damage_relations (a atual).
+function relationsForGeneration(type: RawType, generation: number): RawTypeRelations {
+  const applicablePast = type.past_damage_relations
+    .map((p) => ({ generation: idFromUrl(p.generation.url), damageRelations: p.damage_relations }))
+    .filter((p) => p.generation >= generation)
+    .sort((a, b) => a.generation - b.generation);
+
+  return applicablePast[0]?.damageRelations ?? type.damage_relations;
+}
+
+function toTypeRelationsDTO(raw: RawTypeRelations, validTypes: Set<string>): TypeRelationsDTO {
+  const only = (list: { name: string }[]) => list.map((t) => t.name).filter((name) => validTypes.has(name));
+
+  return {
+    doubleDamageTo: only(raw.double_damage_to),
+    halfDamageTo: only(raw.half_damage_to),
+    noDamageTo: only(raw.no_damage_to),
+    doubleDamageFrom: only(raw.double_damage_from),
+    halfDamageFrom: only(raw.half_damage_from),
+    noDamageFrom: only(raw.no_damage_from),
+  };
+}
+
+// Cada tipo é cacheado individualmente (`type:{name}`), pra sempre. Depois
+// da primeira chamada, montar o chart de qualquer geração é só leitura
+// local + computação em memória — nenhuma chamada de rede.
+export async function getTypeChartByGeneration(generation: number): Promise<TypeChartDTO> {
+  const names = await getTypeNames();
+  const allTypes = await Promise.all(names.map(getTypeRaw));
+
+  const availableTypes = allTypes.filter((t) => idFromUrl(t.generation.url) <= generation);
+  const validNames = new Set(availableTypes.map((t) => t.name));
+
+  const relations: Record<string, TypeRelationsDTO> = {};
+  for (const type of availableTypes) {
+    relations[type.name] = toTypeRelationsDTO(relationsForGeneration(type, generation), validNames);
+  }
+
+  return {
+    generation,
+    types: [...validNames].sort(),
+    relations,
+  };
 }
 
 // Só items têm busca global — moves são sempre consultados no contexto de
