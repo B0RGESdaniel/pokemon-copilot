@@ -65,6 +65,10 @@ function toMoveDTO(raw: RawMove): MoveDTO {
     accuracy: raw.accuracy,
     pp: raw.pp,
     damageClass: raw.damage_class?.name ?? null,
+    category: raw.meta?.category.name ?? null,
+    ailment: raw.meta?.ailment.name === "none" ? null : (raw.meta?.ailment.name ?? null),
+    healing: raw.meta?.healing ?? 0,
+    statChanges: raw.stat_changes.map((sc) => ({ change: sc.change, stat: sc.stat.name })),
   };
 }
 

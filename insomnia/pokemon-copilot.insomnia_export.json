@@ -90,6 +90,14 @@
       "metaSortKey": 300
     },
     {
+      "_id": "fld_moveset",
+      "_type": "request_group",
+      "parentId": "wrk_pokemon_copilot",
+      "name": "Moveset",
+      "description": "Motor de sugestão de moveset: pontua moves (STAB, físico/especial por geração, bônus de categoria pra status) e monta um set de 4 com diversidade de tipo. Só sugestão — não grava nada no Pokémon.",
+      "metaSortKey": 350
+    },
+    {
       "_id": "req_health",
       "_type": "request",
       "parentId": "wrk_pokemon_copilot",
@@ -373,6 +381,66 @@
       ],
       "authentication": {},
       "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_score_move",
+      "_type": "request",
+      "parentId": "fld_moveset",
+      "name": "Score move",
+      "description": "POST /api/saves/:saveId/moveset/score-move\n\nPontua um único move pra uma espécie (score = power × STAB × peso do stat de ataque correspondente; físico/especial respeita o split por tipo nas Gen 1-3). Exemplo: Machop + Superpower (físico, Atk=80) — troque moveName pra \"focus-blast\" (especial, SpA=35, mesmo power/tipo) pra ver o peso de stat decidir.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/moveset/score-move",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": 66,\n  \"moveName\": \"superpower\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_build_moveset",
+      "_type": "request",
+      "parentId": "fld_moveset",
+      "name": "Build moveset",
+      "description": "POST /api/saves/:saveId/moveset/build\n\nMonta o set de 4 moves recomendado (greedy, melhor score por tipo ainda não usado; relaxa a restrição se o movepool não tiver 4 tipos distintos). Só considera moves aprendíveis no version_group exato do save.game.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/moveset/build",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": 66\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_compare_moves",
+      "_type": "request",
+      "parentId": "fld_moveset",
+      "name": "Compare moves",
+      "description": "POST /api/saves/:saveId/moveset/compare\n\nCompara dois moves específicos pra uma espécie e devolve o vencedor por score. Pensado pro fluxo futuro de 'aprendeu um move novo, troca por qual dos atuais?' (level up) — reusa score-move, sem integração com level up ainda.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/saves/{{ _.save_id }}/moveset/compare",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pokeApiId\": 66,\n  \"moveNameA\": \"superpower\",\n  \"moveNameB\": \"focus-blast\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 300,
       "isPrivate": false
     },
     {

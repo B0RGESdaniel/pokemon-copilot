@@ -37,6 +37,10 @@ export type RawMove = {
   accuracy: number | null;
   pp: number | null;
   damage_class: { name: string } | null;
+  // Sinal útil pra pontuar moves de status (sem power real) — ver
+  // moveset.service.ts. `meta` é null em pouquíssimos moves obscuros.
+  meta: { category: { name: string }; healing: number; ailment: { name: string } } | null;
+  stat_changes: { change: number; stat: { name: string } }[];
 };
 
 export type RawItem = {
@@ -108,6 +112,10 @@ export type MoveDTO = {
   accuracy: number | null;
   pp: number | null;
   damageClass: string | null;
+  category: string | null;
+  ailment: string | null;
+  healing: number;
+  statChanges: { change: number; stat: string }[];
 };
 
 export type ItemDTO = {
