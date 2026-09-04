@@ -8,6 +8,7 @@ export type PokemonLocation = (typeof POKEMON_LOCATIONS)[number];
 export const MAX_PARTY_SIZE = 6;
 
 export const createPartyPokemonSchema = z.object({
+  saveId: z.string().min(1),
   pokeApiId: z.number().int().positive(),
   nickname: z.string().min(1).max(50).optional(),
   level: z.number().int().min(1).max(100),
@@ -34,8 +35,15 @@ export const movePokemonSchema = z.object({
 
 export type MovePokemonInput = z.infer<typeof movePokemonSchema>;
 
+export const listBySaveSchema = z.object({
+  saveId: z.string().min(1),
+});
+
+export type ListBySaveInput = z.infer<typeof listBySaveSchema>;
+
 export type PokemonDTO = {
   id: string;
+  saveId: string;
   pokeApiId: number;
   nickname: string | null;
   level: number;

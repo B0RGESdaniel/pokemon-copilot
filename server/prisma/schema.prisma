@@ -6,11 +6,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Contexto de jogo/geração é definido por save, não por Pokémon individual
+// (ver pokemon-copilot/CLAUDE ou histórico do PR que introduziu isso).
+model Save {
+  id         String   @id @default(cuid())
+  name       String
+  game       String
+  generation Int
+  createdAt  DateTime @default(now())
+
+  pokemons Pokemon[]
+}
+
 // SQLite não suporta enum nem Json nativamente no Prisma.
 // `location` é validado na aplicação como "PARTY" | "PC" (ver pokemon.types.ts).
 // `moves` guarda um array de strings serializado em JSON (texto).
 model Pokemon {
   id           String   @id @default(cuid())
+  saveId       String
+  save         Save     @relation(fields: [saveId], references: [id])
   pokeApiId    Int
   nickname     String?
   level        Int
@@ -21,7 +35,7 @@ model Pokemon {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@unique([location, slotPosition])
+  @@unique([saveId, location, slotPosition])
 }
 
 // Cache persistente de respostas da PokeAPI (dados essencialmente estáticos:

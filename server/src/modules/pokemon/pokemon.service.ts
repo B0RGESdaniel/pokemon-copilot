@@ -3,6 +3,7 @@ import type { Pokemon } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../middlewares/errorHandler.js";
 import { getSpecies } from "../pokeapi/pokeapi.service.js";
+import { getSaveOrThrow } from "../save/save.service.js";
 import {
   MAX_PARTY_SIZE,
   type CreatePartyPokemonInput,
@@ -26,27 +27,27 @@ async function toDTO(pokemon: Pokemon): Promise<PokemonDTO> {
   };
 }
 
-export async function getParty(): Promise<PokemonDTO[]> {
+export async function getParty(saveId: string): Promise<PokemonDTO[]> {
   const party = await prisma.pokemon.findMany({
-    where: { location: "PARTY" },
+    where: { saveId, location: "PARTY" },
     orderBy: { slotPosition: "asc" },
   });
 
   return Promise.all(party.map(toDTO));
 }
 
-export async function getPC(): Promise<PokemonDTO[]> {
+export async function getPC(saveId: string): Promise<PokemonDTO[]> {
   const pc = await prisma.pokemon.findMany({
-    where: { location: "PC" },
+    where: { saveId, location: "PC" },
     orderBy: { createdAt: "asc" },
   });
 
   return Promise.all(pc.map(toDTO));
 }
 
-async function resolveSlotPosition(requestedSlot: number | undefined): Promise<number> {
+async function resolveSlotPosition(saveId: string, requestedSlot: number | undefined): Promise<number> {
   const occupiedSlots = await prisma.pokemon.findMany({
-    where: { location: "PARTY" },
+    where: { saveId, location: "PARTY" },
     select: { slotPosition: true },
   });
   const occupied = new Set(occupiedSlots.map((p) => p.slotPosition));
@@ -72,11 +73,13 @@ async function resolveSlotPosition(requestedSlot: number | undefined): Promise<n
 }
 
 export async function addToParty(input: CreatePartyPokemonInput): Promise<PokemonDTO> {
-  const slotPosition = await resolveSlotPosition(input.slotPosition);
+  await getSaveOrThrow(input.saveId);
+  const slotPosition = await resolveSlotPosition(input.saveId, input.slotPosition);
 
   try {
     const created = await prisma.pokemon.create({
       data: {
+        saveId: input.saveId,
         pokeApiId: input.pokeApiId,
         nickname: input.nickname ?? null,
         level: input.level,
@@ -127,7 +130,10 @@ export async function movePokemon(id: string, input: MovePokemonInput): Promise<
 
   const data: Prisma.PokemonUpdateInput =
     input.to === "PARTY"
-      ? { location: "PARTY", slotPosition: await resolveSlotPosition(input.slotPosition) }
+      ? {
+          location: "PARTY",
+          slotPosition: await resolveSlotPosition(existing.saveId, input.slotPosition),
+        }
       : { location: "PC", slotPosition: null };
 
   try {
