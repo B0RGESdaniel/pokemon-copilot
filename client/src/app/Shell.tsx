@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Save } from "./types";
-import { colors, PIX } from "./theme";
-import { Btn, SearchInput, SectionLabel, Stepper } from "./ui";
+import { Btn, SearchInput, SectionLabel, Stepper } from "../components";
+import { colors, PIX } from "../theme";
+import type { Save } from "../types/saves";
 
 export function Header({
   headerMeta,

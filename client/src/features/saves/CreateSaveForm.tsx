@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { colors, PIX, VT } from "./theme";
-import { Btn, Panel, SearchInput, SectionLabel, Stepper } from "./ui";
-import type { Save } from "./types";
+import { Btn, Panel, SearchInput, SectionLabel, Stepper } from "../../components";
+import { colors, PIX, VT } from "../../theme";
+import type { Save } from "../../types/saves";
 
 export function CreateSaveForm({
   onCreate,

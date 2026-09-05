@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { colors, PIX, VT } from "./theme";
-import { Btn, Hint, Sprite, TypeBadge } from "./ui";
-import type { GenerationSpeciesEntry, PokemonDTO } from "./types";
+import { Btn, Hint, Sprite, TypeBadge } from "../../components";
+import { colors, PIX, VT } from "../../theme";
+import type { PokemonDTO } from "../../types/pokemon";
+import type { GenerationSpeciesEntry } from "../../types/species";
 
 function nameOf(p: PokemonDTO): string {
   return p.nickname ?? (p.species ? p.species.name.toUpperCase() : "UNKNOWN");

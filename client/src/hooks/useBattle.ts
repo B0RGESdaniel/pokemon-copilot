@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { battleLevelUp, endBattle, getBattleStatus, setBattleActive, setBattleOpponent, startBattle } from "../api";
-import type { BattleStatusResponse } from "../types";
+import { battleLevelUp, endBattle, getBattleStatus, setBattleActive, setBattleOpponent, startBattle } from "../api/battle";
+import type { BattleStatusResponse } from "../types/battle";
 
 export function useBattle(saveId: string | null) {
   const [status, setStatus] = useState<BattleStatusResponse | null>(null);

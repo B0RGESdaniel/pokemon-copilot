@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { createSave, getParty, getPc, getSpeciesByGeneration, getTypeChart, listSaves } from "../api";
-import type { GenerationSpeciesEntry, PokemonDTO, Save, TypeChart } from "../types";
+import { createSave, listSaves } from "../api/saves";
+import { getParty, getPc } from "../api/pokemon";
+import { getSpeciesByGeneration, getTypeChart } from "../api/species";
+import type { PokemonDTO } from "../types/pokemon";
+import type { Save } from "../types/saves";
+import type { GenerationSpeciesEntry, TypeChart } from "../types/species";
 
 const SAVE_STORAGE_KEY = "pokemon-copilot:saveId";
 

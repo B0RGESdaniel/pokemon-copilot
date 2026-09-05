@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { deletePokemon, getEvolutions, getLegalMoves, learnMove, movePokemon, searchItems, updatePokemon } from "../api";
-import { colors, PIX, VT, cap } from "../theme";
-import { Btn, ConfirmBar, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper, TypeBadge } from "../ui";
-import type { EvolutionOption, LearnMoveResult, PokemonDTO } from "../types";
+import { deletePokemon, learnMove, movePokemon, updatePokemon } from "../../../api/pokemon";
+import { getEvolutions, getLegalMoves, searchItems } from "../../../api/species";
+import { Btn, ConfirmBar, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper, TypeBadge } from "../../../components";
+import { colors, PIX, VT, cap } from "../../../theme";
+import type { LearnMoveResult, PokemonDTO } from "../../../types/pokemon";
+import type { EvolutionOption } from "../../../types/species";
 
 const STAT_DEFS: { key: string; label: string; color: string }[] = [
   { key: "hp", label: "HP", color: "#c03830" },

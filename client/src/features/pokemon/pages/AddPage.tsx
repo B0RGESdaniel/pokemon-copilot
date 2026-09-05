@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { addToParty, addToPc, getLegalMoves, getSpecies, searchItems } from "../api";
-import { colors, PIX, VT, cap } from "../theme";
-import { Btn, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper } from "../ui";
-import type { GenerationSpeciesEntry, SpeciesDTO } from "../types";
+import { addToParty, addToPc } from "../../../api/pokemon";
+import { getLegalMoves, getSpecies, searchItems } from "../../../api/species";
+import { Btn, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper } from "../../../components";
+import { colors, PIX, VT, cap } from "../../../theme";
+import type { GenerationSpeciesEntry, SpeciesDTO } from "../../../types/species";
 
 export function AddPage({
   saveId,

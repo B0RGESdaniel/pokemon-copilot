@@ -1,8 +1,12 @@
-import type { TypeChart } from "./types";
+import type { TypeChart } from "../types/species";
 
 // Mesma matemática do backend (moves/battle.service.ts::multiplierAgainst) —
 // só leitura sobre o type chart já buscado, sem chamada de rede extra.
-export function multiplierAgainst(attackingType: string, defendingTypes: string[], chart: TypeChart): number {
+export function multiplierAgainst(
+  attackingType: string,
+  defendingTypes: string[],
+  chart: TypeChart,
+): number {
   return defendingTypes.reduce((mult, def) => {
     const rel = chart.relations[def];
     if (!rel) return mult;
@@ -13,7 +17,11 @@ export function multiplierAgainst(attackingType: string, defendingTypes: string[
   }, 1);
 }
 
-export function effectivenessBadge(value: number): { label: string; bg: string; fg: string } {
+export function effectivenessBadge(value: number): {
+  label: string;
+  bg: string;
+  fg: string;
+} {
   if (value === 0) return { label: "x0", bg: "#3c4a66", fg: "#f2f6ff" };
   if (value >= 2) return { label: `x${value}`, bg: "#5aa943", fg: "#0b1120" };
   if (value > 1) return { label: `x${value}`, bg: "#cfe3c4", fg: "#0b1120" };

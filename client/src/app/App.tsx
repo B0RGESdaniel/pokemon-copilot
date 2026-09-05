@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { BattleTab } from "./BattleTab";
-import { CreateSaveForm } from "./CreateSaveForm";
-import { useGenerationDex, usePc, useParty, useSaves } from "./hooks/data";
-import { useBattle } from "./hooks/useBattle";
-import { useFlash } from "./hooks/useFlash";
-import { AddPage } from "./pages/AddPage";
-import { DetailFlow } from "./pages/DetailPages";
-import { PartyView, PcView, SearchView } from "./PokemonTab";
+import { FlashMessage } from "../components";
+import { BattleTab } from "../features/battle/BattleTab";
+import { CreateSaveForm } from "../features/saves/CreateSaveForm";
+import { AddPage } from "../features/pokemon/pages/AddPage";
+import { DetailFlow } from "../features/pokemon/pages/DetailPages";
+import { PartyView, PcView, SearchView } from "../features/pokemon/PokemonTab";
+import { useGenerationDex, usePc, useParty, useSaves } from "../hooks/data";
+import { useBattle } from "../hooks/useBattle";
+import { useFlash } from "../hooks/useFlash";
+import { colors } from "../theme";
 import { BottomNav, Header, Subnav } from "./Shell";
-import { colors } from "./theme";
-import { FlashMessage } from "./ui";
-import type { GenerationSpeciesEntry, Save } from "./types";
+import type { GenerationSpeciesEntry } from "../types/species";
+import type { Save } from "../types/saves";
 
 type AddState = GenerationSpeciesEntry | "blank" | null;
 
