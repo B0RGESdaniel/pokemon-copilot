@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { addToParty, addToPc } from "../../../api/pokemon";
 import { getLegalMoves, getSpecies, searchItems } from "../../../api/species";
 import { Btn, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper } from "../../../components";
-import { colors, PIX, VT, cap } from "../../../theme";
+import { cap } from "../../../theme";
 import type { GenerationSpeciesEntry, SpeciesDTO } from "../../../types/species";
 
 export function AddPage({
@@ -111,11 +111,11 @@ export function AddPage({
     <PageShell title="NEW REGISTRATION" onBack={onBack}>
       <Panel>
         <SectionLabel>SPECIES *</SectionLabel>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <div style={{ width: 52, height: 52, flex: "0 0 52px", background: colors.frame, border: `2px solid ${colors.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="flex items-center gap-2">
+          <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
             <Sprite url={species?.sprite} size={44} alt="sprite" />
           </div>
-          <div style={{ flex: "1 1 auto", minWidth: 0 }}>
+          <div className="min-w-0 flex-1">
             <SearchInput
               value={speciesQuery}
               onChange={(v) => {
@@ -127,7 +127,7 @@ export function AddPage({
           </div>
         </div>
         {speciesResults.length > 0 ? (
-          <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, maxHeight: 190, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+          <div className="flex max-h-[190px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {speciesResults.map((r) => (
               <button
                 key={r.pokeApiId}
@@ -135,9 +135,9 @@ export function AddPage({
                   setSpeciesKey(r);
                   setSpeciesQuery(cap(r.name));
                 }}
-                style={{ display: "flex", alignItems: "center", gap: 8, padding: 8, minHeight: 48, background: "none", border: "none", borderBottom: `2px solid ${colors.frameAlt}`, textAlign: "left" }}
+                className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2 text-left"
               >
-                <span style={{ ...PIX, fontSize: 8, color: colors.text }}>{cap(r.name)}</span>
+                <span className="font-pix text-[8px] text-text">{cap(r.name)}</span>
               </button>
             ))}
           </div>
@@ -156,7 +156,7 @@ export function AddPage({
           placeholder="search item..."
         />
         {itemChoices.length > 0 ? (
-          <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, maxHeight: 170, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+          <div className="flex max-h-[170px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {itemChoices.map((it) => (
               <button
                 key={it}
@@ -164,7 +164,7 @@ export function AddPage({
                   setItem(it);
                   setItemQuery(cap(it));
                 }}
-                style={{ display: "flex", alignItems: "center", padding: 10, minHeight: 46, background: colors.panel, border: "none", borderBottom: `2px solid ${colors.frameAlt}`, textAlign: "left", fontSize: 8, color: colors.text, fontFamily: "'Press Start 2P', monospace" }}
+                className="flex min-h-[46px] items-center border-0 border-b-2 border-frame-alt bg-panel p-2.5 text-left font-pix text-[8px] text-text"
               >
                 {cap(it)}
               </button>
@@ -179,9 +179,9 @@ export function AddPage({
       </Panel>
 
       <Panel>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="flex items-center justify-between">
           <SectionLabel>MOVES</SectionLabel>
-          <div style={{ ...VT, fontSize: 18, color: colors.red }}>{moves.length}/4</div>
+          <div className="font-vt text-[18px] text-red">{moves.length}/4</div>
         </div>
         {!species ? (
           <Hint>Pick a species to see its learnable moves.</Hint>
@@ -192,10 +192,12 @@ export function AddPage({
               <button
                 key={m}
                 onClick={() => toggleMove(m)}
-                style={{ display: "flex", alignItems: "center", gap: 8, border: `2px solid ${colors.ink}`, background: checked ? colors.greenSoft : colors.panel, padding: 10, minHeight: 48, textAlign: "left" }}
+                className={`flex min-h-12 items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                  checked ? "bg-green-soft" : "bg-panel"
+                }`}
               >
-                <span style={{ width: 14, height: 14, flex: "0 0 14px", border: `2px solid ${colors.ink}`, background: checked ? colors.red : "#fff" }} />
-                <span style={{ ...PIX, fontSize: 8, color: colors.text, flex: "1 1 auto" }}>{cap(m)}</span>
+                <span className={`size-3.5 flex-none border-2 border-ink ${checked ? "bg-red" : "bg-white"}`} />
+                <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
               </button>
             );
           })

@@ -8,7 +8,6 @@ import { PartyView, PcView, SearchView } from "../features/pokemon/PokemonTab";
 import { useGenerationDex, usePc, useParty, useSaves } from "../hooks/data";
 import { useBattle } from "../hooks/useBattle";
 import { useFlash } from "../hooks/useFlash";
-import { colors } from "../theme";
 import { BottomNav, Header, Subnav } from "./Shell";
 import type { GenerationSpeciesEntry } from "../types/species";
 import type { Save } from "../types/saves";
@@ -17,9 +16,7 @@ type AddState = GenerationSpeciesEntry | "blank" | null;
 
 function LoadingScreen() {
   return (
-    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: colors.white, fontFamily: "'VT323', monospace", fontSize: 22 }}>
-      Loading...
-    </div>
+    <div className="flex h-screen items-center justify-center font-vt text-[22px] text-white">Loading...</div>
   );
 }
 
@@ -58,26 +55,16 @@ function MainApp({
       : `${party.length}/6 party · ${pc.length} PC`;
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100%",
-        maxWidth: 480,
-        margin: "0 auto",
-        background: colors.bg,
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        overflow: "hidden",
-        borderLeft: `3px solid ${colors.ink}`,
-        borderRight: `3px solid ${colors.ink}`,
-      }}
-    >
+    <div className="relative mx-auto flex h-screen w-full max-w-[480px] flex-col overflow-hidden border-x-[3px] border-ink bg-bg">
       <Header headerMeta={headerMeta} saves={saves} selectedSave={save} onSelectSave={onSelectSave} onCreateSave={onCreateSave} />
       {tab === "pokemons" ? <Subnav sub={sub} onChange={setSub} /> : null}
       <FlashMessage message={message} />
 
-      <div style={{ flex: "1 1 auto", overflowY: tab === "pokemons" ? "auto" : "hidden", padding: tab === "pokemons" ? "10px 10px 18px" : 0 }}>
+      <div
+        className={`flex-1 ${
+          tab === "pokemons" ? "overflow-y-auto px-2.5 pt-2.5 pb-[18px]" : "overflow-hidden"
+        }`}
+      >
         {tab === "pokemons" && sub === "party" ? (
           <PartyView party={party} onOpenDetail={setDetailId} onOpenAdd={() => setAddOpen("blank")} />
         ) : null}

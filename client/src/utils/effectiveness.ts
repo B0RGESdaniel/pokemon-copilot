@@ -1,3 +1,4 @@
+import { tv } from "tailwind-variants";
 import type { TypeChart } from "../types/species";
 
 // Mesma matemática do backend (moves/battle.service.ts::multiplierAgainst) —
@@ -17,14 +18,25 @@ export function multiplierAgainst(
   }, 1);
 }
 
+const effectivenessTier = tv({
+  variants: {
+    tier: {
+      immune: "bg-text-muted text-white",
+      resisted: "bg-red text-white",
+      neutral: "bg-border text-text-muted",
+      superEffective: "bg-green-soft text-ink",
+      veryEffective: "bg-green text-ink",
+    },
+  },
+});
+
 export function effectivenessBadge(value: number): {
   label: string;
-  bg: string;
-  fg: string;
+  className: string;
 } {
-  if (value === 0) return { label: "x0", bg: "#3c4a66", fg: "#f2f6ff" };
-  if (value >= 2) return { label: `x${value}`, bg: "#5aa943", fg: "#0b1120" };
-  if (value > 1) return { label: `x${value}`, bg: "#cfe3c4", fg: "#0b1120" };
-  if (value === 1) return { label: "x1", bg: "#e4e9f2", fg: "#3c4a66" };
-  return { label: `x${value}`, bg: "#c03830", fg: "#f2f6ff" };
+  if (value === 0) return { label: "x0", className: effectivenessTier({ tier: "immune" }) };
+  if (value >= 2) return { label: `x${value}`, className: effectivenessTier({ tier: "veryEffective" }) };
+  if (value > 1) return { label: `x${value}`, className: effectivenessTier({ tier: "superEffective" }) };
+  if (value === 1) return { label: "x1", className: effectivenessTier({ tier: "neutral" }) };
+  return { label: `x${value}`, className: effectivenessTier({ tier: "resisted" }) };
 }

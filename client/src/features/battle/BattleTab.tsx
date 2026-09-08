@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tv } from "tailwind-variants";
 import { getBattleSuggestions } from "../../api/battle";
 import { updatePokemon } from "../../api/pokemon";
 import { getLegalMoves, getMove } from "../../api/species";
@@ -14,13 +15,10 @@ import {
   Stepper,
   TypeBadge,
 } from "../../components";
-import {
-  effectivenessBadge,
-  multiplierAgainst,
-} from "../../utils/effectiveness";
+import { effectivenessBadge, multiplierAgainst } from "../../utils/effectiveness";
 import type { useBattle } from "../../hooks/useBattle";
 import { useTypeChart } from "../../hooks/data";
-import { colors, PIX, VT, cap } from "../../theme";
+import { cap } from "../../theme";
 import type { PartyMatchup } from "../../types/battle";
 import type { LearnMoveResult } from "../../types/pokemon";
 import type { GenerationSpeciesEntry, MoveDTO } from "../../types/species";
@@ -47,30 +45,16 @@ export function BattleTab({
   const status = battle.status;
 
   if (!status || battle.loading) {
-    return (
-      <div
-        style={{ padding: 20, ...VT, fontSize: 18, color: colors.textMuted }}
-      >
-        Loading battle...
-      </div>
-    );
+    return <div className="p-5 font-vt text-[18px] text-text-muted">Loading battle...</div>;
   }
 
   if (status.status === "not_started") {
     return (
-      <div style={{ padding: 10 }}>
-        <Panel style={{ alignItems: "center", textAlign: "center" }}>
-          <div style={{ ...PIX, fontSize: 11, color: colors.text }}>
-            NO BATTLE YET
-          </div>
+      <div className="p-2.5">
+        <Panel className="items-center text-center">
+          <div className="font-pix text-[11px] text-text">NO BATTLE YET</div>
           <Hint>Start a battle to bring out your slot 1 pokemon.</Hint>
-          <Btn
-            variant="primary"
-            full
-            onClick={() =>
-              void battle.start().catch((e) => onFlash(String(e.message ?? e)))
-            }
-          >
+          <Btn variant="primary" full onClick={() => void battle.start().catch((e) => onFlash(String(e.message ?? e)))}>
             START BATTLE
           </Btn>
         </Panel>
@@ -84,11 +68,9 @@ export function BattleTab({
         ? `${cap(status.opponent?.species?.name)} was marked as fainted. Battle over.`
         : "You ran from the battle. Nothing was marked as fainted.";
     return (
-      <div style={{ padding: 10 }}>
-        <Panel style={{ alignItems: "center", textAlign: "center" }}>
-          <div style={{ ...PIX, fontSize: 11, color: colors.text }}>
-            BATTLE OVER
-          </div>
+      <div className="p-2.5">
+        <Panel className="items-center text-center">
+          <div className="font-pix text-[11px] text-text">BATTLE OVER</div>
           <Hint>{text}</Hint>
           <Btn variant="primary" full onClick={() => void battle.start()}>
             FIND NEW OPPONENT
@@ -105,67 +87,26 @@ export function BattleTab({
   const oppTypes = opponent?.species?.types ?? [];
 
   return (
-    <div style={{ position: "relative", height: "100%" }}>
-      <div
-        style={{
-          padding: 10,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
-          <div
-            style={{
-              flex: "0 0 112px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-            }}
-          >
-            <Btn
-              variant="outlineDanger"
-              onClick={() => setConfirm("fainted")}
-              style={{ flex: "1 1 0" }}
-              fontSize={8}
-            >
+    <div className="relative h-full">
+      <div className="flex flex-col gap-2 p-2.5">
+        <div className="flex items-stretch gap-2">
+          <div className="flex w-28 flex-none flex-col gap-1.5">
+            <Btn variant="outlineDanger" onClick={() => setConfirm("fainted")} className="flex-1" fontSize={8}>
               FAINTED
             </Btn>
-            <Btn
-              variant="secondary"
-              onClick={() => setPanel("opp")}
-              style={{ flex: "1 1 0" }}
-              fontSize={8}
-            >
+            <Btn variant="secondary" onClick={() => setPanel("opp")} className="flex-1" fontSize={8}>
               SWITCH
             </Btn>
           </div>
-          <Panel style={{ flex: "1 1 auto", minWidth: 0 }}>
-            <div style={{ ...PIX, fontSize: 8, color: colors.red }}>
-              OPPONENT
-            </div>
-            <div
-              style={{
-                ...PIX,
-                fontSize: 11,
-                color: colors.text,
-                lineHeight: 1.4,
-                wordBreak: "break-word",
-              }}
-            >
+          <Panel className="min-w-0 flex-1">
+            <div className="font-pix text-[8px] text-red">OPPONENT</div>
+            <div className="font-pix text-[11px] leading-[1.4] break-words text-text">
               {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
             </div>
-            <div
-              style={{
-                ...VT,
-                fontSize: 21,
-                lineHeight: 1,
-                color: colors.textMuted,
-              }}
-            >
+            <div className="font-vt text-[21px] leading-none text-text-muted">
               {opponent ? `Lv ${opponent.level}` : "not set"}
             </div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+            <div className="flex flex-wrap gap-1">
               {oppTypes.map((t) => (
                 <TypeBadge key={t} type={t} />
               ))}
@@ -173,156 +114,51 @@ export function BattleTab({
           </Panel>
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            height: 216,
-            border: `3px solid ${colors.ink}`,
-            boxShadow: `3px 3px 0 ${colors.ink}`,
-            backgroundColor: "#2d4b34",
-            backgroundImage: "url('/battle-background.webp')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 26,
-              right: 76,
-              width: 140,
-              height: 140,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Sprite
-              url={opponent?.species?.sprite}
-              size={132}
-              alt={opponent?.species?.name ?? "opponent"}
-            />
+        <div className="relative h-[216px] overflow-hidden border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-[3px_3px_0_var(--color-ink)]">
+          <div className="absolute top-[26px] right-19 flex h-35 w-35 items-center justify-center">
+            <Sprite url={opponent?.species?.sprite} size={132} alt={opponent?.species?.name ?? "opponent"} />
           </div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: -6,
-              left: 58,
-              width: 154,
-              height: 154,
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "center",
-            }}
-          >
+          <div className="absolute -bottom-1.5 left-[58px] flex h-[154px] w-[154px] items-end justify-center">
             <img
               src={mine.species?.sprite ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
-              style={{
-                width: 148,
-                height: 148,
-                objectFit: "contain",
-                imageRendering: "pixelated",
-                transform: "scaleX(-1)",
-              }}
+              className="h-37 w-37 -scale-x-100 object-contain"
             />
           </div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: 6,
-              right: 8,
-              ...VT,
-              fontSize: 15,
-              color: colors.white,
-              textShadow: `1px 1px 0 ${colors.ink}`,
-            }}
-          >
+          <div className="absolute right-2 bottom-1.5 font-vt text-[15px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">
             reference only · no damage math
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
-          <Panel
-            style={{
-              flex: "1 1 auto",
-              minWidth: 0,
-              boxShadow: `inset 0 3px 0 #ffffff, 3px 3px 0 ${colors.ink}`,
-            }}
-          >
-            <div style={{ ...PIX, fontSize: 8, color: colors.blue }}>
-              ON FIELD
-            </div>
-            <div
-              style={{
-                ...PIX,
-                fontSize: 11,
-                color: colors.text,
-                lineHeight: 1.4,
-                wordBreak: "break-word",
-              }}
-            >
+        <div className="flex items-stretch gap-2">
+          <Panel className="min-w-0 flex-1 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]">
+            <div className="font-pix text-[8px] text-blue">ON FIELD</div>
+            <div className="font-pix text-[11px] leading-[1.4] break-words text-text">
               {mine.nickname ?? cap(mine.species?.name)}
             </div>
-            <div
-              style={{
-                ...VT,
-                fontSize: 21,
-                lineHeight: 1,
-                color: colors.textMuted,
-              }}
-            >
-              Lv {mine.level}
-            </div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+            <div className="font-vt text-[21px] leading-none text-text-muted">Lv {mine.level}</div>
+            <div className="flex flex-wrap gap-1">
               {mineTypes.map((t) => (
                 <TypeBadge key={t} type={t} />
               ))}
             </div>
-            <Btn
-              variant="secondary"
-              full
-              onClick={() => setPanel("levelup")}
-              style={{ marginTop: "auto" }}
-              fontSize={8}
-              minHeight={42}
-            >
+            <Btn variant="secondary" full onClick={() => setPanel("levelup")} className="mt-auto" fontSize={8} minHeight={42}>
               LEVEL UP
             </Btn>
           </Panel>
-          <div
-            style={{
-              flex: "0 0 138px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-            }}
-          >
-            <Btn
-              variant="primary"
-              onClick={() => setPanel("attack")}
-              fontSize={8}
-            >
+          <div className="flex w-[138px] flex-none flex-col gap-1.5">
+            <Btn variant="primary" onClick={() => setPanel("attack")} fontSize={8}>
               ATTACK
             </Btn>
             <Btn
               variant="secondary"
               onClick={() => setPanel("matchup")}
-              style={{
-                background: colors.yellow,
-                boxShadow: `inset 0 3px 0 ${colors.yellowLight}, 3px 3px 0 ${colors.ink}`,
-              }}
+              className="bg-yellow shadow-[inset_0_3px_0_var(--color-yellow-light),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               SWITCH POKEMON
             </Btn>
-            <Btn
-              variant="ghost"
-              onClick={() => setConfirm("flee")}
-              style={{ background: colors.bgAlt, color: colors.textMuted }}
-              fontSize={8}
-            >
+            <Btn variant="ghost" onClick={() => setConfirm("flee")} className="bg-bg-alt text-text-muted" fontSize={8}>
               RUN
             </Btn>
           </div>
@@ -339,23 +175,14 @@ export function BattleTab({
             confirmLabel={confirm === "fainted" ? "YES, FAINTED" : "YES, RUN"}
             onCancel={() => setConfirm(null)}
             onConfirm={() => {
-              void battle.end(
-                confirm === "fainted" ? "opponent_fainted" : "fled",
-              );
+              void battle.end(confirm === "fainted" ? "opponent_fainted" : "fled");
               setConfirm(null);
             }}
           />
         ) : null}
       </div>
 
-      {panel === "attack" ? (
-        <AttackPanel
-          mine={mine}
-          oppTypes={oppTypes}
-          chart={chart}
-          onClose={() => setPanel(null)}
-        />
-      ) : null}
+      {panel === "attack" ? <AttackPanel mine={mine} oppTypes={oppTypes} chart={chart} onClose={() => setPanel(null)} /> : null}
       {panel === "opp" ? (
         <OpponentPanel
           dex={dex}
@@ -410,9 +237,7 @@ function AttackPanel({
   chart: ReturnType<typeof useTypeChart>["chart"];
   onClose: () => void;
 }) {
-  const [rows, setRows] = useState<
-    (MoveDTO & { effLabel: string; effBg: string; effFg: string })[]
-  >([]);
+  const [rows, setRows] = useState<(MoveDTO & { effLabel: string; effClassName: string })[]>([]);
 
   useEffect(() => {
     Promise.all(mine.moves.map((m) => getMove(m))).then((moves) => {
@@ -422,8 +247,7 @@ function AttackPanel({
             return {
               ...mv,
               effLabel: "STATUS",
-              effBg: colors.border,
-              effFg: colors.textMuted,
+              effClassName: "bg-border text-text-muted",
             };
           }
           const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
@@ -431,8 +255,7 @@ function AttackPanel({
           return {
             ...mv,
             effLabel: badge.label,
-            effBg: badge.bg,
-            effFg: badge.fg,
+            effClassName: badge.className,
           };
         }),
       );
@@ -442,61 +265,15 @@ function AttackPanel({
   return (
     <PageShell title="MOVES" onBack={onClose}>
       <Panel>
-        <SectionLabel>
-          {cap(mine.nickname ?? mine.species?.name)} MOVES
-        </SectionLabel>
-        <Hint>
-          Reference only. Effectiveness vs{" "}
-          {cap(oppTypes.join("/") || "opponent")}:
-        </Hint>
-        {rows.length === 0 ? (
-          <Hint>This pokemon has no registered moves.</Hint>
-        ) : null}
+        <SectionLabel>{cap(mine.nickname ?? mine.species?.name)} MOVES</SectionLabel>
+        <Hint>Reference only. Effectiveness vs {cap(oppTypes.join("/") || "opponent")}:</Hint>
+        {rows.length === 0 ? <Hint>This pokemon has no registered moves.</Hint> : null}
         {rows.map((m) => (
-          <div
-            key={m.name}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              border: `2px solid ${colors.ink}`,
-              background: colors.panelAlt,
-              padding: 10,
-              minHeight: 52,
-            }}
-          >
-            <span
-              style={{
-                ...PIX,
-                fontSize: 8,
-                color: colors.text,
-                flex: "1 1 auto",
-              }}
-            >
-              {cap(m.name)}
-            </span>
+          <div key={m.name} className="flex min-h-13 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
+            <span className="flex-1 font-pix text-[8px] text-text">{cap(m.name)}</span>
             <TypeBadge type={m.type} size={6} />
-            <span
-              style={{
-                ...VT,
-                fontSize: 16,
-                color: colors.text,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {m.power ? `PWR ${m.power}` : "—"}
-            </span>
-            <span
-              style={{
-                ...PIX,
-                fontSize: 7,
-                padding: "4px 5px",
-                border: `2px solid ${colors.ink}`,
-                background: m.effBg,
-                color: m.effFg,
-                whiteSpace: "nowrap",
-              }}
-            >
+            <span className="font-vt text-[16px] whitespace-nowrap text-text">{m.power ? `PWR ${m.power}` : "—"}</span>
+            <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[7px] whitespace-nowrap ${m.effClassName}`}>
               {m.effLabel}
             </span>
           </div>
@@ -521,29 +298,14 @@ function OpponentPanel({
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<GenerationSpeciesEntry | null>(null);
   const [level, setLevel] = useState(20);
-  const results = picked
-    ? []
-    : dex
-        .filter((e) => e.name.includes(query.trim().toLowerCase()))
-        .slice(0, 8);
+  const results = picked ? [] : dex.filter((e) => e.name.includes(query.trim().toLowerCase())).slice(0, 8);
 
   return (
     <PageShell title="SWITCH OPPONENT" onBack={onClose}>
       <Panel>
         <SectionLabel>OPPONENT SPECIES *</SectionLabel>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              flex: "0 0 52px",
-              background: colors.frame,
-              border: `2px solid ${colors.ink}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+        <div className="flex items-center gap-2">
+          <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
             <Sprite
               url={
                 picked
@@ -554,7 +316,7 @@ function OpponentPanel({
               alt="sprite"
             />
           </div>
-          <div style={{ flex: "1 1 auto", minWidth: 0 }}>
+          <div className="min-w-0 flex-1">
             <SearchInput
               value={query}
               onChange={(v) => {
@@ -566,16 +328,7 @@ function OpponentPanel({
           </div>
         </div>
         {results.length > 0 ? (
-          <div
-            style={{
-              border: `2px solid ${colors.ink}`,
-              background: colors.panelAlt,
-              maxHeight: 210,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <div className="flex max-h-[210px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {results.map((r) => (
               <button
                 key={r.pokeApiId}
@@ -583,39 +336,33 @@ function OpponentPanel({
                   setPicked(r);
                   setQuery(cap(r.name));
                 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: 8,
-                  minHeight: 48,
-                  background: "none",
-                  border: "none",
-                  borderBottom: `2px solid ${colors.frameAlt}`,
-                  textAlign: "left",
-                }}
+                className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2 text-left"
               >
-                <span style={{ ...PIX, fontSize: 8, color: colors.text }}>
-                  {cap(r.name)}
-                </span>
+                <span className="font-pix text-[8px] text-text">{cap(r.name)}</span>
               </button>
             ))}
           </div>
         ) : null}
         <SectionLabel>LEVEL *</SectionLabel>
         <Stepper value={level} onChange={setLevel} />
-        <Btn
-          variant="primary"
-          full
-          disabled={!picked}
-          onClick={() => picked && void onApply(picked.pokeApiId, level)}
-        >
+        <Btn variant="primary" full disabled={!picked} onClick={() => picked && void onApply(picked.pokeApiId, level)}>
           SET OPPONENT
         </Btn>
       </Panel>
     </PageShell>
   );
 }
+
+const matchupGrade = tv({
+  variants: {
+    tier: {
+      great: "bg-green text-ink",
+      good: "bg-green-soft text-ink",
+      bad: "bg-red text-white",
+      neutral: "bg-border text-text-muted",
+    },
+  },
+});
 
 function MatchupPanel({
   saveId,
@@ -645,101 +392,42 @@ function MatchupPanel({
         <Hint>Best to worst matchup. Tap to send out.</Hint>
         {(ranking ?? []).map((r, i) => {
           const active = r.pokemon.id === activeId;
-          const grade =
-            r.matchup.score >= 1.5
-              ? { label: "GREAT", bg: colors.green, fg: colors.ink }
-              : r.matchup.score > 0
-                ? { label: "GOOD", bg: colors.greenSoft, fg: colors.ink }
-                : r.matchup.score < 0
-                  ? { label: "BAD", bg: colors.red, fg: colors.white }
-                  : {
-                      label: "NEUTRAL",
-                      bg: colors.border,
-                      fg: colors.textMuted,
-                    };
+          const gradeTier =
+            r.matchup.score >= 1.5 ? "great" : r.matchup.score > 0 ? "good" : r.matchup.score < 0 ? "bad" : "neutral";
+          const grade = {
+            label: { great: "GREAT", good: "GOOD", bad: "BAD", neutral: "NEUTRAL" }[gradeTier],
+            className: matchupGrade({ tier: gradeTier }),
+          };
           return (
             <button
               key={r.pokemon.id}
               onClick={() => (active ? undefined : void onPick(r.pokemon.id))}
-              style={{
-                width: "100%",
-                border: `3px solid ${colors.ink}`,
-                background: active ? colors.panelAlt : colors.panel,
-                boxShadow: `3px 3px 0 ${colors.ink}`,
-                padding: 8,
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                textAlign: "left",
-                minHeight: 70,
-              }}
+              className={`flex min-h-[70px] w-full items-center gap-2.5 border-[3px] border-ink p-2 text-left shadow-[3px_3px_0_var(--color-ink)] ${
+                active ? "bg-panel-alt" : "bg-panel"
+              }`}
             >
-              <div
-                style={{
-                  width: 54,
-                  height: 54,
-                  flex: "0 0 54px",
-                  background: colors.frame,
-                  border: `2px solid ${colors.ink}`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Sprite
-                  url={r.pokemon.species?.sprite}
-                  size={46}
-                  alt={r.pokemon.nickname ?? undefined}
-                />
+              <div className="flex size-[54px] flex-none items-center justify-center border-2 border-ink bg-frame">
+                <Sprite url={r.pokemon.species?.sprite} size={46} alt={r.pokemon.nickname ?? undefined} />
               </div>
-              <div
-                style={{
-                  flex: "1 1 auto",
-                  minWidth: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <div style={{ ...PIX, fontSize: 8, color: colors.text }}>
+              <div className="flex min-w-0 flex-1 flex-col gap-[5px]">
+                <div className="font-pix text-[8px] text-text">
                   {i + 1}. {r.pokemon.nickname ?? cap(r.pokemon.species?.name)}
                 </div>
-                <div style={{ ...VT, fontSize: 16, color: colors.textMuted }}>
-                  Lv {r.pokemon.level}{" "}
-                  {active
-                    ? "· ON FIELD"
-                    : `· slot ${r.pokemon.slotPosition ?? "-"}`}
+                <div className="font-vt text-[16px] text-text-muted">
+                  Lv {r.pokemon.level} {active ? "· ON FIELD" : `· slot ${r.pokemon.slotPosition ?? "-"}`}
                 </div>
-                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                <div className="flex flex-wrap gap-1">
                   {(r.pokemon.species?.types ?? []).map((t) => (
                     <TypeBadge key={t} type={t} size={6} />
                   ))}
                 </div>
               </div>
-              <div
-                style={{
-                  flex: "0 0 auto",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
-                  alignItems: "flex-end",
-                }}
-              >
-                <span
-                  style={{
-                    ...PIX,
-                    fontSize: 7,
-                    padding: "4px 5px",
-                    border: `2px solid ${colors.ink}`,
-                    background: grade.bg,
-                    color: grade.fg,
-                  }}
-                >
+              <div className="flex flex-none flex-col items-end gap-1">
+                <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[7px] ${grade.className}`}>
                   {grade.label}
                 </span>
-                <span style={{ ...VT, fontSize: 15, color: colors.textMuted }}>
-                  deals x{r.matchup.offensiveMultiplier} / takes x
-                  {r.matchup.defensiveMultiplier}
+                <span className="font-vt text-[15px] text-text-muted">
+                  deals x{r.matchup.offensiveMultiplier} / takes x{r.matchup.defensiveMultiplier}
                 </span>
               </div>
             </button>
@@ -769,10 +457,7 @@ function LevelUpPanel({
   };
   onClose: () => void;
   onFlash: (msg: string) => void;
-  onApply: (
-    level: number,
-    moveName?: string,
-  ) => Promise<LearnMoveResult | undefined>;
+  onApply: (level: number, moveName?: string) => Promise<LearnMoveResult | undefined>;
   onReload: () => Promise<void>;
 }) {
   const [level, setLevel] = useState(Math.min(100, mine.level + 1));
@@ -792,8 +477,7 @@ function LevelUpPanel({
   const results = move ? [] : pool.filter((m) => m.includes(q)).slice(0, 8);
 
   const ask = () => {
-    if (level < mine.level)
-      return onFlash(`Level up cannot be lower than ${mine.level}.`);
+    if (level < mine.level) return onFlash(`Level up cannot be lower than ${mine.level}.`);
     setAsking(true);
   };
 
@@ -804,11 +488,7 @@ function LevelUpPanel({
       setAsking(false);
       return;
     }
-    onFlash(
-      move
-        ? `Reached Lv ${level} and learned ${cap(move)}.`
-        : `Now Lv ${level}.`,
-    );
+    onFlash(move ? `Reached Lv ${level} and learned ${cap(move)}.` : `Now Lv ${level}.`);
     onClose();
   };
 
@@ -825,54 +505,22 @@ function LevelUpPanel({
   if (result?.outcome === "suggested_replacement") {
     return (
       <PageShell title="LOG LEVEL UP" onBack={onClose}>
-        <Panel
-          style={{
-            border: `3px solid ${colors.yellow}`,
-            background: colors.yellowSoft,
-          }}
-        >
+        <Panel className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
-          <Hint>
-            Suggestion: replace {cap(result.suggestedReplacement)} (weakest).
-            Tap the move that should go.
-          </Hint>
+          <Hint>Suggestion: replace {cap(result.suggestedReplacement)} (weakest). Tap the move that should go.</Hint>
           {result.comparisons.map((c) => (
             <button
               key={c.moveB.move}
               onClick={() => setReplace(c.moveB.move)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                border: `2px solid ${colors.ink}`,
-                background:
-                  c.moveB.move === replace ? colors.greenSoft : colors.panel,
-                padding: 10,
-                minHeight: 52,
-                textAlign: "left",
-              }}
+              className={`flex min-h-13 items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                c.moveB.move === replace ? "bg-green-soft" : "bg-panel"
+              }`}
             >
-              <span
-                style={{
-                  ...PIX,
-                  fontSize: 8,
-                  color: colors.text,
-                  flex: "1 1 auto",
-                }}
-              >
-                {cap(c.moveB.move)}
-              </span>
-              <span style={{ ...VT, fontSize: 15, color: colors.textMuted }}>
-                score {c.moveB.score}
-              </span>
+              <span className="flex-1 font-pix text-[8px] text-text">{cap(c.moveB.move)}</span>
+              <span className="font-vt text-[15px] text-text-muted">score {c.moveB.score}</span>
             </button>
           ))}
-          <Btn
-            variant="primary"
-            full
-            disabled={!replace}
-            onClick={() => void applyReplacement()}
-          >
+          <Btn variant="primary" full disabled={!replace} onClick={() => void applyReplacement()}>
             CONFIRM REPLACEMENT
           </Btn>
         </Panel>
@@ -883,9 +531,7 @@ function LevelUpPanel({
   return (
     <PageShell title="LOG LEVEL UP" onBack={onClose}>
       <Panel>
-        <SectionLabel>
-          NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}
-        </SectionLabel>
+        <SectionLabel>NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}</SectionLabel>
         <Hint>
           Current level: {mine.level} · {mine.moves.length}/4 moves
         </Hint>
@@ -910,16 +556,7 @@ function LevelUpPanel({
           placeholder="search learned move..."
         />
         {results.length > 0 ? (
-          <div
-            style={{
-              border: `2px solid ${colors.ink}`,
-              background: colors.panelAlt,
-              maxHeight: 200,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <div className="flex max-h-[200px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {results.map((m) => (
               <button
                 key={m}
@@ -927,60 +564,21 @@ function LevelUpPanel({
                   setMove(m);
                   setQuery(cap(m));
                 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: 10,
-                  minHeight: 48,
-                  background: "none",
-                  border: "none",
-                  borderBottom: `2px solid ${colors.frameAlt}`,
-                  textAlign: "left",
-                }}
+                className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2.5 text-left"
               >
-                <span
-                  style={{
-                    ...PIX,
-                    fontSize: 8,
-                    color: colors.text,
-                    flex: "1 1 auto",
-                  }}
-                >
-                  {cap(m)}
-                </span>
+                <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
               </button>
             ))}
           </div>
         ) : null}
         {!move ? <Hint>Leave blank to just update the level.</Hint> : null}
         {move ? (
-          <div
-            style={{
-              border: `2px solid ${colors.ink}`,
-              background: colors.panelAlt,
-              padding: 10,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            <div style={{ ...PIX, fontSize: 7, color: colors.textMuted }}>
-              {mine.moves.length >= 4
-                ? "MUST REPLACE A MOVE"
-                : "GOES INTO A FREE SLOT"}
+          <div className="flex flex-col gap-2 border-2 border-ink bg-panel-alt p-2.5">
+            <div className="font-pix text-[7px] text-text-muted">
+              {mine.moves.length >= 4 ? "MUST REPLACE A MOVE" : "GOES INTO A FREE SLOT"}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  ...PIX,
-                  fontSize: 8,
-                  color: colors.text,
-                  flex: "1 1 auto",
-                }}
-              >
-                {cap(move)}
-              </span>
+            <div className="flex items-center gap-2">
+              <span className="flex-1 font-pix text-[8px] text-text">{cap(move)}</span>
             </div>
             <Btn
               variant="danger"
@@ -991,7 +589,7 @@ function LevelUpPanel({
               }}
               minHeight={40}
               fontSize={8}
-              style={{ alignSelf: "flex-start" }}
+              className="self-start"
             >
               X CLEAR MOVE
             </Btn>

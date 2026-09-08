@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { deletePokemon, learnMove, movePokemon, updatePokemon } from "../../../api/pokemon";
 import { getEvolutions, getLegalMoves, searchItems } from "../../../api/species";
 import { Btn, ConfirmBar, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper, TypeBadge } from "../../../components";
-import { colors, PIX, VT, cap } from "../../../theme";
+import { cap } from "../../../theme";
 import type { LearnMoveResult, PokemonDTO } from "../../../types/pokemon";
 import type { EvolutionOption } from "../../../types/species";
 
@@ -95,13 +95,13 @@ export function DetailFlow({
 
   return (
     <PageShell title={`${nameOf(pokemon)} · ${pokemon.location === "PARTY" ? `PARTY ${pokemon.slotPosition ?? "-"}` : "PC"}`} onBack={onBack}>
-      <Panel style={{ alignItems: "center" }}>
-        <div style={{ width: 132, height: 132, background: colors.frame, border: `3px solid ${colors.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Panel className="items-center">
+        <div className="flex size-33 items-center justify-center border-[3px] border-ink bg-frame">
           <Sprite url={sp?.sprite} size={120} alt={nameOf(pokemon)} />
         </div>
-        <div style={{ ...PIX, fontSize: 12, color: colors.text, textAlign: "center" }}>{nameOf(pokemon)}</div>
+        <div className="text-center font-pix text-[12px] text-text">{nameOf(pokemon)}</div>
         <Hint>{sp ? `#${pokemon.pokeApiId} · ${cap(sp.name)}` : "POKEAPI DATA UNAVAILABLE"}</Hint>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
+        <div className="flex flex-wrap justify-center gap-1.5">
           {(sp?.types ?? ["unknown"]).map((t) => (
             <TypeBadge key={t} type={t} size={8} />
           ))}
@@ -120,12 +120,12 @@ export function DetailFlow({
               const value = sp.baseStats[st.key as keyof typeof sp.baseStats];
               const pct = Math.min(100, Math.round((value / 140) * 100));
               return (
-                <div key={st.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{ width: 62, flex: "0 0 62px", ...PIX, fontSize: 7, color: colors.textMuted }}>{st.label}</div>
-                  <div style={{ flex: "1 1 auto", height: 18, border: `2px solid ${colors.ink}`, background: colors.frame, padding: 2 }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: st.color }} />
+                <div key={st.label} className="flex items-center gap-2">
+                  <div className="w-[62px] flex-none font-pix text-[7px] text-text-muted">{st.label}</div>
+                  <div className="h-[18px] flex-1 border-2 border-ink bg-frame p-0.5">
+                    <div className="h-full" style={{ width: `${pct}%`, background: st.color }} />
                   </div>
-                  <div style={{ width: 32, flex: "0 0 32px", textAlign: "right", ...PIX, fontSize: 8, color: colors.text }}>{value}</div>
+                  <div className="w-8 flex-none text-right font-pix text-[8px] text-text">{value}</div>
                 </div>
               );
             })
@@ -138,8 +138,8 @@ export function DetailFlow({
           <Hint>No moves registered.</Hint>
         ) : (
           pokemon.moves.map((m) => (
-            <div key={m} style={{ display: "flex", alignItems: "center", gap: 8, border: `2px solid ${colors.ink}`, background: colors.panelAlt, padding: 10, minHeight: 46 }}>
-              <span style={{ ...PIX, fontSize: 8, color: colors.text, flex: "1 1 auto" }}>{cap(m)}</span>
+            <div key={m} className="flex min-h-[46px] items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
+              <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
             </div>
           ))
         )}
@@ -150,7 +150,7 @@ export function DetailFlow({
 
       <Panel>
         <SectionLabel>HELD ITEM</SectionLabel>
-        <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, padding: 10, minHeight: 46, display: "flex", alignItems: "center", ...VT, fontSize: 19, color: colors.text }}>
+        <div className="flex min-h-[46px] items-center border-2 border-ink bg-panel-alt p-2.5 font-vt text-[19px] text-text">
           {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
         </div>
         <Btn variant="secondary" full onClick={() => setPage("item")}>
@@ -159,26 +159,26 @@ export function DetailFlow({
       </Panel>
 
       <Panel>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="flex gap-2">
           <Btn
             variant={evolutions.length ? "secondary" : "ghost"}
-            style={{ flex: "1 1 auto", background: evolutions.length ? colors.yellow : colors.bgAlt }}
+            className={`flex-1 ${evolutions.length ? "bg-yellow" : "bg-bg-alt"}`}
             onClick={() => (evolutions.length ? setPage("evolve") : onFlash(`${nameOf(pokemon)} has no known evolution.`))}
           >
             {evolutions.length ? "EVOLVE" : "NO EVOLUTION"}
           </Btn>
-          <Btn variant={evoInfo ? "primary" : "ghost"} style={{ width: 56, flex: "0 0 56px" }} onClick={() => setEvoInfo((v) => !v)} fontSize={12}>
+          <Btn variant={evoInfo ? "primary" : "ghost"} className="w-14 flex-none" onClick={() => setEvoInfo((v) => !v)} fontSize={12}>
             i
           </Btn>
         </div>
         {evoInfo ? (
-          <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-            <div style={{ ...PIX, fontSize: 7, color: colors.textMuted }}>EVOLUTION METHOD</div>
+          <div className="flex flex-col gap-1.5 border-2 border-ink bg-panel-alt p-2.5">
+            <div className="font-pix text-[7px] text-text-muted">EVOLUTION METHOD</div>
             {evolutions.length === 0 ? (
-              <div style={{ ...VT, fontSize: 18, color: colors.text }}>{sp ? `${cap(sp.name)} is in its final form.` : "No species data."}</div>
+              <div className="font-vt text-[18px] text-text">{sp ? `${cap(sp.name)} is in its final form.` : "No species data."}</div>
             ) : (
               evolutions.map((e) => (
-                <div key={e.pokeApiId} style={{ ...VT, fontSize: 18, color: colors.text }}>
+                <div key={e.pokeApiId} className="font-vt text-[18px] text-text">
                   {cap(e.name)} — {e.method}
                 </div>
               ))
@@ -187,7 +187,12 @@ export function DetailFlow({
         ) : null}
       </Panel>
 
-      <Btn variant="secondary" full onClick={() => void toggleLocation()} style={{ background: colors.navy, color: colors.white, boxShadow: `inset 0 3px 0 ${colors.navyLight}, 3px 3px 0 ${colors.ink}`, textShadow: `1px 1px 0 ${colors.ink}` }}>
+      <Btn
+        variant="secondary"
+        full
+        onClick={() => void toggleLocation()}
+        className="bg-navy text-white shadow-[inset_0_3px_0_var(--color-navy-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]"
+      >
         {pokemon.location === "PARTY" ? "MOVE TO PC" : "MOVE TO PARTY"}
       </Btn>
 
@@ -266,9 +271,9 @@ function MovesPage({
           <Hint>No moves. Pick some below.</Hint>
         ) : (
           pokemon.moves.map((m) => (
-            <div key={m} style={{ display: "flex", alignItems: "center", gap: 8, border: `2px solid ${colors.ink}`, background: colors.panelAlt, padding: 10, minHeight: 46 }}>
-              <span style={{ ...PIX, fontSize: 8, color: colors.text, flex: "1 1 auto" }}>{cap(m)}</span>
-              <Btn variant="danger" onClick={() => void removeMove(m)} minHeight={40} style={{ width: 40, height: 40, padding: 0 }} fontSize={9}>
+            <div key={m} className="flex min-h-[46px] items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
+              <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
+              <Btn variant="danger" onClick={() => void removeMove(m)} minHeight={40} className="size-10 p-0" fontSize={9}>
                 X
               </Btn>
             </div>
@@ -277,17 +282,19 @@ function MovesPage({
       </Panel>
 
       {suggestion?.outcome === "suggested_replacement" ? (
-        <Panel style={{ border: `3px solid ${colors.yellow}`, background: colors.yellowSoft }}>
+        <Panel className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
           <Hint>Suggestion: replace {cap(suggestion.suggestedReplacement)} (weakest). Tap the move that should go.</Hint>
           {suggestion.comparisons.map((c) => (
             <button
               key={c.moveB.move}
               onClick={() => void applyReplacement(c.moveB.move, suggestion.newMove.move)}
-              style={{ display: "flex", alignItems: "center", gap: 8, border: `2px solid ${colors.ink}`, background: c.moveB.move === suggestion.suggestedReplacement ? colors.yellowSoft : colors.panel, padding: 10, minHeight: 52, textAlign: "left" }}
+              className={`flex min-h-13 items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                c.moveB.move === suggestion.suggestedReplacement ? "bg-yellow-soft" : "bg-panel"
+              }`}
             >
-              <span style={{ ...PIX, fontSize: 8, color: colors.text, flex: "1 1 auto" }}>{cap(c.moveB.move)}</span>
-              <span style={{ ...VT, fontSize: 15, color: colors.textMuted }}>score {c.moveB.score}</span>
+              <span className="flex-1 font-pix text-[8px] text-text">{cap(c.moveB.move)}</span>
+              <span className="font-vt text-[15px] text-text-muted">score {c.moveB.score}</span>
             </button>
           ))}
         </Panel>
@@ -300,9 +307,9 @@ function MovesPage({
           <button
             key={m}
             onClick={() => void addMove(m)}
-            style={{ display: "flex", alignItems: "center", gap: 8, border: `2px solid ${colors.ink}`, background: colors.panel, padding: 10, minHeight: 48, textAlign: "left" }}
+            className="flex min-h-12 items-center gap-2 border-2 border-ink bg-panel p-2.5 text-left"
           >
-            <span style={{ ...PIX, fontSize: 8, color: colors.text, flex: "1 1 auto" }}>{cap(m)}</span>
+            <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
           </button>
         ))}
       </Panel>
@@ -354,8 +361,8 @@ function ItemPage({
     <PageShell title="HELD ITEM" onBack={onBack}>
       <Panel>
         <SectionLabel>CURRENT ITEM</SectionLabel>
-        <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, padding: 10, minHeight: 46, display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ flex: "1 1 auto", ...VT, fontSize: 19, color: colors.text }}>{pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}</span>
+        <div className="flex min-h-[46px] items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
+          <span className="flex-1 font-vt text-[19px] text-text">{pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}</span>
           {pokemon.heldItem ? (
             <Btn variant="danger" onClick={() => void remove()} minHeight={40} fontSize={8}>
               REMOVE
@@ -364,12 +371,14 @@ function ItemPage({
         </div>
         <SearchInput value={query} onChange={setQuery} placeholder="search item..." />
         {choices.length > 0 ? (
-          <div style={{ border: `2px solid ${colors.ink}`, background: colors.panelAlt, maxHeight: 230, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+          <div className="flex max-h-[230px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {choices.map((it) => (
               <button
                 key={it}
                 onClick={() => void pick(it)}
-                style={{ display: "flex", alignItems: "center", padding: 10, minHeight: 46, background: pokemon.heldItem === it ? colors.yellow : colors.panel, border: "none", borderBottom: `2px solid ${colors.frameAlt}`, textAlign: "left", fontSize: 8, color: colors.text, fontFamily: "'Press Start 2P', monospace" }}
+                className={`flex min-h-[46px] items-center border-0 border-b-2 border-frame-alt p-2.5 text-left font-pix text-[8px] text-text ${
+                  pokemon.heldItem === it ? "bg-yellow" : "bg-panel"
+                }`}
               >
                 {cap(it)}
               </button>
@@ -412,22 +421,22 @@ function EvolvePage({
       <Panel>
         <SectionLabel>POSSIBLE EVOLUTIONS</SectionLabel>
         <Hint>{evolutions.length > 1 ? "This species has several paths. Pick one." : "Tap a card to confirm the evolution."}</Hint>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        <div className="grid grid-cols-2 gap-2">
           {evolutions.map((o) => (
             <button
               key={o.pokeApiId}
               onClick={() => void pick(o)}
-              style={{ border: `3px solid ${colors.ink}`, background: colors.panel, boxShadow: `inset 0 3px 0 #ffffff, 3px 3px 0 ${colors.ink}`, padding: 8, minHeight: 154, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, textAlign: "center" }}
+              className="flex min-h-[154px] flex-col items-center gap-1.5 border-[3px] border-ink bg-panel p-2 text-center shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]"
             >
-              <div style={{ width: 72, height: 72, background: colors.frame, border: `2px solid ${colors.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div className="flex size-18 items-center justify-center border-2 border-ink bg-frame">
                 <Sprite
                   url={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${o.pokeApiId}.png`}
                   size={64}
                   alt={o.name}
                 />
               </div>
-              <div style={{ ...PIX, fontSize: 8, color: colors.text }}>{cap(o.name)}</div>
-              <div style={{ ...VT, fontSize: 15, color: colors.textMuted, lineHeight: 1.1 }}>{o.method}</div>
+              <div className="font-pix text-[8px] text-text">{cap(o.name)}</div>
+              <div className="font-vt text-[15px] leading-[1.1] text-text-muted">{o.method}</div>
             </button>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { tv } from "tailwind-variants";
 import { Btn, SearchInput, SectionLabel, Stepper } from "../components";
-import { colors, PIX } from "../theme";
 import type { Save } from "../types/saves";
 
 export function Header({
@@ -20,59 +20,22 @@ export function Header({
   const [creating, setCreating] = useState(false);
 
   return (
-    <div style={{ position: "relative", flex: "0 0 auto" }}>
-      <div
-        style={{
-          background: colors.navy,
-          borderBottom: `3px solid ${colors.ink}`,
-          boxShadow: `inset 0 -4px 0 ${colors.navyDark}`,
-          padding: "12px 12px 10px",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <img
-          src="/pokeball.png"
-          alt="Pokemon Copilot"
-          style={{ width: 26, height: 26, flex: "0 0 26px", objectFit: "contain" }}
-        />
-        <div style={{ ...PIX, fontSize: 10, color: colors.white, textShadow: `2px 2px 0 ${colors.ink}`, letterSpacing: 1 }}>
+    <div className="relative flex-none">
+      <div className="flex items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 pt-3 pb-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+        <img src="/pokeball.png" alt="Pokemon Copilot" className="size-[26px] shrink-0 object-contain" />
+        <div className="font-pix text-[10px] tracking-[1px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           POKEMON COPILOT
         </div>
         <button
           onClick={() => setOpen((v) => !v)}
-          style={{
-            marginLeft: "auto",
-            background: "none",
-            border: "none",
-            fontFamily: "'VT323', monospace",
-            fontSize: 17,
-            color: colors.headerHint,
-            cursor: "pointer",
-          }}
+          className="ml-auto border-0 bg-transparent font-vt text-[17px] text-header-hint"
         >
           {headerMeta} ▾
         </button>
       </div>
 
       {open ? (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            right: 8,
-            zIndex: 10,
-            width: 260,
-            border: `3px solid ${colors.ink}`,
-            background: colors.panel,
-            boxShadow: `3px 3px 0 ${colors.ink}`,
-            padding: 10,
-            display: "flex",
-            flexDirection: "column",
-            gap: 6,
-          }}
-        >
+        <div className="absolute top-full right-2 z-10 flex w-[260px] flex-col gap-1.5 border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]">
           <SectionLabel>SAVES</SectionLabel>
           {saves.map((s) => (
             <button
@@ -81,15 +44,9 @@ export function Header({
                 onSelectSave(s.id);
                 setOpen(false);
               }}
-              style={{
-                ...PIX,
-                fontSize: 8,
-                textAlign: "left",
-                padding: 8,
-                border: `2px solid ${colors.ink}`,
-                background: s.id === selectedSave.id ? colors.navy : colors.panelAlt,
-                color: s.id === selectedSave.id ? colors.white : colors.text,
-              }}
+              className={`border-2 border-ink p-2 text-left font-pix text-[8px] ${
+                s.id === selectedSave.id ? "bg-navy text-white" : "bg-panel-alt text-text"
+              }`}
             >
               {s.name.toUpperCase()} · GEN {s.generation}
             </button>
@@ -125,11 +82,11 @@ function NewSaveInline({
   const [game, setGame] = useState("");
   const [generation, setGeneration] = useState(4);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, borderTop: `2px solid ${colors.frameAlt}`, paddingTop: 6 }}>
+    <div className="flex flex-col gap-1.5 border-t-2 border-frame-alt pt-1.5">
       <SearchInput value={name} onChange={setName} placeholder="save name" />
       <SearchInput value={game} onChange={setGame} placeholder="game (ex: platinum)" />
       <Stepper value={generation} onChange={setGeneration} min={1} max={9} />
-      <div style={{ display: "flex", gap: 6 }}>
+      <div className="flex gap-1.5">
         <Btn variant="ghost" full fontSize={7} minHeight={36} onClick={onCancel}>
           CANCEL
         </Btn>
@@ -147,6 +104,16 @@ function NewSaveInline({
   );
 }
 
+const subnavTab = tv({
+  base: "min-h-11 flex-1 border-2 border-ink font-pix text-[8px]",
+  variants: {
+    active: {
+      true: "bg-navy text-white shadow-[inset_0_2px_0_var(--color-navy-light)]",
+      false: "bg-[#b8c1d2] text-[#7a8598] shadow-[inset_0_2px_0_#c7cfdd]",
+    },
+  },
+});
+
 export function Subnav({ sub, onChange }: { sub: "party" | "pc" | "search"; onChange: (s: "party" | "pc" | "search") => void }) {
   const tabs: { key: "party" | "pc" | "search"; label: string }[] = [
     { key: "party", label: "PARTY" },
@@ -154,23 +121,14 @@ export function Subnav({ sub, onChange }: { sub: "party" | "pc" | "search"; onCh
     { key: "search", label: "SEARCH" },
   ];
   return (
-    <div style={{ flex: "0 0 auto", background: colors.bgAlt, borderBottom: `3px solid ${colors.ink}`, padding: 8, display: "flex", gap: 6 }}>
+    <div className="flex flex-none gap-1.5 border-b-[3px] border-ink bg-bg-alt p-2">
       {tabs.map((t) => {
         const active = sub === t.key;
         return (
           <button
             key={t.key}
             onClick={() => onChange(t.key)}
-            style={{
-              flex: "1 1 0",
-              minHeight: 44,
-              fontSize: 8,
-              fontFamily: "'Press Start 2P', monospace",
-              border: `2px solid ${colors.ink}`,
-              background: active ? colors.navy : "#b8c1d2",
-              color: active ? colors.white : "#7a8598",
-              boxShadow: `inset 0 2px 0 ${active ? colors.navyLight : "#c7cfdd"}`,
-            }}
+            className={subnavTab({ active })}
           >
             {t.label}
           </button>
@@ -180,49 +138,31 @@ export function Subnav({ sub, onChange }: { sub: "party" | "pc" | "search"; onCh
   );
 }
 
+const bottomNavItem = tv({
+  slots: {
+    button: "flex min-h-16 flex-1 flex-col items-center justify-center gap-1.5 border-0 font-pix text-[9px]",
+    dot: "size-3 border-2 border-ink",
+  },
+  variants: {
+    active: {
+      true: { button: "bg-blue text-white", dot: "bg-white" },
+      false: { button: "bg-navy-dark text-nav-inactive", dot: "bg-nav-inactive" },
+    },
+  },
+});
+
 export function BottomNav({ tab, onChange }: { tab: "pokemons" | "battle"; onChange: (t: "pokemons" | "battle") => void }) {
   const isPokemons = tab === "pokemons";
+  const pokemonNav = bottomNavItem({ active: isPokemons });
+  const battleNav = bottomNavItem({ active: !isPokemons });
   return (
-    <div style={{ flex: "0 0 auto", background: colors.navyDark, borderTop: `3px solid ${colors.ink}`, display: "flex" }}>
-      <button
-        onClick={() => onChange("pokemons")}
-        style={{
-          flex: "1 1 0",
-          minHeight: 64,
-          border: "none",
-          borderRight: `3px solid ${colors.ink}`,
-          background: isPokemons ? colors.blue : colors.navyDark,
-          color: isPokemons ? colors.white : colors.navInactive,
-          fontSize: 9,
-          fontFamily: "'Press Start 2P', monospace",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-        }}
-      >
-        <span style={{ width: 12, height: 12, background: isPokemons ? colors.white : colors.navInactive, border: `2px solid ${colors.ink}` }} />
+    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark">
+      <button onClick={() => onChange("pokemons")} className={pokemonNav.button({ className: "border-r-[3px] border-ink" })}>
+        <span className={pokemonNav.dot()} />
         POKEMON
       </button>
-      <button
-        onClick={() => onChange("battle")}
-        style={{
-          flex: "1 1 0",
-          minHeight: 64,
-          border: "none",
-          background: !isPokemons ? colors.blue : colors.navyDark,
-          color: !isPokemons ? colors.white : colors.navInactive,
-          fontSize: 9,
-          fontFamily: "'Press Start 2P', monospace",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-        }}
-      >
-        <span style={{ width: 12, height: 12, background: !isPokemons ? colors.white : colors.navInactive, border: `2px solid ${colors.ink}` }} />
+      <button onClick={() => onChange("battle")} className={battleNav.button()}>
+        <span className={battleNav.dot()} />
         BATTLE
       </button>
     </div>

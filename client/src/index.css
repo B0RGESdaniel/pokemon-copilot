@@ -1,11 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --font-pix: "Press Start 2P", monospace;
+  --font-vt: "VT323", monospace;
+
+  --color-ink: #0b1120;
+  --color-navy: #22355e;
+  --color-navy-dark: #16233f;
+  --color-navy-light: #3a5a97;
+  --color-bg: #dfe4ee;
+  --color-bg-alt: #c9d2e2;
+  --color-panel: #f7f9fc;
+  --color-panel-alt: #e8edf7;
+  --color-frame: #d5dded;
+  --color-frame-alt: #b3c1d8;
+  --color-slot-empty: #bcc6d8;
+  --color-border: #e4e9f2;
+  --color-text: #0b1120;
+  --color-text-muted: #3c4a66;
+  --color-text-faint: #6a768c;
+  --color-text-dim: #8b96ab;
+  --color-white: #f2f6ff;
+  --color-blue: #3a6ec0;
+  --color-blue-light: #6d9adf;
+  --color-blue-soft: #8ba7d6;
+  --color-blue-softer: #b9cdea;
+  --color-red: #c03830;
+  --color-red-soft: #f7e3e1;
+  --color-yellow: #e6c422;
+  --color-yellow-light: #f6e07a;
+  --color-yellow-soft: #f9f2cf;
+  --color-green: #5aa943;
+  --color-green-soft: #cfe3c4;
+  --color-header-hint: #9fc4f0;
+  --color-nav-inactive: #7c89a3;
+
+  --color-type-fire: #e2762f;
+  --color-type-fire-fg: #0b1120;
+  --color-type-water: #4f86dd;
+  --color-type-water-fg: #f2f6ff;
+  --color-type-grass: #5aa943;
+  --color-type-grass-fg: #0b1120;
+  --color-type-electric: #e6c422;
+  --color-type-electric-fg: #0b1120;
+  --color-type-normal: #bcbca8;
+  --color-type-normal-fg: #0b1120;
+  --color-type-flying: #9a8ce0;
+  --color-type-flying-fg: #0b1120;
+  --color-type-poison: #8e3c96;
+  --color-type-poison-fg: #f2f6ff;
+  --color-type-ghost: #63528c;
+  --color-type-ghost-fg: #f2f6ff;
+  --color-type-fighting: #b02c26;
+  --color-type-fighting-fg: #f2f6ff;
+  --color-type-psychic: #e04f7c;
+  --color-type-psychic-fg: #f2f6ff;
+  --color-type-dark: #5f4c3f;
+  --color-type-dark-fg: #f2f6ff;
+  --color-type-steel: #a8b0c4;
+  --color-type-steel-fg: #0b1120;
+  --color-type-ground: #d2b054;
+  --color-type-ground-fg: #0b1120;
+  --color-type-ice: #87c9cd;
+  --color-type-ice-fg: #0b1120;
+  --color-type-dragon: #6231e0;
+  --color-type-dragon-fg: #f2f6ff;
+  --color-type-rock: #b6a163;
+  --color-type-rock-fg: #0b1120;
+  --color-type-bug: #9aad2a;
+  --color-type-bug-fg: #0b1120;
+  --color-type-fairy: #e59ac0;
+  --color-type-fairy-fg: #0b1120;
+  --color-type-stellar: #7fd8c8;
+  --color-type-stellar-fg: #0b1120;
+  --color-type-unknown: #8b96ab;
+  --color-type-unknown-fg: #f2f6ff;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background: #0b1120;
-  font-family: "VT323", monospace;
+  background: var(--color-ink);
+  font-family: var(--font-vt);
   -webkit-font-smoothing: none;
 }
 
@@ -14,21 +93,21 @@ img {
 }
 
 a {
-  color: #3a6ec0;
+  color: var(--color-blue);
   text-decoration: none;
 }
 
 a:hover {
-  color: #c03830;
+  color: var(--color-red);
 }
 
 button {
-  font-family: "Press Start 2P", monospace;
+  font-family: var(--font-pix);
   cursor: pointer;
 }
 
 input {
-  font-family: "VT323", monospace;
+  font-family: var(--font-vt);
 }
 
 ::-webkit-scrollbar {

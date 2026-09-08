@@ -1,101 +1,85 @@
-import type { CSSProperties, ReactNode } from "react";
-import { colors, PIX, VT } from "../theme";
+import type { ReactNode } from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 
-export function Panel({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-  return (
-    <div
-      style={{
-        border: `3px solid ${colors.ink}`,
-        background: colors.panel,
-        boxShadow: `3px 3px 0 ${colors.ink}`,
-        padding: 10,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
+const panel = tv({
+  base: "flex flex-col gap-2 border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]",
+});
+
+export function Panel({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={panel({ className })}>{children}</div>;
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <div style={{ ...PIX, fontSize: 9, color: colors.text }}>{children}</div>;
+  return <div className="font-pix text-[9px] text-text">{children}</div>;
 }
 
 export function Hint({ children }: { children: ReactNode }) {
-  return <div style={{ ...VT, fontSize: 18, color: colors.textMuted }}>{children}</div>;
+  return <div className="font-vt text-[18px] text-text-muted">{children}</div>;
 }
 
-type BtnVariant = "primary" | "secondary" | "danger" | "ghost" | "outlineDanger";
+const btn = tv({
+  base: "font-pix px-3 py-2",
+  variants: {
+    variant: {
+      primary:
+        "border-[3px] border-ink bg-blue text-white shadow-[inset_0_3px_0_var(--color-blue-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
+      secondary:
+        "border-[3px] border-ink bg-blue-soft text-ink shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]",
+      danger: "border-2 border-ink bg-red text-white [text-shadow:1px_1px_0_var(--color-ink)]",
+      outlineDanger: "border-[3px] border-red bg-bg text-red shadow-[3px_3px_0_var(--color-ink)]",
+      ghost: "border-2 border-ink bg-panel text-ink",
+    },
+    fontSize: {
+      7: "text-[7px]",
+      8: "text-[8px]",
+      9: "text-[9px]",
+      12: "text-[12px]",
+    },
+    minHeight: {
+      36: "min-h-9",
+      40: "min-h-10",
+      42: "min-h-[42px]",
+      44: "min-h-11",
+      48: "min-h-12",
+    },
+    full: {
+      true: "w-full",
+    },
+    disabled: {
+      true: "opacity-50",
+      false: "opacity-100",
+    },
+  },
+  defaultVariants: {
+    variant: "secondary",
+    fontSize: 9,
+    minHeight: 48,
+    full: false,
+    disabled: false,
+  },
+});
 
-const variantStyle: Record<BtnVariant, CSSProperties> = {
-  primary: {
-    background: colors.blue,
-    color: colors.white,
-    boxShadow: `inset 0 3px 0 ${colors.blueLight}, 3px 3px 0 ${colors.ink}`,
-    textShadow: `1px 1px 0 ${colors.ink}`,
-    border: `3px solid ${colors.ink}`,
-  },
-  secondary: {
-    background: colors.blueSoft,
-    color: colors.ink,
-    boxShadow: `inset 0 3px 0 ${colors.blueSofter}, 3px 3px 0 ${colors.ink}`,
-    border: `3px solid ${colors.ink}`,
-  },
-  danger: {
-    background: colors.red,
-    color: colors.white,
-    textShadow: `1px 1px 0 ${colors.ink}`,
-    border: `2px solid ${colors.ink}`,
-  },
-  outlineDanger: {
-    background: colors.bg,
-    color: colors.red,
-    boxShadow: `3px 3px 0 ${colors.ink}`,
-    border: `3px solid ${colors.red}`,
-  },
-  ghost: {
-    background: colors.panel,
-    color: colors.ink,
-    border: `2px solid ${colors.ink}`,
-  },
-};
+type BtnVariants = VariantProps<typeof btn>;
 
 export function Btn({
   children,
   onClick,
-  variant = "secondary",
+  variant,
   full,
   disabled,
-  style,
-  fontSize = 9,
-  minHeight = 48,
+  className,
+  fontSize,
+  minHeight,
 }: {
   children: ReactNode;
   onClick?: () => void;
-  variant?: BtnVariant;
-  full?: boolean;
-  disabled?: boolean;
-  style?: CSSProperties;
-  fontSize?: number;
-  minHeight?: number;
-}) {
+  className?: string;
+} & BtnVariants) {
   return (
     <button
       onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...PIX,
-        fontSize,
-        minHeight,
-        width: full ? "100%" : undefined,
-        padding: "8px 12px",
-        opacity: disabled ? 0.5 : 1,
-        ...variantStyle[variant],
-        ...style,
-      }}
+      disabled={disabled ?? false}
+      className={btn({ variant, fontSize, minHeight, full, disabled, className })}
     >
       {children}
     </button>
@@ -116,14 +100,7 @@ export function SearchInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      style={{
-        width: "100%",
-        fontSize: 21,
-        padding: 11,
-        border: `2px solid ${colors.ink}`,
-        background: "#fff",
-        color: colors.ink,
-      }}
+      className="w-full border-2 border-ink bg-white p-[11px] text-[21px] text-ink"
     />
   );
 }
@@ -140,18 +117,10 @@ export function Stepper({
   max?: number;
 }) {
   return (
-    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+    <div className="flex items-center gap-2">
       <button
         onClick={() => onChange(Math.max(min, value - 1))}
-        style={{
-          width: 52,
-          height: 52,
-          border: `2px solid ${colors.ink}`,
-          background: colors.blueSoft,
-          color: colors.ink,
-          fontSize: 12,
-          boxShadow: `inset 0 3px 0 ${colors.blueSofter}`,
-        }}
+        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[12px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
       >
         -
       </button>
@@ -162,34 +131,30 @@ export function Stepper({
           onChange(digits === "" ? min : Math.min(max, Number(digits)));
         }}
         inputMode="numeric"
-        style={{
-          flex: "1 1 auto",
-          minWidth: 0,
-          textAlign: "center",
-          fontSize: 26,
-          padding: 8,
-          border: `2px solid ${colors.ink}`,
-          background: "#fff",
-          color: colors.ink,
-        }}
+        className="min-w-0 flex-[1_1_auto] border-2 border-ink bg-white p-2 text-center text-[26px] text-ink"
       />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        style={{
-          width: 52,
-          height: 52,
-          border: `2px solid ${colors.ink}`,
-          background: colors.blueSoft,
-          color: colors.ink,
-          fontSize: 12,
-          boxShadow: `inset 0 3px 0 ${colors.blueSofter}`,
-        }}
+        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[12px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
       >
         +
       </button>
     </div>
   );
 }
+
+const confirmBar = tv({
+  base: "flex flex-col gap-2.5 border-[3px] p-2.5",
+  variants: {
+    danger: {
+      true: "border-red bg-red-soft",
+      false: "border-ink bg-panel-alt",
+    },
+  },
+  defaultVariants: {
+    danger: false,
+  },
+});
 
 export function ConfirmBar({
   text,
@@ -205,18 +170,9 @@ export function ConfirmBar({
   danger?: boolean;
 }) {
   return (
-    <div
-      style={{
-        border: `3px solid ${danger ? colors.red : colors.ink}`,
-        background: danger ? colors.redSoft : colors.panelAlt,
-        padding: 10,
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-      }}
-    >
+    <div className={confirmBar({ danger })}>
       <Hint>{text}</Hint>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div className="flex gap-2">
         <Btn variant="ghost" full onClick={onCancel}>
           CANCEL
         </Btn>

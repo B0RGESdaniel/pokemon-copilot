@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Btn, Panel, SearchInput, SectionLabel, Stepper } from "../../components";
-import { colors, PIX, VT } from "../../theme";
 import type { Save } from "../../types/saves";
 
 export function CreateSaveForm({
@@ -31,36 +30,15 @@ export function CreateSaveForm({
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100%",
-        maxWidth: 480,
-        margin: "0 auto",
-        background: colors.bg,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          flex: "0 0 auto",
-          background: colors.navy,
-          borderBottom: `3px solid ${colors.ink}`,
-          boxShadow: `inset 0 -4px 0 ${colors.navyDark}`,
-          padding: "16px 12px",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <img src="/pokeball.png" alt="Pokemon Copilot" style={{ width: 26, height: 26 }} />
-        <div style={{ ...PIX, fontSize: 10, color: colors.white, textShadow: `2px 2px 0 ${colors.ink}` }}>
+    <div className="mx-auto flex h-screen w-full max-w-[480px] flex-col bg-bg">
+      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 py-4 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+        <img src="/pokeball.png" alt="Pokemon Copilot" className="size-[26px]" />
+        <div className="font-pix text-[10px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           POKEMON COPILOT
         </div>
       </div>
-      <div style={{ flex: "1 1 auto", overflowY: "auto", padding: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ ...VT, fontSize: 19, color: colors.textMuted }}>
+      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3.5">
+        <div className="font-vt text-[19px] text-text-muted">
           Nenhum save encontrado. Crie o primeiro pra começar a registrar Pokémon.
         </div>
         <Panel>
@@ -70,7 +48,7 @@ export function CreateSaveForm({
           <SearchInput value={game} onChange={setGame} placeholder="ex: platinum, black, scarlet..." />
           <SectionLabel>GERAÇÃO *</SectionLabel>
           <Stepper value={generation} onChange={setGeneration} min={1} max={9} />
-          {error ? <div style={{ ...VT, fontSize: 17, color: colors.red }}>{error}</div> : null}
+          {error ? <div className="font-vt text-[17px] text-red">{error}</div> : null}
           <Btn variant="primary" full disabled={busy} onClick={() => void submit()}>
             {busy ? "CREATING..." : "CREATE SAVE"}
           </Btn>
