@@ -16,7 +16,9 @@ type AddState = GenerationSpeciesEntry | "blank" | null;
 
 function LoadingScreen() {
   return (
-    <div className="flex h-screen items-center justify-center font-vt text-[22px] text-white">Loading...</div>
+    <div className="flex h-screen items-center justify-center font-vt text-[22px] text-white">
+      Loading...
+    </div>
   );
 }
 
@@ -29,7 +31,11 @@ function MainApp({
   save: Save;
   saves: Save[];
   onSelectSave: (id: string) => void;
-  onCreateSave: (input: { name: string; game: string; generation: number }) => Promise<Save>;
+  onCreateSave: (input: {
+    name: string;
+    game: string;
+    generation: number;
+  }) => Promise<Save>;
 }) {
   const { party } = useParty(save.id);
   const { pc } = usePc(save.id);
@@ -43,40 +49,79 @@ function MainApp({
   const [addOpen, setAddOpen] = useState<AddState>(null);
 
   const allPokemon = [...party, ...pc];
-  const detailPokemon = detailId ? (allPokemon.find((p) => p.id === detailId) ?? null) : null;
+  const detailPokemon = detailId
+    ? (allPokemon.find((p) => p.id === detailId) ?? null)
+    : null;
 
   const headerMeta =
-    tab === "battle" && battle.status?.status === "active" && battle.status.opponent
+    tab === "battle" &&
+    battle.status?.status === "active" &&
+    battle.status.opponent
       ? `vs ${battle.status.opponent.species?.name.toUpperCase() ?? "?"} Lv ${battle.status.opponent.level}`
       : `${party.length}/6 party · ${pc.length} PC`;
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-[480px] flex-col overflow-hidden border-x-[3px] border-ink bg-bg">
-      <Header headerMeta={headerMeta} saves={saves} selectedSave={save} onSelectSave={onSelectSave} onCreateSave={onCreateSave} />
+    <div className="relative mx-auto flex h-screen w-full max-w-120 flex-col overflow-hidden border-x-[3px] border-ink bg-bg">
+      <Header
+        headerMeta={headerMeta}
+        saves={saves}
+        selectedSave={save}
+        onSelectSave={onSelectSave}
+        onCreateSave={onCreateSave}
+      />
       {tab === "pokemons" ? <Subnav sub={sub} onChange={setSub} /> : null}
       <FlashMessage message={message} />
 
       <div
         className={`flex-1 ${
-          tab === "pokemons" ? "overflow-y-auto px-2.5 pt-2.5 pb-[18px]" : "overflow-hidden"
+          tab === "pokemons"
+            ? "overflow-y-auto px-2.5 pt-2.5 pb-4.5"
+            : "overflow-hidden"
         }`}
       >
         {tab === "pokemons" && sub === "party" ? (
-          <PartyView party={party} onOpenDetail={setDetailId} onOpenAdd={() => setAddOpen("blank")} />
+          <PartyView
+            party={party}
+            onOpenDetail={setDetailId}
+            onOpenAdd={() => setAddOpen("blank")}
+          />
         ) : null}
         {tab === "pokemons" && sub === "pc" ? (
-          <PcView pc={pc} onOpenDetail={setDetailId} onOpenAdd={() => setAddOpen("blank")} />
+          <PcView
+            pc={pc}
+            onOpenDetail={setDetailId}
+            onOpenAdd={() => setAddOpen("blank")}
+          />
         ) : null}
         {tab === "pokemons" && sub === "search" ? (
-          <SearchView dex={dex} party={party} pc={pc} onOpenDetail={setDetailId} onOpenAdd={(entry) => setAddOpen(entry)} />
+          <SearchView
+            dex={dex}
+            party={party}
+            pc={pc}
+            onOpenDetail={setDetailId}
+            onOpenAdd={(entry) => setAddOpen(entry)}
+          />
         ) : null}
-        {tab === "battle" ? <BattleTab saveId={save.id} generation={save.generation} dex={dex} battle={battle} onFlash={flash} /> : null}
+        {tab === "battle" ? (
+          <BattleTab
+            saveId={save.id}
+            generation={save.generation}
+            dex={dex}
+            battle={battle}
+            onFlash={flash}
+          />
+        ) : null}
       </div>
 
       <BottomNav tab={tab} onChange={setTab} />
 
       {detailPokemon ? (
-        <DetailFlow saveId={save.id} pokemon={detailPokemon} onBack={() => setDetailId(null)} onFlash={flash} />
+        <DetailFlow
+          saveId={save.id}
+          pokemon={detailPokemon}
+          onBack={() => setDetailId(null)}
+          onFlash={flash}
+        />
       ) : null}
 
       {addOpen ? (
@@ -101,5 +146,12 @@ export function App() {
   if (!saves || saves.length === 0) return <CreateSaveForm onCreate={create} />;
   if (!selected) return <LoadingScreen />;
 
-  return <MainApp save={selected} saves={saves} onSelectSave={select} onCreateSave={create} />;
+  return (
+    <MainApp
+      save={selected}
+      saves={saves}
+      onSelectSave={select}
+      onCreateSave={create}
+    />
+  );
 }
