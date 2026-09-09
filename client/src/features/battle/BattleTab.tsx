@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { useState } from "react";
 import { tv } from "tailwind-variants";
-import { getBattleSuggestions } from "../../api/battle";
-import { updatePokemon } from "../../api/pokemon";
-import { getLegalMoves, getMove } from "../../api/species";
+import { getMove } from "../../api/species";
+import { queryKeys } from "../../api/queryKeys";
 import {
   Btn,
   ConfirmBar,
@@ -17,9 +17,11 @@ import {
 } from "../../components";
 import { effectivenessBadge, multiplierAgainst } from "../../utils/effectiveness";
 import type { useBattle } from "../../hooks/useBattle";
+import { useBattleSuggestions } from "../../hooks/useBattle";
 import { useTypeChart } from "../../hooks/data";
+import { useLegalMoves } from "../../hooks/useSpecies";
+import { useUpdatePokemon } from "../../hooks/usePokemonMutations";
 import { cap } from "../../theme";
-import type { PartyMatchup } from "../../types/battle";
 import type { LearnMoveResult } from "../../types/pokemon";
 import type { GenerationSpeciesEntry, MoveDTO } from "../../types/species";
 
@@ -215,7 +217,6 @@ export function BattleTab({
             const result = await battle.levelUp(level, moveName);
             return result.moveEvaluation ?? undefined;
           }}
-          onReload={() => battle.reload()}
         />
       ) : null}
     </div>
@@ -237,30 +238,25 @@ function AttackPanel({
   chart: ReturnType<typeof useTypeChart>["chart"];
   onClose: () => void;
 }) {
-  const [rows, setRows] = useState<(MoveDTO & { effLabel: string; effClassName: string })[]>([]);
+  const moveQueries = useQueries({
+    queries: mine.moves.map((m) => ({
+      queryKey: queryKeys.move(m),
+      queryFn: () => getMove(m),
+      staleTime: Infinity,
+    })),
+  });
 
-  useEffect(() => {
-    Promise.all(mine.moves.map((m) => getMove(m))).then((moves) => {
-      setRows(
-        moves.map((mv) => {
-          if (mv.damageClass === "status" || mv.power === null) {
-            return {
-              ...mv,
-              effLabel: "STATUS",
-              effClassName: "bg-border text-text-muted",
-            };
-          }
-          const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
-          const badge = effectivenessBadge(v);
-          return {
-            ...mv,
-            effLabel: badge.label,
-            effClassName: badge.className,
-          };
-        }),
-      );
+  const rows: (MoveDTO & { effLabel: string; effClassName: string })[] = moveQueries
+    .map((q) => q.data)
+    .filter((mv): mv is MoveDTO => !!mv)
+    .map((mv) => {
+      if (mv.damageClass === "status" || mv.power === null) {
+        return { ...mv, effLabel: "STATUS", effClassName: "bg-border text-text-muted" };
+      }
+      const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
+      const badge = effectivenessBadge(v);
+      return { ...mv, effLabel: badge.label, effClassName: badge.className };
     });
-  }, [mine.moves, oppTypes, chart]);
 
   return (
     <PageShell title="MOVES" onBack={onClose}>
@@ -375,22 +371,15 @@ function MatchupPanel({
   onClose: () => void;
   onPick: (id: string) => Promise<void>;
 }) {
-  const [ranking, setRanking] = useState<PartyMatchup[] | null>(null);
-  const [oppName, setOppName] = useState("");
-
-  useEffect(() => {
-    getBattleSuggestions(saveId).then((r) => {
-      setRanking(r.ranking);
-      setOppName(cap(r.opponent.species?.name));
-    });
-  }, [saveId]);
+  const suggestions = useBattleSuggestions(saveId);
+  const oppName = suggestions ? cap(suggestions.opponent.species?.name) : "";
 
   return (
     <PageShell title="TEAM MATCHUP" onBack={onClose}>
       <Panel>
         <SectionLabel>MATCHUP VS {oppName}</SectionLabel>
         <Hint>Best to worst matchup. Tap to send out.</Hint>
-        {(ranking ?? []).map((r, i) => {
+        {(suggestions?.ranking ?? []).map((r, i) => {
           const active = r.pokemon.id === activeId;
           const gradeTier =
             r.matchup.score >= 1.5 ? "great" : r.matchup.score > 0 ? "good" : r.matchup.score < 0 ? "bad" : "neutral";
@@ -444,7 +433,6 @@ function LevelUpPanel({
   onClose,
   onFlash,
   onApply,
-  onReload,
 }: {
   saveId: string;
   mine: {
@@ -458,19 +446,15 @@ function LevelUpPanel({
   onClose: () => void;
   onFlash: (msg: string) => void;
   onApply: (level: number, moveName?: string) => Promise<LearnMoveResult | undefined>;
-  onReload: () => Promise<void>;
 }) {
   const [level, setLevel] = useState(Math.min(100, mine.level + 1));
   const [query, setQuery] = useState("");
   const [move, setMove] = useState<string | null>(null);
-  const [legalMoves, setLegalMoves] = useState<string[]>([]);
+  const legalMoves = useLegalMoves(saveId, mine.pokeApiId);
   const [asking, setAsking] = useState(false);
   const [result, setResult] = useState<LearnMoveResult | null>(null);
   const [replace, setReplace] = useState<string | null>(null);
-
-  useEffect(() => {
-    getLegalMoves(saveId, mine.pokeApiId).then(setLegalMoves);
-  }, [saveId, mine.pokeApiId]);
+  const updatePokemon = useUpdatePokemon();
 
   const pool = legalMoves.filter((m) => !mine.moves.includes(m));
   const q = query.trim().toLowerCase();
@@ -494,10 +478,10 @@ function LevelUpPanel({
 
   const applyReplacement = async () => {
     if (!move || !replace) return;
-    await updatePokemon(mine.id, {
-      moves: mine.moves.map((m) => (m === replace ? move : m)),
+    await updatePokemon.mutateAsync({
+      id: mine.id,
+      input: { moves: mine.moves.map((m) => (m === replace ? move : m)) },
     });
-    await onReload();
     onFlash(`${cap(move)} learned, replacing ${cap(replace)}.`);
     onClose();
   };

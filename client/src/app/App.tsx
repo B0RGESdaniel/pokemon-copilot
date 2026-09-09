@@ -31,8 +31,8 @@ function MainApp({
   onSelectSave: (id: string) => void;
   onCreateSave: (input: { name: string; game: string; generation: number }) => Promise<Save>;
 }) {
-  const { party, reload: reloadParty } = useParty(save.id);
-  const { pc, reload: reloadPc } = usePc(save.id);
+  const { party } = useParty(save.id);
+  const { pc } = usePc(save.id);
   const { dex } = useGenerationDex(save.generation);
   const battle = useBattle(save.id);
   const { message, flash } = useFlash();
@@ -41,10 +41,6 @@ function MainApp({
   const [sub, setSub] = useState<"party" | "pc" | "search">("party");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState<AddState>(null);
-
-  const reloadAll = async () => {
-    await Promise.all([reloadParty(), reloadPc()]);
-  };
 
   const allPokemon = [...party, ...pc];
   const detailPokemon = detailId ? (allPokemon.find((p) => p.id === detailId) ?? null) : null;
@@ -80,7 +76,7 @@ function MainApp({
       <BottomNav tab={tab} onChange={setTab} />
 
       {detailPokemon ? (
-        <DetailFlow saveId={save.id} pokemon={detailPokemon} onBack={() => setDetailId(null)} onFlash={flash} onMutated={reloadAll} />
+        <DetailFlow saveId={save.id} pokemon={detailPokemon} onBack={() => setDetailId(null)} onFlash={flash} />
       ) : null}
 
       {addOpen ? (
@@ -90,10 +86,7 @@ function MainApp({
           prefill={addOpen === "blank" ? null : addOpen}
           dex={dex}
           onBack={() => setAddOpen(null)}
-          onDone={() => {
-            setAddOpen(null);
-            void reloadAll();
-          }}
+          onDone={() => setAddOpen(null)}
           onFlash={flash}
         />
       ) : null}

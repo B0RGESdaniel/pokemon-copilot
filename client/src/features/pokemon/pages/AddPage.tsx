@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { addToParty, addToPc } from "../../../api/pokemon";
-import { getLegalMoves, getSpecies, searchItems } from "../../../api/species";
+import { useState } from "react";
+import { useAddToParty, useAddToPc } from "../../../hooks/usePokemonMutations";
+import { useLegalMoves, useSearchItems, useSpecies } from "../../../hooks/useSpecies";
 import { Btn, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper } from "../../../components";
 import { cap } from "../../../theme";
-import type { GenerationSpeciesEntry, SpeciesDTO } from "../../../types/species";
+import type { GenerationSpeciesEntry } from "../../../types/species";
 
 export function AddPage({
   saveId,
@@ -24,48 +24,23 @@ export function AddPage({
 }) {
   const [speciesQuery, setSpeciesQuery] = useState(prefill ? cap(prefill.name) : "");
   const [speciesKey, setSpeciesKey] = useState<GenerationSpeciesEntry | null>(prefill);
-  const [species, setSpecies] = useState<SpeciesDTO | null>(null);
-  const [legalMoves, setLegalMoves] = useState<string[]>([]);
   const [level, setLevel] = useState(5);
   const [nickname, setNickname] = useState("");
   const [itemQuery, setItemQuery] = useState("");
   const [item, setItem] = useState<string | null>(null);
-  const [itemChoices, setItemChoices] = useState<string[]>([]);
   const [moves, setMoves] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    if (!speciesKey) {
-      setSpecies(null);
-      setLegalMoves([]);
-      return;
-    }
-    let cancelled = false;
-    setMoves([]);
-    Promise.all([getSpecies(speciesKey.pokeApiId), getLegalMoves(saveId, speciesKey.pokeApiId)])
-      .then(([sp, legal]) => {
-        if (cancelled) return;
-        setSpecies(sp);
-        setLegalMoves(legal);
-      })
-      .catch(() => !cancelled && onFlash(`Failed to load ${cap(speciesKey.name)} data.`));
-    return () => {
-      cancelled = true;
-    };
-  }, [speciesKey, saveId, onFlash]);
+  const { species } = useSpecies(speciesKey?.pokeApiId ?? null);
+  const legalMoves = useLegalMoves(saveId, speciesKey?.pokeApiId ?? null);
+  const itemChoices = useSearchItems(item ? "" : itemQuery);
+  const addToParty = useAddToParty();
+  const addToPc = useAddToPc();
 
-  useEffect(() => {
-    const q = itemQuery.trim().toLowerCase();
-    if (!q || item) {
-      setItemChoices([]);
-      return;
-    }
-    let cancelled = false;
-    searchItems(q).then((list) => !cancelled && setItemChoices(list));
-    return () => {
-      cancelled = true;
-    };
-  }, [itemQuery, item]);
+  const pickSpecies = (entry: GenerationSpeciesEntry | null) => {
+    setSpeciesKey(entry);
+    setMoves([]);
+  };
 
   const speciesResults = speciesKey ? [] : dex.filter((e) => e.name.includes(speciesQuery.trim().toLowerCase())).slice(0, 8);
 
@@ -93,10 +68,10 @@ export function AddPage({
         moves,
       };
       if (partyFull) {
-        await addToPc(input);
+        await addToPc.mutateAsync(input);
         onFlash(`Party full! ${cap(speciesKey.name)} went to the PC.`);
       } else {
-        await addToParty(input);
+        await addToParty.mutateAsync(input);
         onFlash(`${cap(speciesKey.name)} joined the party.`);
       }
       onDone();
@@ -120,7 +95,7 @@ export function AddPage({
               value={speciesQuery}
               onChange={(v) => {
                 setSpeciesQuery(v);
-                setSpeciesKey(null);
+                pickSpecies(null);
               }}
               placeholder="search species..."
             />
@@ -132,7 +107,7 @@ export function AddPage({
               <button
                 key={r.pokeApiId}
                 onClick={() => {
-                  setSpeciesKey(r);
+                  pickSpecies(r);
                   setSpeciesQuery(cap(r.name));
                 }}
                 className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2 text-left"

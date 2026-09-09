@@ -1,66 +1,78 @@
-import { useCallback, useEffect, useState } from "react";
-import { battleLevelUp, endBattle, getBattleStatus, setBattleActive, setBattleOpponent, startBattle } from "../api/battle";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  battleLevelUp,
+  endBattle,
+  getBattleStatus,
+  getBattleSuggestions,
+  setBattleActive,
+  setBattleOpponent,
+  startBattle,
+} from "../api/battle";
+import { queryKeys } from "../api/queryKeys";
 import type { BattleStatusResponse } from "../types/battle";
 
 export function useBattle(saveId: string | null) {
-  const [status, setStatus] = useState<BattleStatusResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const reload = useCallback(async () => {
-    if (!saveId) return;
-    setLoading(true);
-    try {
-      setStatus(await getBattleStatus(saveId));
-    } finally {
-      setLoading(false);
-    }
-  }, [saveId]);
+  const { data: status, isLoading } = useQuery({
+    queryKey: queryKeys.battle(saveId ?? ""),
+    queryFn: () => getBattleStatus(saveId as string),
+    enabled: !!saveId,
+  });
 
-  useEffect(() => {
-    void reload();
-  }, [reload]);
+  const setStatus = (data: BattleStatusResponse) => {
+    if (saveId) queryClient.setQueryData(queryKeys.battle(saveId), data);
+  };
 
-  const start = useCallback(async () => {
-    if (!saveId) return;
-    setStatus(await startBattle(saveId));
-  }, [saveId]);
+  const startMutation = useMutation({
+    mutationFn: () => startBattle(saveId as string),
+    onSuccess: setStatus,
+  });
 
-  const setOpponent = useCallback(
-    async (pokeApiId: number, level: number) => {
-      if (!saveId) return;
-      setStatus(await setBattleOpponent(saveId, pokeApiId, level));
+  const setOpponentMutation = useMutation({
+    mutationFn: ({ pokeApiId, level }: { pokeApiId: number; level: number }) =>
+      setBattleOpponent(saveId as string, pokeApiId, level),
+    onSuccess: setStatus,
+  });
+
+  const setActiveMutation = useMutation({
+    mutationFn: (pokemonId: string) => setBattleActive(saveId as string, pokemonId),
+    onSuccess: setStatus,
+  });
+
+  const endMutation = useMutation({
+    mutationFn: (reason: "opponent_fainted" | "fled") => endBattle(saveId as string, reason),
+    onSuccess: setStatus,
+  });
+
+  const levelUpMutation = useMutation({
+    mutationFn: ({ level, moveName }: { level: number; moveName?: string }) =>
+      battleLevelUp(saveId as string, level, moveName),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["battle"] }),
+        queryClient.invalidateQueries({ queryKey: ["party"] }),
+      ]);
     },
-    [saveId],
-  );
+  });
 
-  const setActive = useCallback(
-    async (pokemonId: string) => {
-      if (!saveId) return;
-      setStatus(await setBattleActive(saveId, pokemonId));
-    },
-    [saveId],
-  );
+  return {
+    status: status ?? null,
+    loading: isLoading,
+    start: () => startMutation.mutateAsync(),
+    setOpponent: (pokeApiId: number, level: number) => setOpponentMutation.mutateAsync({ pokeApiId, level }),
+    setActive: (pokemonId: string) => setActiveMutation.mutateAsync(pokemonId),
+    end: (reason: "opponent_fainted" | "fled") => endMutation.mutateAsync(reason),
+    levelUp: (level: number, moveName?: string) => levelUpMutation.mutateAsync({ level, moveName }),
+  };
+}
 
-  const end = useCallback(
-    async (reason: "opponent_fainted" | "fled") => {
-      if (!saveId) return;
-      setStatus(await endBattle(saveId, reason));
-    },
-    [saveId],
-  );
+export function useBattleSuggestions(saveId: string | null) {
+  const { data } = useQuery({
+    queryKey: queryKeys.battleSuggestions(saveId ?? ""),
+    queryFn: () => getBattleSuggestions(saveId as string),
+    enabled: !!saveId,
+  });
 
-  // O resultado do level-up tem um formato diferente do estado de batalha
-  // (inclui a avaliação do move novo) — por isso recarrega o status geral
-  // à parte, em vez de tentar reaproveitar a resposta como novo `status`.
-  const levelUp = useCallback(
-    async (level: number, moveName?: string) => {
-      if (!saveId) throw new Error("No save selected");
-      const result = await battleLevelUp(saveId, level, moveName);
-      await reload();
-      return result;
-    },
-    [saveId, reload],
-  );
-
-  return { status, loading, start, setOpponent, setActive, end, levelUp, reload };
+  return data ?? null;
 }

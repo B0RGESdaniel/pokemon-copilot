@@ -1,42 +1,30 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { queryKeys } from "../api/queryKeys";
 import { createSave, listSaves } from "../api/saves";
 import { getParty, getPc } from "../api/pokemon";
 import { getSpeciesByGeneration, getTypeChart } from "../api/species";
-import type { PokemonDTO } from "../types/pokemon";
 import type { Save } from "../types/saves";
-import type { GenerationSpeciesEntry, TypeChart } from "../types/species";
 
 const SAVE_STORAGE_KEY = "pokemon-copilot:saveId";
 
 export function useSaves() {
-  const [saves, setSaves] = useState<Save[] | null>(null);
+  const queryClient = useQueryClient();
+  const { data: saves, isLoading } = useQuery({ queryKey: queryKeys.saves, queryFn: listSaves });
   const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem(SAVE_STORAGE_KEY));
-  const [loading, setLoading] = useState(true);
-
-  const refresh = useCallback(async () => {
-    const list = await listSaves();
-    setSaves(list);
-    return list;
-  }, []);
-
-  useEffect(() => {
-    refresh().finally(() => setLoading(false));
-  }, [refresh]);
 
   const select = useCallback((id: string) => {
     localStorage.setItem(SAVE_STORAGE_KEY, id);
     setSelectedId(id);
   }, []);
 
-  const create = useCallback(
-    async (input: { name: string; game: string; generation: number }) => {
-      const created = await createSave(input);
-      setSaves((prev) => (prev ? [...prev, created] : [created]));
+  const createMutation = useMutation({
+    mutationFn: createSave,
+    onSuccess: (created) => {
+      queryClient.setQueryData<Save[]>(queryKeys.saves, (prev) => (prev ? [...prev, created] : [created]));
       select(created.id);
-      return created;
     },
-    [select],
-  );
+  });
 
   const selected = saves?.find((s) => s.id === selectedId) ?? saves?.[0] ?? null;
 
@@ -44,99 +32,53 @@ export function useSaves() {
     if (selected && selected.id !== selectedId) select(selected.id);
   }, [selected, selectedId, select]);
 
-  return { saves, loading, selected, select, create };
+  return {
+    saves: saves ?? null,
+    loading: isLoading,
+    selected,
+    select,
+    create: createMutation.mutateAsync,
+  };
 }
 
 export function useParty(saveId: string | null) {
-  const [data, setData] = useState<PokemonDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: queryKeys.party(saveId ?? ""),
+    queryFn: () => getParty(saveId as string),
+    enabled: !!saveId,
+  });
 
-  const reload = useCallback(async () => {
-    if (!saveId) return;
-    setLoading(true);
-    try {
-      setData(await getParty(saveId));
-    } finally {
-      setLoading(false);
-    }
-  }, [saveId]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
-
-  return { party: data, loading, reload };
+  return { party: data ?? [], loading: isLoading };
 }
 
 export function usePc(saveId: string | null) {
-  const [data, setData] = useState<PokemonDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: queryKeys.pc(saveId ?? ""),
+    queryFn: () => getPc(saveId as string),
+    enabled: !!saveId,
+  });
 
-  const reload = useCallback(async () => {
-    if (!saveId) return;
-    setLoading(true);
-    try {
-      setData(await getPc(saveId));
-    } finally {
-      setLoading(false);
-    }
-  }, [saveId]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
-
-  return { pc: data, loading, reload };
+  return { pc: data ?? [], loading: isLoading };
 }
-
-const dexCache = new Map<number, GenerationSpeciesEntry[]>();
 
 export function useGenerationDex(generation: number | null) {
-  const [dex, setDex] = useState<GenerationSpeciesEntry[]>(generation ? (dexCache.get(generation) ?? []) : []);
-  const [loading, setLoading] = useState(!!generation && !dexCache.has(generation));
+  const { data, isLoading } = useQuery({
+    queryKey: queryKeys.dex(generation ?? 0),
+    queryFn: () => getSpeciesByGeneration(generation as number),
+    enabled: !!generation,
+    staleTime: Infinity,
+  });
 
-  useEffect(() => {
-    if (!generation) return;
-    const cached = dexCache.get(generation);
-    if (cached) {
-      setDex(cached);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    getSpeciesByGeneration(generation)
-      .then((list) => {
-        dexCache.set(generation, list);
-        setDex(list);
-      })
-      .finally(() => setLoading(false));
-  }, [generation]);
-
-  return { dex, loading };
+  return { dex: data ?? [], loading: isLoading };
 }
 
-const typeChartCache = new Map<number, TypeChart>();
-
 export function useTypeChart(generation: number | null) {
-  const [chart, setChart] = useState<TypeChart | null>(generation ? (typeChartCache.get(generation) ?? null) : null);
-  const [loading, setLoading] = useState(!!generation && !typeChartCache.has(generation));
+  const { data, isLoading } = useQuery({
+    queryKey: queryKeys.typeChart(generation ?? 0),
+    queryFn: () => getTypeChart(generation as number),
+    enabled: !!generation,
+    staleTime: Infinity,
+  });
 
-  useEffect(() => {
-    if (!generation) return;
-    const cached = typeChartCache.get(generation);
-    if (cached) {
-      setChart(cached);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    getTypeChart(generation)
-      .then((c) => {
-        typeChartCache.set(generation, c);
-        setChart(c);
-      })
-      .finally(() => setLoading(false));
-  }, [generation]);
-
-  return { chart, loading };
+  return { chart: data ?? null, loading: isLoading };
 }

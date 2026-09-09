@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { deletePokemon, learnMove, movePokemon, updatePokemon } from "../../../api/pokemon";
-import { getEvolutions, getLegalMoves, searchItems } from "../../../api/species";
+import { useState } from "react";
+import { useDeletePokemon, useLearnMove, useMovePokemon, useUpdatePokemon } from "../../../hooks/usePokemonMutations";
+import { useEvolutions, useLegalMoves, useSearchItems } from "../../../hooks/useSpecies";
 import { Btn, ConfirmBar, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper, TypeBadge } from "../../../components";
 import { cap } from "../../../theme";
 import type { LearnMoveResult, PokemonDTO } from "../../../types/pokemon";
@@ -24,72 +24,50 @@ export function DetailFlow({
   pokemon,
   onBack,
   onFlash,
-  onMutated,
 }: {
   saveId: string;
   pokemon: PokemonDTO;
   onBack: () => void;
   onFlash: (msg: string) => void;
-  onMutated: () => Promise<void>;
 }) {
   const [page, setPage] = useState<"detail" | "moves" | "item" | "evolve">("detail");
   const [confirming, setConfirming] = useState(false);
   const [evoInfo, setEvoInfo] = useState(false);
-  const [evolutions, setEvolutions] = useState<EvolutionOption[]>([]);
-
-  useEffect(() => {
-    getEvolutions(pokemon.pokeApiId)
-      .then(setEvolutions)
-      .catch(() => setEvolutions([]));
-  }, [pokemon.pokeApiId]);
+  const { evolutions } = useEvolutions(pokemon.pokeApiId);
+  const updatePokemon = useUpdatePokemon();
+  const movePokemon = useMovePokemon();
+  const deletePokemon = useDeletePokemon();
 
   if (page === "moves") {
-    return (
-      <MovesPage
-        saveId={saveId}
-        pokemon={pokemon}
-        onBack={() => setPage("detail")}
-        onFlash={onFlash}
-        onMutated={onMutated}
-      />
-    );
+    return <MovesPage saveId={saveId} pokemon={pokemon} onBack={() => setPage("detail")} onFlash={onFlash} />;
   }
   if (page === "item") {
-    return <ItemPage pokemon={pokemon} onBack={() => setPage("detail")} onFlash={onFlash} onMutated={onMutated} />;
+    return <ItemPage pokemon={pokemon} onBack={() => setPage("detail")} onFlash={onFlash} />;
   }
   if (page === "evolve") {
     return (
-      <EvolvePage
-        pokemon={pokemon}
-        evolutions={evolutions}
-        onBack={() => setPage("detail")}
-        onFlash={onFlash}
-        onMutated={onMutated}
-      />
+      <EvolvePage pokemon={pokemon} evolutions={evolutions} onBack={() => setPage("detail")} onFlash={onFlash} />
     );
   }
 
   const sp = pokemon.species;
 
   const setLevel = async (level: number) => {
-    await updatePokemon(pokemon.id, { level });
-    await onMutated();
+    await updatePokemon.mutateAsync({ id: pokemon.id, input: { level } });
   };
 
   const toggleLocation = async () => {
     try {
-      await movePokemon(pokemon.id, pokemon.location === "PARTY" ? "PC" : "PARTY");
+      await movePokemon.mutateAsync({ id: pokemon.id, to: pokemon.location === "PARTY" ? "PC" : "PARTY" });
       onFlash(pokemon.location === "PARTY" ? "Moved to the PC." : "Moved to the party.");
-      await onMutated();
     } catch (e) {
       onFlash(e instanceof Error ? e.message : "Failed to move pokemon.");
     }
   };
 
   const confirmDelete = async () => {
-    await deletePokemon(pokemon.id);
+    await deletePokemon.mutateAsync(pokemon.id);
     onFlash(`${nameOf(pokemon)} was released.`);
-    await onMutated();
     onBack();
   };
 
@@ -218,34 +196,28 @@ function MovesPage({
   pokemon,
   onBack,
   onFlash,
-  onMutated,
 }: {
   saveId: string;
   pokemon: PokemonDTO;
   onBack: () => void;
   onFlash: (msg: string) => void;
-  onMutated: () => Promise<void>;
 }) {
-  const [legalMoves, setLegalMoves] = useState<string[]>([]);
+  const legalMoves = useLegalMoves(saveId, pokemon.pokeApiId);
   const [suggestion, setSuggestion] = useState<LearnMoveResult | null>(null);
-
-  useEffect(() => {
-    getLegalMoves(saveId, pokemon.pokeApiId).then(setLegalMoves);
-  }, [saveId, pokemon.pokeApiId]);
+  const updatePokemon = useUpdatePokemon();
+  const learnMove = useLearnMove();
 
   const removeMove = async (move: string) => {
-    await updatePokemon(pokemon.id, { moves: pokemon.moves.filter((m) => m !== move) });
+    await updatePokemon.mutateAsync({ id: pokemon.id, input: { moves: pokemon.moves.filter((m) => m !== move) } });
     onFlash(`${cap(move)} removed.`);
-    await onMutated();
   };
 
   const addMove = async (move: string) => {
     setSuggestion(null);
     try {
-      const result = await learnMove(pokemon.id, move);
+      const result = await learnMove.mutateAsync({ id: pokemon.id, moveName: move });
       if (result.outcome === "learned_directly") {
         onFlash(`${cap(move)} learned.`);
-        await onMutated();
       } else {
         setSuggestion(result);
       }
@@ -255,10 +227,12 @@ function MovesPage({
   };
 
   const applyReplacement = async (replace: string, move: string) => {
-    await updatePokemon(pokemon.id, { moves: pokemon.moves.map((m) => (m === replace ? move : m)) });
+    await updatePokemon.mutateAsync({
+      id: pokemon.id,
+      input: { moves: pokemon.moves.map((m) => (m === replace ? move : m)) },
+    });
     setSuggestion(null);
     onFlash(`${cap(move)} learned, replacing ${cap(replace)}.`);
-    await onMutated();
   };
 
   const learnable = legalMoves.filter((m) => !pokemon.moves.includes(m));
@@ -321,40 +295,24 @@ function ItemPage({
   pokemon,
   onBack,
   onFlash,
-  onMutated,
 }: {
   pokemon: PokemonDTO;
   onBack: () => void;
   onFlash: (msg: string) => void;
-  onMutated: () => Promise<void>;
 }) {
   const [query, setQuery] = useState("");
-  const [choices, setChoices] = useState<string[]>([]);
-
-  useEffect(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) {
-      setChoices([]);
-      return;
-    }
-    let cancelled = false;
-    searchItems(q).then((list) => !cancelled && setChoices(list));
-    return () => {
-      cancelled = true;
-    };
-  }, [query]);
+  const choices = useSearchItems(query);
+  const updatePokemon = useUpdatePokemon();
 
   const pick = async (item: string) => {
-    await updatePokemon(pokemon.id, { heldItem: item });
+    await updatePokemon.mutateAsync({ id: pokemon.id, input: { heldItem: item } });
     onFlash(`${cap(item)} equipped.`);
-    await onMutated();
     onBack();
   };
 
   const remove = async () => {
-    await updatePokemon(pokemon.id, { heldItem: null });
+    await updatePokemon.mutateAsync({ id: pokemon.id, input: { heldItem: null } });
     onFlash("Item removed.");
-    await onMutated();
   };
 
   return (
@@ -397,19 +355,18 @@ function EvolvePage({
   evolutions,
   onBack,
   onFlash,
-  onMutated,
 }: {
   pokemon: PokemonDTO;
   evolutions: EvolutionOption[];
   onBack: () => void;
   onFlash: (msg: string) => void;
-  onMutated: () => Promise<void>;
 }) {
+  const updatePokemon = useUpdatePokemon();
+
   const pick = async (option: EvolutionOption) => {
     try {
-      await updatePokemon(pokemon.id, { pokeApiId: option.pokeApiId });
+      await updatePokemon.mutateAsync({ id: pokemon.id, input: { pokeApiId: option.pokeApiId } });
       onFlash(`${cap(pokemon.species?.name)} evolved into ${cap(option.name)}!`);
-      await onMutated();
       onBack();
     } catch (e) {
       onFlash(e instanceof Error ? e.message : "Failed to evolve.");
