@@ -29,8 +29,8 @@ export function useSaves() {
   const selected = saves?.find((s) => s.id === selectedId) ?? saves?.[0] ?? null;
 
   useEffect(() => {
-    if (selected && selected.id !== selectedId) select(selected.id);
-  }, [selected, selectedId, select]);
+    if (selected && selected.id !== selectedId) localStorage.setItem(SAVE_STORAGE_KEY, selected.id);
+  }, [selected, selectedId]);
 
   return {
     saves: saves ?? null,

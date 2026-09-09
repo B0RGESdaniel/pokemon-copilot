@@ -11,7 +11,7 @@ export function multiplierAgainst(
   return defendingTypes.reduce((mult, def) => {
     const rel = chart.relations[def];
     if (!rel) return mult;
-    if (rel.noDamageFrom.includes(attackingType)) return mult * 0;
+    if (rel.noDamageFrom.includes(attackingType)) return 0;
     if (rel.doubleDamageFrom.includes(attackingType)) return mult * 2;
     if (rel.halfDamageFrom.includes(attackingType)) return mult * 0.5;
     return mult;
