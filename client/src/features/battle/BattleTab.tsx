@@ -152,18 +152,18 @@ export function BattleTab({
         </div>
 
         <div className="relative h-[216px] overflow-hidden border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-[3px_3px_0_var(--color-ink)]">
-          <div className="absolute top-[26px] right-19 flex h-35 w-35 items-center justify-center">
+          <div className="absolute top-[26px] right-[16%] aspect-square w-[29%] max-w-33">
             <Sprite
               url={opponent?.species?.sprite}
-              size={132}
+              size="fill"
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute -bottom-1.5 left-[58px] flex h-[154px] w-[154px] items-end justify-center">
+          <div className="absolute bottom-2 left-[12%] aspect-square w-[32%] max-w-[154px]">
             <img
               src={mine.species?.sprite ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
-              className="h-37 w-37 -scale-x-100 object-contain"
+              className="h-full w-full -scale-x-100 object-contain object-bottom"
             />
           </div>
           <div className="absolute right-2 bottom-1.5 font-vt text-[15px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">

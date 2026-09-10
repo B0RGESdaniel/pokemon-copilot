@@ -73,10 +73,12 @@ export function Sprite({
   alt,
 }: {
   url: string | null | undefined;
-  size: number;
+  // "fill" fits the sprite to its (responsive) parent box instead of a fixed px size —
+  // use it for boxes sized in % so the sprite scales down on narrow screens.
+  size: number | "fill";
   alt?: string;
 }) {
-  const knownSize = spriteSizeClass[size];
+  const knownSize = typeof size === "number" ? spriteSizeClass[size] : undefined;
   if (url) {
     // official-artwork is a smooth high-res illustration and should scale smoothly;
     // only the low-res front_default fallback is genuine pixel art.
@@ -85,20 +87,18 @@ export function Sprite({
       <img
         src={url}
         alt={alt ?? "sprite"}
-        className={`object-contain ${knownSize ?? ""} ${isPixelArt ? "[image-rendering:pixelated]" : ""}`}
-        style={knownSize ? undefined : { width: size, height: size }}
+        className={`object-contain ${size === "fill" ? "h-full w-full" : (knownSize ?? "")} ${isPixelArt ? "[image-rendering:pixelated]" : ""}`}
+        style={size === "fill" || knownSize ? undefined : { width: size, height: size }}
       />
     );
   }
+  const fallbackFontSize = size === "fill" ? 32 : Math.max(12, Math.round(size / 3.5));
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div
-        className="font-pix text-text-faint"
-        style={{ fontSize: Math.max(12, Math.round(size / 3.5)) }}
-      >
+      <div className="font-pix text-text-faint" style={{ fontSize: fallbackFontSize }}>
         ?
       </div>
-      {size > 90 ? (
+      {size === "fill" || size > 90 ? (
         <div className="font-pix text-[16px] text-text-faint">NO DATA</div>
       ) : null}
     </div>
