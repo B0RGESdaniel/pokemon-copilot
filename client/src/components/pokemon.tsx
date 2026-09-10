@@ -80,14 +80,11 @@ export function Sprite({
 }) {
   const knownSize = typeof size === "number" ? spriteSizeClass[size] : undefined;
   if (url) {
-    // official-artwork is a smooth high-res illustration and should scale smoothly;
-    // only the low-res front_default fallback is genuine pixel art.
-    const isPixelArt = !url.includes("official-artwork");
     return (
       <img
         src={url}
         alt={alt ?? "sprite"}
-        className={`object-contain ${size === "fill" ? "h-full w-full" : (knownSize ?? "")} ${isPixelArt ? "[image-rendering:pixelated]" : ""}`}
+        className={`object-contain ${size === "fill" ? "h-full w-full" : (knownSize ?? "")}`}
         style={size === "fill" || knownSize ? undefined : { width: size, height: size }}
       />
     );

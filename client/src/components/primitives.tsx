@@ -36,11 +36,6 @@ const btn = tv({
       outlineDanger:
         "border-[3px] border-red bg-bg text-red shadow-[3px_3px_0_var(--color-ink)]",
       ghost: "border-2 border-ink bg-panel text-ink",
-      attack:
-        "border-[3px] border-ink bg-red text-white shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
-      run: "border-[3px] border-ink bg-blue text-white shadow-[inset_0_3px_0_var(--color-blue-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
-      switch:
-        "border-[3px] border-ink bg-red text-white shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
     },
     fontSize: {
       7: "text-[7px]",

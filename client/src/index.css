@@ -89,6 +89,10 @@ body {
   -webkit-font-smoothing: none;
 }
 
+img {
+  image-rendering: pixelated;
+}
+
 a {
   color: var(--color-blue);
   text-decoration: none;

@@ -7,6 +7,7 @@ export type RawPokemon = {
   weight: number;
   sprites: {
     front_default: string | null;
+    back_default: string | null;
     other?: {
       "official-artwork"?: {
         front_default: string | null;
@@ -118,6 +119,9 @@ export type SpeciesDTO = {
   name: string;
   types: string[];
   sprite: string | null;
+  // Classic low-res back-view sprite (no official-artwork equivalent exists)
+  // — used to show the player's own pokemon facing away, like in-game.
+  backSprite: string | null;
   learnableMoves: string[];
   baseStats: {
     hp: number;

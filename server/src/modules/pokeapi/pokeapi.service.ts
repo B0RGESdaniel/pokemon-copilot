@@ -50,6 +50,7 @@ function toSpeciesDTO(raw: RawPokemon): SpeciesDTO {
     name: raw.name,
     types: raw.types.map((t) => t.type.name),
     sprite: raw.sprites.other?.["official-artwork"]?.front_default ?? raw.sprites.front_default,
+    backSprite: raw.sprites.back_default,
     learnableMoves: raw.moves.map((m) => m.move.name).sort(),
     baseStats: {
       hp: baseStat(raw.stats, "hp"),

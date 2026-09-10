@@ -3,6 +3,7 @@ export type SpeciesDTO = {
   name: string;
   types: string[];
   sprite: string | null;
+  backSprite: string | null;
   learnableMoves: string[];
   baseStats: {
     hp: number;

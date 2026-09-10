@@ -112,6 +112,10 @@ export function BattleTab({
   const opponent = status.opponent;
   const mineTypes = mine.species?.types ?? [];
   const oppTypes = opponent?.species?.types ?? [];
+  // No official-artwork back view exists — fall back to mirroring the front
+  // sprite so it at least faces the right way when back_default is missing.
+  const mineBackSprite = mine.species?.backSprite;
+  const mineSpriteUrl = mineBackSprite ?? mine.species?.sprite ?? null;
 
   return (
     <div className="relative h-full">
@@ -159,11 +163,11 @@ export function BattleTab({
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute bottom-2 left-[12%] aspect-square w-[32%] max-w-[154px]">
+          <div className="absolute -bottom-1.5 left-[12%] aspect-square w-[32%] max-w-[154px]">
             <img
-              src={mine.species?.sprite ?? undefined}
+              src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
-              className="h-full w-full -scale-x-100 object-contain object-bottom"
+              className={`h-full w-full object-contain object-bottom ${mineBackSprite ? "" : "-scale-x-100"}`}
             />
           </div>
           <div className="absolute right-2 bottom-1.5 font-vt text-[15px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">

@@ -107,7 +107,7 @@ function PcCell({
       <div className="flex h-14 items-center justify-center">
         <Sprite url={pokemon.species?.sprite} size={48} alt={nameOf(pokemon)} />
       </div>
-      <div className="max-w-full overflow-hidden font-pix text-[15px] leading-none text-ellipsis whitespace-nowrap text-text">
+      <div className="max-w-full overflow-hidden font-pix text-[8px] leading-none text-ellipsis whitespace-nowrap text-text">
         {nameOf(pokemon)}
       </div>
       <div className="font-vt text-[15px] leading-none text-text-muted">
