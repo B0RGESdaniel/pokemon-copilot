@@ -59,11 +59,14 @@ const spriteSizeClass: Record<number, string> = {
 export function Sprite({ url, size, alt }: { url: string | null | undefined; size: number; alt?: string }) {
   const knownSize = spriteSizeClass[size];
   if (url) {
+    // official-artwork is a smooth high-res illustration and should scale smoothly;
+    // only the low-res front_default fallback is genuine pixel art.
+    const isPixelArt = !url.includes("official-artwork");
     return (
       <img
         src={url}
         alt={alt ?? "sprite"}
-        className={`object-contain ${knownSize ?? ""}`}
+        className={`object-contain ${knownSize ?? ""} ${isPixelArt ? "[image-rendering:pixelated]" : ""}`}
         style={knownSize ? undefined : { width: size, height: size }}
       />
     );
