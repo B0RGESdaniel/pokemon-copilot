@@ -198,7 +198,7 @@ export function DetailFlow({
 
       <Panel>
         <SectionLabel>HELD ITEM</SectionLabel>
-        <div className="flex min-h-[46px] items-center border-2 border-ink bg-panel-alt p-2.5 font-vt text-[20px] text-text">
+        <div className="flex min-h-[46px] items-center border-2 border-ink bg-panel-alt p-2.5 font-vt text-[16px] text-text">
           {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
         </div>
         <Btn variant="secondary" full onClick={() => setPage("item")}>
@@ -234,7 +234,7 @@ export function DetailFlow({
               EVOLUTION METHOD
             </div>
             {evolutions.length === 0 ? (
-              <div className="font-pix text-[18px] text-text">
+              <div className="font-pix text-[16px] text-text">
                 {sp
                   ? `${cap(sp.name)} is in its final form.`
                   : "No species data."}
@@ -243,7 +243,7 @@ export function DetailFlow({
               evolutions.map((e) => (
                 <div
                   key={e.pokeApiId}
-                  className="font-pix text-[18px] text-text"
+                  className="font-pix text-[16px] text-text"
                 >
                   {cap(e.name)} — {e.method}
                 </div>
@@ -382,7 +382,7 @@ function MovesPage({
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(c.moveB.move)}
               </span>
-              <span className="font-pix text-[15px] text-text-muted">
+              <span className="font-pix text-[16px] text-text-muted">
                 score {c.moveB.score}
               </span>
             </button>
@@ -446,7 +446,7 @@ function ItemPage({
       <Panel>
         <SectionLabel>CURRENT ITEM</SectionLabel>
         <div className="flex min-h-[46px] items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
-          <span className="flex-1 font-pix text-[19px] text-text">
+          <span className="flex-1 font-pix text-[16px] text-text">
             {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
           </span>
           {pokemon.heldItem ? (
@@ -539,7 +539,7 @@ function EvolvePage({
                 />
               </div>
               <div className="font-pix text-[8px] text-text">{cap(o.name)}</div>
-              <div className="font-pix text-[15px] leading-[1.1] text-text-muted">
+              <div className="font-pix text-[16px] leading-[1.1] text-text-muted">
                 {o.method}
               </div>
             </button>

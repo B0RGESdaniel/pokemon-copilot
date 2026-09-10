@@ -2,7 +2,7 @@
 
 @theme {
   --font-pix: "Press Start 2P", monospace;
-  --font-vt: "VT323", monospace;
+  --font-vt: "JetBrains Mono", monospace;
 
   --color-ink: #0b1120;
   --color-navy: #22355e;
@@ -86,6 +86,20 @@ body {
   margin: 0;
   background: var(--color-ink);
   font-family: var(--font-vt);
+}
+
+/* Bold by default for --font-vt (JetBrains Mono) — scoped here rather than
+   on body so it doesn't inherit onto font-pix text (Press Start 2P only
+   ships weight 400; inheriting 700 there would trigger faux-bold and blur
+   its blocky pixel-art glyphs). */
+.font-vt,
+input {
+  font-weight: 700;
+}
+
+/* Only Press Start 2P's blocky glyphs want raw (non-antialiased) rendering —
+   forcing this on other fonts used via --font-vt makes them look faint/blurry. */
+.font-pix {
   -webkit-font-smoothing: none;
 }
 
@@ -104,6 +118,7 @@ a:hover {
 
 button {
   font-family: var(--font-pix);
+  -webkit-font-smoothing: none;
   cursor: pointer;
 }
 

@@ -198,7 +198,7 @@ export function AddPage({
       <Panel>
         <div className="flex items-center justify-between">
           <SectionLabel>MOVES</SectionLabel>
-          <div className="font-pix text-[18px] text-red">{moves.length}/4</div>
+          <div className="font-pix text-[16px] text-red">{moves.length}/4</div>
         </div>
         {!species ? (
           <Hint>Pick a species to see its learnable moves.</Hint>

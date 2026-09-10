@@ -78,21 +78,30 @@ export function Sprite({
   size: number | "fill";
   alt?: string;
 }) {
-  const knownSize = typeof size === "number" ? spriteSizeClass[size] : undefined;
+  const knownSize =
+    typeof size === "number" ? spriteSizeClass[size] : undefined;
   if (url) {
     return (
       <img
         src={url}
         alt={alt ?? "sprite"}
         className={`object-contain ${size === "fill" ? "h-full w-full" : (knownSize ?? "")}`}
-        style={size === "fill" || knownSize ? undefined : { width: size, height: size }}
+        style={
+          size === "fill" || knownSize
+            ? undefined
+            : { width: size, height: size }
+        }
       />
     );
   }
-  const fallbackFontSize = size === "fill" ? 32 : Math.max(12, Math.round(size / 3.5));
+  const fallbackFontSize =
+    size === "fill" ? 32 : Math.max(12, Math.round(size / 3.5));
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div className="font-pix text-text-faint" style={{ fontSize: fallbackFontSize }}>
+      <div
+        className="font-pix text-text-faint"
+        style={{ fontSize: fallbackFontSize }}
+      >
         ?
       </div>
       {size === "fill" || size > 90 ? (

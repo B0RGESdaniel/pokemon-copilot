@@ -49,7 +49,7 @@ function PartyCell({
           <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
             {nameOf(pokemon)}
           </div>
-          <div className="font-vt text-[20px] leading-none text-text-muted">
+          <div className="font-vt text-[16px] leading-none text-text-muted">
             Lv {pokemon.level}
           </div>
           <div className="flex flex-col items-start gap-[3px]">
@@ -110,7 +110,7 @@ function PcCell({
       <div className="max-w-full overflow-hidden font-pix text-[8px] leading-none text-ellipsis whitespace-nowrap text-text">
         {nameOf(pokemon)}
       </div>
-      <div className="font-vt text-[15px] leading-none text-text-muted">
+      <div className="font-vt text-[16px] leading-none text-text-muted">
         Lv {pokemon.level}
       </div>
     </button>
@@ -165,7 +165,7 @@ export function PcView({
       </div>
       <div className="grid grid-cols-3 gap-[5px] border-[3px] border-ink bg-frame-alt p-1.5">
         {shown.length === 0 ? (
-          <div className="col-span-full p-2.5 font-vt text-[20px] text-text-muted">
+          <div className="col-span-full p-2.5 font-vt text-[16px] text-text-muted">
             {pc.length === 0
               ? "No pokemon in the PC yet."
               : "No pokemon match this filter."}
@@ -250,7 +250,7 @@ export function SearchView({
               <div className="font-pix text-[8px] text-text">
                 {entry.name.toUpperCase()}
               </div>
-              <div className="font-vt text-[15px] text-text-muted">
+              <div className="font-vt text-[16px] text-text-muted">
                 #{entry.pokeApiId}
                 {owned.length
                   ? ` · ${owned.map((p) => `Lv ${p.level}`).join(", ")}`

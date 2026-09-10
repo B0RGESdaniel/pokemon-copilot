@@ -37,7 +37,7 @@ export function Header({
         </div>
         <button
           onClick={() => setOpen((v) => !v)}
-          className="ml-auto min-w-0 truncate border-0 bg-transparent font-vt text-[10px] text-header-hint"
+          className="ml-auto min-w-0 truncate border-0 bg-transparent font-vt text-[8px] text-header-hint"
         >
           {headerMeta} ▾
         </button>

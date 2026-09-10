@@ -20,7 +20,7 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 }
 
 export function Hint({ children }: { children: ReactNode }) {
-  return <div className="font-vt text-[20px] text-text-muted">{children}</div>;
+  return <div className="font-vt text-[16px] text-text-muted">{children}</div>;
 }
 
 const btn = tv({
@@ -116,7 +116,7 @@ export function SearchInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full border-2 border-ink bg-white p-[11px] text-[20px] text-ink"
+      className="w-full border-2 border-ink bg-white p-[11px] text-[16px] text-ink"
     />
   );
 }
@@ -136,7 +136,7 @@ export function Stepper({
     <div className="flex items-center gap-2">
       <button
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[12px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
+        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[16px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
       >
         -
       </button>
@@ -147,11 +147,11 @@ export function Stepper({
           onChange(digits === "" ? min : Math.min(max, Number(digits)));
         }}
         inputMode="numeric"
-        className="min-w-0 flex-[1_1_auto] border-2 border-ink bg-white p-2 text-center text-[25px] text-ink"
+        className="min-w-0 flex-[1_1_auto] border-2 border-ink bg-white p-2 text-center text-[24px] text-ink"
       />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[12px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
+        className="h-13 w-13 border-2 border-ink bg-blue-soft text-[16px] text-ink shadow-[inset_0_3px_0_var(--color-blue-softer)]"
       >
         +
       </button>

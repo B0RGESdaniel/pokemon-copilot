@@ -33,12 +33,12 @@ export function CreateSaveForm({
     <div className="mx-auto flex h-screen w-full max-w-[480px] flex-col bg-bg">
       <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 py-4 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
         <img src="/pokeball.png" alt="Pokemon Copilot" className="size-[26px]" />
-        <div className="font-pix text-[10px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
+        <div className="font-pix text-[8px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           POKEMON COPILOT
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3.5">
-        <div className="font-vt text-[20px] text-text-muted">
+        <div className="font-vt text-[16px] text-text-muted">
           Nenhum save encontrado. Crie o primeiro pra começar a registrar Pokémon.
         </div>
         <Panel>
@@ -48,7 +48,7 @@ export function CreateSaveForm({
           <SearchInput value={game} onChange={setGame} placeholder="ex: platinum, black, scarlet..." />
           <SectionLabel>GERAÇÃO *</SectionLabel>
           <Stepper value={generation} onChange={setGeneration} min={1} max={9} />
-          {error ? <div className="font-vt text-[15px] text-red">{error}</div> : null}
+          {error ? <div className="font-vt text-[16px] text-red">{error}</div> : null}
           <Btn variant="primary" full disabled={busy} onClick={() => void submit()}>
             {busy ? "CREATING..." : "CREATE SAVE"}
           </Btn>

@@ -51,7 +51,7 @@ export function BattleTab({
 
   if (!status || battle.loading) {
     return (
-      <div className="p-5 font-vt text-[20px] text-text-muted">
+      <div className="p-5 font-vt text-[24px] text-text-muted">
         Loading battle...
       </div>
     );
@@ -144,7 +144,7 @@ export function BattleTab({
             <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
             </div>
-            <div className="font-vt text-[20px] leading-none text-text-muted">
+            <div className="font-vt text-[16px] leading-none text-text-muted">
               {opponent ? `Lv ${opponent.level}` : "not set"}
             </div>
             <div className="flex flex-wrap gap-1">
@@ -163,14 +163,14 @@ export function BattleTab({
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute -bottom-1.5 left-[12%] aspect-square w-[32%] max-w-[154px]">
+          <div className="absolute bottom-1 left-[12%] aspect-square w-[32%] max-w-[154px]">
             <img
               src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
               className={`h-full w-full object-contain object-bottom ${mineBackSprite ? "" : "-scale-x-100"}`}
             />
           </div>
-          <div className="absolute right-2 bottom-1.5 font-vt text-[15px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">
+          <div className="absolute right-2 bottom-1.5 font-vt text-[16px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">
             reference only · no damage math
           </div>
         </div>
@@ -181,7 +181,7 @@ export function BattleTab({
             <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {mine.nickname ?? cap(mine.species?.name)}
             </div>
-            <div className="font-vt text-[20px] leading-none text-text-muted">
+            <div className="font-vt text-[16px] leading-none text-text-muted">
               Lv {mine.level}
             </div>
             <div className="flex flex-wrap gap-1">
@@ -356,7 +356,7 @@ function AttackPanel({
               {cap(m.name)}
             </span>
             <TypeBadge type={m.type} size={6} />
-            <span className="font-vt text-[15px] whitespace-nowrap text-text">
+            <span className="font-vt text-[16px] whitespace-nowrap text-text">
               {m.power ? `PWR ${m.power}` : "—"}
             </span>
             <span
@@ -520,7 +520,7 @@ function MatchupPanel({
                 <div className="font-pix text-[8px] text-text">
                   {i + 1}. {r.pokemon.nickname ?? cap(r.pokemon.species?.name)}
                 </div>
-                <div className="font-pix text-[16px] text-text-muted">
+                <div className="font-vt text-[16px] text-text-muted">
                   Lv {r.pokemon.level}{" "}
                   {active
                     ? "· ON FIELD"
@@ -534,11 +534,11 @@ function MatchupPanel({
               </div>
               <div className="flex flex-none flex-col items-end gap-1">
                 <span
-                  className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${grade.className}`}
+                  className={`border-2 border-ink px-[5px] py-1 font-vt text-[8px] ${grade.className}`}
                 >
                   {grade.label}
                 </span>
-                <span className="font-pix text-[15px] text-text-muted">
+                <span className="font-vt text-[16px] text-text-muted">
                   deals x{r.matchup.offensiveMultiplier} / takes x
                   {r.matchup.defensiveMultiplier}
                 </span>
@@ -639,7 +639,7 @@ function LevelUpPanel({
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(c.moveB.move)}
               </span>
-              <span className="font-pix text-[15px] text-text-muted">
+              <span className="font-pix text-[16px] text-text-muted">
                 score {c.moveB.score}
               </span>
             </button>
