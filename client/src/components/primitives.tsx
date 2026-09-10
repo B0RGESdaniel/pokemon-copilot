@@ -10,7 +10,7 @@ export function Panel({ children, className }: { children: ReactNode; className?
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <div className="font-pix text-[9px] text-text">{children}</div>;
+  return <div className="font-pix text-[8px] text-text">{children}</div>;
 }
 
 export function Hint({ children }: { children: ReactNode }) {
@@ -34,6 +34,7 @@ const btn = tv({
       8: "text-[8px]",
       9: "text-[9px]",
       12: "text-[12px]",
+      16: "text-[16px]",
     },
     minHeight: {
       36: "min-h-9",

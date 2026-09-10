@@ -31,7 +31,7 @@ export function Header({
           alt="Pokemon Copilot"
           className="size-6.5 shrink-0 object-contain"
         />
-        <div className="flex shrink-0 flex-col font-pix text-[10px] leading-[1.3] tracking-[1px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
+        <div className="flex shrink-0 flex-col font-pix text-[8px] leading-[1.3] tracking-[1px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           <span>POKEMON</span>
           <span>COPILOT</span>
         </div>
@@ -180,7 +180,7 @@ export function Subnav({
 const bottomNavItem = tv({
   slots: {
     button:
-      "flex min-h-16 flex-1 flex-col items-center justify-center gap-1.5 border-0 font-pix text-[9px]",
+      "flex min-h-16 flex-1 flex-col items-center justify-center gap-1.5 border-0 font-pix text-[8px]",
     dot: "size-3 border-2 border-ink",
   },
   variants: {

@@ -77,11 +77,11 @@ export function DetailFlow({
         <div className="flex size-33 items-center justify-center border-[3px] border-ink bg-frame">
           <Sprite url={sp?.sprite} size={120} alt={nameOf(pokemon)} />
         </div>
-        <div className="text-center font-pix text-[12px] text-text">{nameOf(pokemon)}</div>
+        <div className="text-center font-pix text-[16px] text-text">{nameOf(pokemon)}</div>
         <Hint>{sp ? `#${pokemon.pokeApiId} · ${cap(sp.name)}` : "POKEAPI DATA UNAVAILABLE"}</Hint>
         <div className="flex flex-wrap justify-center gap-1.5">
           {(sp?.types ?? ["unknown"]).map((t) => (
-            <TypeBadge key={t} type={t} size={8} />
+            <TypeBadge key={t} type={t} size={16} />
           ))}
         </div>
       </Panel>
@@ -99,7 +99,7 @@ export function DetailFlow({
               const pct = Math.min(100, Math.round((value / 140) * 100));
               return (
                 <div key={st.label} className="flex items-center gap-2">
-                  <div className="w-[62px] flex-none font-pix text-[7px] text-text-muted">{st.label}</div>
+                  <div className="w-[62px] flex-none font-pix text-[8px] text-text-muted">{st.label}</div>
                   <div className="h-[18px] flex-1 border-2 border-ink bg-frame p-0.5">
                     <div className="h-full" style={{ width: `${pct}%`, background: st.color }} />
                   </div>
@@ -145,13 +145,13 @@ export function DetailFlow({
           >
             {evolutions.length ? "EVOLVE" : "NO EVOLUTION"}
           </Btn>
-          <Btn variant={evoInfo ? "primary" : "ghost"} className="w-14 flex-none" onClick={() => setEvoInfo((v) => !v)} fontSize={12}>
+          <Btn variant={evoInfo ? "primary" : "ghost"} className="w-14 flex-none" onClick={() => setEvoInfo((v) => !v)} fontSize={16}>
             i
           </Btn>
         </div>
         {evoInfo ? (
           <div className="flex flex-col gap-1.5 border-2 border-ink bg-panel-alt p-2.5">
-            <div className="font-pix text-[7px] text-text-muted">EVOLUTION METHOD</div>
+            <div className="font-pix text-[8px] text-text-muted">EVOLUTION METHOD</div>
             {evolutions.length === 0 ? (
               <div className="font-vt text-[18px] text-text">{sp ? `${cap(sp.name)} is in its final form.` : "No species data."}</div>
             ) : (
@@ -247,7 +247,7 @@ function MovesPage({
           pokemon.moves.map((m) => (
             <div key={m} className="flex min-h-[46px] items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
               <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
-              <Btn variant="danger" onClick={() => void removeMove(m)} minHeight={40} className="size-10 p-0" fontSize={9}>
+              <Btn variant="danger" onClick={() => void removeMove(m)} minHeight={40} className="size-10 p-0" fontSize={8}>
                 X
               </Btn>
             </div>

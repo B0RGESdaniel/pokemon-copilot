@@ -16,7 +16,7 @@ function PartyCell({ pokemon, slot, onClick }: { pokemon: PokemonDTO | undefined
       >
         <div className="font-pix text-[8px] text-text-faint">SLOT {slot}</div>
         <div className="flex flex-1 items-center justify-center">
-          <span className="font-pix text-[20px] text-text-dim">+</span>
+          <span className="font-pix text-[24px] text-text-dim">+</span>
         </div>
       </button>
     );
@@ -34,7 +34,7 @@ function PartyCell({ pokemon, slot, onClick }: { pokemon: PokemonDTO | undefined
           <Sprite url={pokemon.species?.sprite} size={68} alt={nameOf(pokemon)} />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-[5px]">
-          <div className="font-pix text-[9px] leading-[1.4] break-words text-text">{nameOf(pokemon)}</div>
+          <div className="font-pix text-[8px] leading-[1.4] break-words text-text">{nameOf(pokemon)}</div>
           <div className="font-vt text-[20px] leading-none text-text-muted">Lv {pokemon.level}</div>
           <div className="flex flex-col items-start gap-[3px]">
             {types.length ? types.map((t) => <TypeBadge key={t} type={t} />) : <TypeBadge type="unknown" />}
@@ -88,7 +88,7 @@ export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOp
       <div className="flex gap-[5px] overflow-x-auto pb-0.5">
         <button
           onClick={() => setFilter("")}
-          className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[7px] whitespace-nowrap ${
+          className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
             filter === "" ? "bg-navy text-white" : "bg-panel-alt text-text-muted"
           }`}
         >
@@ -98,7 +98,7 @@ export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOp
           <button
             key={t}
             onClick={() => setFilter(t)}
-            className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[7px] whitespace-nowrap ${
+            className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
               filter === t ? "bg-navy text-white" : "bg-panel-alt text-text-muted"
             }`}
           >
@@ -183,7 +183,7 @@ export function SearchView({
                 #{entry.pokeApiId}
                 {owned.length ? ` · ${owned.map((p) => `Lv ${p.level}`).join(", ")}` : " · tap to register"}
               </div>
-              <span className={`self-start border-2 border-ink px-[5px] py-1 font-pix text-[6px] ${statusClass}`}>
+              <span className={`self-start border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${statusClass}`}>
                 {status}
               </span>
             </div>

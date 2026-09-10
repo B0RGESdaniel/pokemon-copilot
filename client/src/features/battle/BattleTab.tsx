@@ -54,7 +54,7 @@ export function BattleTab({
     return (
       <div className="p-2.5">
         <Panel className="items-center text-center">
-          <div className="font-pix text-[11px] text-text">NO BATTLE YET</div>
+          <div className="font-pix text-[8px] text-text">NO BATTLE YET</div>
           <Hint>Start a battle to bring out your slot 1 pokemon.</Hint>
           <Btn variant="primary" full onClick={() => void battle.start().catch((e) => onFlash(String(e.message ?? e)))}>
             START BATTLE
@@ -72,7 +72,7 @@ export function BattleTab({
     return (
       <div className="p-2.5">
         <Panel className="items-center text-center">
-          <div className="font-pix text-[11px] text-text">BATTLE OVER</div>
+          <div className="font-pix text-[8px] text-text">BATTLE OVER</div>
           <Hint>{text}</Hint>
           <Btn variant="primary" full onClick={() => void battle.start()}>
             FIND NEW OPPONENT
@@ -102,7 +102,7 @@ export function BattleTab({
           </div>
           <Panel className="min-w-0 flex-1">
             <div className="font-pix text-[8px] text-red">OPPONENT</div>
-            <div className="font-pix text-[11px] leading-[1.4] break-words text-text">
+            <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
             </div>
             <div className="font-vt text-[21px] leading-none text-text-muted">
@@ -135,7 +135,7 @@ export function BattleTab({
         <div className="flex items-stretch gap-2">
           <Panel className="min-w-0 flex-1 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]">
             <div className="font-pix text-[8px] text-blue">ON FIELD</div>
-            <div className="font-pix text-[11px] leading-[1.4] break-words text-text">
+            <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {mine.nickname ?? cap(mine.species?.name)}
             </div>
             <div className="font-vt text-[21px] leading-none text-text-muted">Lv {mine.level}</div>
@@ -269,7 +269,7 @@ function AttackPanel({
             <span className="flex-1 font-pix text-[8px] text-text">{cap(m.name)}</span>
             <TypeBadge type={m.type} size={6} />
             <span className="font-vt text-[16px] whitespace-nowrap text-text">{m.power ? `PWR ${m.power}` : "—"}</span>
-            <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[7px] whitespace-nowrap ${m.effClassName}`}>
+            <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] whitespace-nowrap ${m.effClassName}`}>
               {m.effLabel}
             </span>
           </div>
@@ -412,7 +412,7 @@ function MatchupPanel({
                 </div>
               </div>
               <div className="flex flex-none flex-col items-end gap-1">
-                <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[7px] ${grade.className}`}>
+                <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${grade.className}`}>
                   {grade.label}
                 </span>
                 <span className="font-vt text-[15px] text-text-muted">
@@ -558,7 +558,7 @@ function LevelUpPanel({
         {!move ? <Hint>Leave blank to just update the level.</Hint> : null}
         {move ? (
           <div className="flex flex-col gap-2 border-2 border-ink bg-panel-alt p-2.5">
-            <div className="font-pix text-[7px] text-text-muted">
+            <div className="font-pix text-[8px] text-text-muted">
               {mine.moves.length >= 4 ? "MUST REPLACE A MOVE" : "GOES INTO A FREE SLOT"}
             </div>
             <div className="flex items-center gap-2">

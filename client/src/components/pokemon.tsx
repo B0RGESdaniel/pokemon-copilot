@@ -7,6 +7,7 @@ const typeBadge = tv({
       6: "text-[6px]",
       7: "text-[7px]",
       8: "text-[8px]",
+      16: "text-[16px]",
     },
   },
   defaultVariants: {
@@ -37,7 +38,7 @@ const typeClass: Record<string, string> = {
   unknown: "bg-type-unknown text-type-unknown-fg",
 };
 
-export function TypeBadge({ type, size }: { type: string; size?: 6 | 7 | 8 }) {
+export function TypeBadge({ type, size }: { type: string; size?: 6 | 7 | 8 | 16 }) {
   return (
     <span className={typeBadge({ size, className: typeClass[type] ?? typeClass.unknown })}>
       {type === "unknown" ? "???" : type.toUpperCase()}
