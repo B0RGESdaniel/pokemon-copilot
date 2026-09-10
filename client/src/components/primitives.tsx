@@ -5,7 +5,13 @@ const panel = tv({
   base: "flex flex-col gap-2 border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]",
 });
 
-export function Panel({ children, className }: { children: ReactNode; className?: string }) {
+export function Panel({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return <div className={panel({ className })}>{children}</div>;
 }
 
@@ -25,9 +31,16 @@ const btn = tv({
         "border-[3px] border-ink bg-blue text-white shadow-[inset_0_3px_0_var(--color-blue-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
       secondary:
         "border-[3px] border-ink bg-blue-soft text-ink shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]",
-      danger: "border-2 border-ink bg-red text-white [text-shadow:1px_1px_0_var(--color-ink)]",
-      outlineDanger: "border-[3px] border-red bg-bg text-red shadow-[3px_3px_0_var(--color-ink)]",
+      danger:
+        "border-2 border-ink bg-red text-white [text-shadow:1px_1px_0_var(--color-ink)]",
+      outlineDanger:
+        "border-[3px] border-red bg-bg text-red shadow-[3px_3px_0_var(--color-ink)]",
       ghost: "border-2 border-ink bg-panel text-ink",
+      attack:
+        "border-[3px] border-ink bg-red text-white shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
+      run: "border-[3px] border-ink bg-blue text-white shadow-[inset_0_3px_0_var(--color-blue-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
+      switch:
+        "border-[3px] border-ink bg-red text-white shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]",
     },
     fontSize: {
       7: "text-[7px]",
@@ -80,7 +93,14 @@ export function Btn({
     <button
       onClick={onClick}
       disabled={disabled ?? false}
-      className={btn({ variant, fontSize, minHeight, full, disabled, className })}
+      className={btn({
+        variant,
+        fontSize,
+        minHeight,
+        full,
+        disabled,
+        className,
+      })}
     >
       {children}
     </button>

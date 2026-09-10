@@ -196,26 +196,27 @@ export function BattleTab({
               LEVEL UP
             </Btn>
           </Panel>
-          <div className="flex w-[138px] flex-none flex-col gap-1.5">
+          <div className="flex flex-none flex-col gap-2">
             <Btn
               variant="primary"
               onClick={() => setPanel("attack")}
+              className="bg-red shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               ATTACK
             </Btn>
             <Btn
-              variant="secondary"
+              variant="primary"
               onClick={() => setPanel("matchup")}
-              className="bg-yellow shadow-[inset_0_3px_0_var(--color-yellow-light),3px_3px_0_var(--color-ink)]"
+              className="bg-green shadow-[inset_0_3px_0_var(--color-green-soft),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               SWITCH POKEMON
             </Btn>
             <Btn
-              variant="ghost"
+              variant="primary"
               onClick={() => setConfirm("flee")}
-              className="bg-bg-alt text-text-muted"
+              className="bg-blue-light shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               RUN
@@ -381,11 +382,11 @@ function OpponentPanel({
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<GenerationSpeciesEntry | null>(null);
   const [level, setLevel] = useState(20);
-  const results = picked
-    ? []
-    : dex
-        .filter((e) => e.name.includes(query.trim().toLowerCase()))
-        .slice(0, 8);
+  const trimmedQuery = query.trim().toLowerCase();
+  const results =
+    picked || !trimmedQuery
+      ? []
+      : dex.filter((e) => e.name.includes(trimmedQuery)).slice(0, 8);
 
   return (
     <PageShell title="SWITCH OPPONENT" onBack={onClose}>
@@ -580,7 +581,8 @@ function LevelUpPanel({
 
   const pool = legalMoves.filter((m) => !mine.moves.includes(m));
   const q = query.trim().toLowerCase();
-  const results = move ? [] : pool.filter((m) => m.includes(q)).slice(0, 8);
+  const results =
+    move || !q ? [] : pool.filter((m) => m.includes(q)).slice(0, 8);
 
   const ask = () => {
     if (level < mine.level)
