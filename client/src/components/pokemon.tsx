@@ -38,9 +38,20 @@ const typeClass: Record<string, string> = {
   unknown: "bg-type-unknown text-type-unknown-fg",
 };
 
-export function TypeBadge({ type, size }: { type: string; size?: 6 | 7 | 8 | 16 }) {
+export function TypeBadge({
+  type,
+  size,
+}: {
+  type: string;
+  size?: 6 | 7 | 8 | 16;
+}) {
   return (
-    <span className={typeBadge({ size, className: typeClass[type] ?? typeClass.unknown })}>
+    <span
+      className={typeBadge({
+        size,
+        className: typeClass[type] ?? typeClass.unknown,
+      })}
+    >
       {type === "unknown" ? "???" : type.toUpperCase()}
     </span>
   );
@@ -56,7 +67,15 @@ const spriteSizeClass: Record<number, string> = {
   132: "h-33 w-33",
 };
 
-export function Sprite({ url, size, alt }: { url: string | null | undefined; size: number; alt?: string }) {
+export function Sprite({
+  url,
+  size,
+  alt,
+}: {
+  url: string | null | undefined;
+  size: number;
+  alt?: string;
+}) {
   const knownSize = spriteSizeClass[size];
   if (url) {
     // official-artwork is a smooth high-res illustration and should scale smoothly;
@@ -73,10 +92,15 @@ export function Sprite({ url, size, alt }: { url: string | null | undefined; siz
   }
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div className="font-pix text-text-faint" style={{ fontSize: Math.max(12, Math.round(size / 3.5)) }}>
+      <div
+        className="font-pix text-text-faint"
+        style={{ fontSize: Math.max(12, Math.round(size / 3.5)) }}
+      >
         ?
       </div>
-      {size > 90 ? <div className="font-vt text-[15px] text-text-faint">NO DATA</div> : null}
+      {size > 90 ? (
+        <div className="font-pix text-[16px] text-text-faint">NO DATA</div>
+      ) : null}
     </div>
   );
 }

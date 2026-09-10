@@ -16,7 +16,7 @@ type AddState = GenerationSpeciesEntry | "blank" | null;
 
 function LoadingScreen() {
   return (
-    <div className="flex h-screen items-center justify-center font-vt text-[22px] text-white">
+    <div className="flex h-screen items-center justify-center font-vt text-[20px] text-white">
       Loading...
     </div>
   );

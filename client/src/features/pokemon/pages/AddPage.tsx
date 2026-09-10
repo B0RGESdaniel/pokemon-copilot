@@ -1,7 +1,20 @@
 import { useState } from "react";
 import { useAddToParty, useAddToPc } from "../../../hooks/usePokemonMutations";
-import { useLegalMoves, useSearchItems, useSpecies } from "../../../hooks/useSpecies";
-import { Btn, Hint, PageShell, Panel, SearchInput, SectionLabel, Sprite, Stepper } from "../../../components";
+import {
+  useLegalMoves,
+  useSearchItems,
+  useSpecies,
+} from "../../../hooks/useSpecies";
+import {
+  Btn,
+  Hint,
+  PageShell,
+  Panel,
+  SearchInput,
+  SectionLabel,
+  Sprite,
+  Stepper,
+} from "../../../components";
 import { cap } from "../../../theme";
 import type { GenerationSpeciesEntry } from "../../../types/species";
 
@@ -22,13 +35,18 @@ export function AddPage({
   onFlash: (msg: string) => void;
   dex: GenerationSpeciesEntry[];
 }) {
-  const [speciesQuery, setSpeciesQuery] = useState(prefill ? cap(prefill.name) : "");
-  const [speciesKey, setSpeciesKey] = useState<GenerationSpeciesEntry | null>(prefill);
+  const [speciesQuery, setSpeciesQuery] = useState(
+    prefill ? cap(prefill.name) : "",
+  );
+  const [speciesKey, setSpeciesKey] = useState<GenerationSpeciesEntry | null>(
+    prefill,
+  );
   const [level, setLevel] = useState(5);
   const [nickname, setNickname] = useState("");
   const [itemQuery, setItemQuery] = useState("");
   const [item, setItem] = useState<string | null>(null);
   const [moves, setMoves] = useState<string[]>([]);
+  const [moveQuery, setMoveQuery] = useState("");
   const [busy, setBusy] = useState(false);
 
   const { species } = useSpecies(speciesKey?.pokeApiId ?? null);
@@ -40,9 +58,19 @@ export function AddPage({
   const pickSpecies = (entry: GenerationSpeciesEntry | null) => {
     setSpeciesKey(entry);
     setMoves([]);
+    setMoveQuery("");
   };
 
-  const speciesResults = speciesKey ? [] : dex.filter((e) => e.name.includes(speciesQuery.trim().toLowerCase())).slice(0, 8);
+  const trimmedMoveQuery = moveQuery.trim().toLowerCase();
+  const shownMoves = trimmedMoveQuery
+    ? legalMoves.filter((m) => m.includes(trimmedMoveQuery))
+    : legalMoves;
+
+  const trimmedSpeciesQuery = speciesQuery.trim().toLowerCase();
+  const speciesResults =
+    speciesKey || !trimmedSpeciesQuery
+      ? []
+      : dex.filter((e) => e.name.includes(trimmedSpeciesQuery)).slice(0, 8);
 
   const toggleMove = (move: string) => {
     setMoves((prev) => {
@@ -112,7 +140,9 @@ export function AddPage({
                 }}
                 className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2 text-left"
               >
-                <span className="font-pix text-[8px] text-text">{cap(r.name)}</span>
+                <span className="font-pix text-[8px] text-text">
+                  {cap(r.name)}
+                </span>
               </button>
             ))}
           </div>
@@ -120,7 +150,11 @@ export function AddPage({
         <SectionLabel>LEVEL *</SectionLabel>
         <Stepper value={level} onChange={setLevel} />
         <SectionLabel>NICKNAME (OPTIONAL)</SectionLabel>
-        <SearchInput value={nickname} onChange={(v) => setNickname(v.slice(0, 12))} placeholder="no nickname" />
+        <SearchInput
+          value={nickname}
+          onChange={(v) => setNickname(v.slice(0, 12))}
+          placeholder="no nickname"
+        />
         <SectionLabel>ITEM (OPTIONAL)</SectionLabel>
         <SearchInput
           value={itemQuery}
@@ -147,7 +181,15 @@ export function AddPage({
           </div>
         ) : null}
         {item ? (
-          <Btn variant="danger" onClick={() => { setItem(null); setItemQuery(""); }} minHeight={40} fontSize={8}>
+          <Btn
+            variant="danger"
+            onClick={() => {
+              setItem(null);
+              setItemQuery("");
+            }}
+            minHeight={40}
+            fontSize={8}
+          >
             X CLEAR ITEM
           </Btn>
         ) : null}
@@ -156,26 +198,43 @@ export function AddPage({
       <Panel>
         <div className="flex items-center justify-between">
           <SectionLabel>MOVES</SectionLabel>
-          <div className="font-vt text-[18px] text-red">{moves.length}/4</div>
+          <div className="font-pix text-[18px] text-red">{moves.length}/4</div>
         </div>
         {!species ? (
           <Hint>Pick a species to see its learnable moves.</Hint>
         ) : (
-          legalMoves.map((m) => {
-            const checked = moves.includes(m);
-            return (
-              <button
-                key={m}
-                onClick={() => toggleMove(m)}
-                className={`flex min-h-12 items-center gap-2 border-2 border-ink p-2.5 text-left ${
-                  checked ? "bg-green-soft" : "bg-panel"
-                }`}
-              >
-                <span className={`size-3.5 flex-none border-2 border-ink ${checked ? "bg-red" : "bg-white"}`} />
-                <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
-              </button>
-            );
-          })
+          <>
+            <SearchInput
+              value={moveQuery}
+              onChange={setMoveQuery}
+              placeholder="search moves..."
+            />
+            <div className="flex max-h-[240px] flex-col gap-1.5 overflow-y-auto">
+              {shownMoves.length === 0 ? (
+                <Hint>No learnable move matches "{moveQuery}".</Hint>
+              ) : (
+                shownMoves.map((m) => {
+                  const checked = moves.includes(m);
+                  return (
+                    <button
+                      key={m}
+                      onClick={() => toggleMove(m)}
+                      className={`flex min-h-12 flex-none items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                        checked ? "bg-green-soft" : "bg-panel"
+                      }`}
+                    >
+                      <span
+                        className={`size-3.5 flex-none border-2 border-ink ${checked ? "bg-red" : "bg-white"}`}
+                      />
+                      <span className="flex-1 font-pix text-[8px] text-text">
+                        {cap(m)}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </>
         )}
       </Panel>
 

@@ -15,7 +15,10 @@ import {
   Stepper,
   TypeBadge,
 } from "../../components";
-import { effectivenessBadge, multiplierAgainst } from "../../utils/effectiveness";
+import {
+  effectivenessBadge,
+  multiplierAgainst,
+} from "../../utils/effectiveness";
 import type { useBattle } from "../../hooks/useBattle";
 import { useBattleSuggestions } from "../../hooks/useBattle";
 import { useTypeChart } from "../../hooks/data";
@@ -47,7 +50,11 @@ export function BattleTab({
   const status = battle.status;
 
   if (!status || battle.loading) {
-    return <div className="p-5 font-vt text-[18px] text-text-muted">Loading battle...</div>;
+    return (
+      <div className="p-5 font-vt text-[20px] text-text-muted">
+        Loading battle...
+      </div>
+    );
   }
 
   if (status.status === "not_started") {
@@ -56,7 +63,16 @@ export function BattleTab({
         <Panel className="items-center text-center">
           <div className="font-pix text-[8px] text-text">NO BATTLE YET</div>
           <Hint>Start a battle to bring out your slot 1 pokemon.</Hint>
-          <Btn variant="primary" full onClick={() => void battle.start().catch((e) => onFlash(String(e.message ?? e)))}>
+          <Btn
+            variant="primary"
+            full
+            onClick={() =>
+              void battle
+                .start()
+                .then(() => setPanel("opp"))
+                .catch((e) => onFlash(String(e.message ?? e)))
+            }
+          >
             START BATTLE
           </Btn>
         </Panel>
@@ -74,7 +90,16 @@ export function BattleTab({
         <Panel className="items-center text-center">
           <div className="font-pix text-[8px] text-text">BATTLE OVER</div>
           <Hint>{text}</Hint>
-          <Btn variant="primary" full onClick={() => void battle.start()}>
+          <Btn
+            variant="primary"
+            full
+            onClick={() =>
+              void battle
+                .start()
+                .then(() => setPanel("opp"))
+                .catch((e) => onFlash(String(e.message ?? e)))
+            }
+          >
             FIND NEW OPPONENT
           </Btn>
         </Panel>
@@ -93,10 +118,20 @@ export function BattleTab({
       <div className="flex flex-col gap-2 p-2.5">
         <div className="flex items-stretch gap-2">
           <div className="flex w-28 flex-none flex-col gap-1.5">
-            <Btn variant="outlineDanger" onClick={() => setConfirm("fainted")} className="flex-1" fontSize={8}>
+            <Btn
+              variant="outlineDanger"
+              onClick={() => setConfirm("fainted")}
+              className="flex-1"
+              fontSize={8}
+            >
               FAINTED
             </Btn>
-            <Btn variant="secondary" onClick={() => setPanel("opp")} className="flex-1" fontSize={8}>
+            <Btn
+              variant="secondary"
+              onClick={() => setPanel("opp")}
+              className="flex-1"
+              fontSize={8}
+            >
               SWITCH
             </Btn>
           </div>
@@ -105,7 +140,7 @@ export function BattleTab({
             <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
             </div>
-            <div className="font-vt text-[21px] leading-none text-text-muted">
+            <div className="font-vt text-[20px] leading-none text-text-muted">
               {opponent ? `Lv ${opponent.level}` : "not set"}
             </div>
             <div className="flex flex-wrap gap-1">
@@ -118,7 +153,11 @@ export function BattleTab({
 
         <div className="relative h-[216px] overflow-hidden border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-[3px_3px_0_var(--color-ink)]">
           <div className="absolute top-[26px] right-19 flex h-35 w-35 items-center justify-center">
-            <Sprite url={opponent?.species?.sprite} size={132} alt={opponent?.species?.name ?? "opponent"} />
+            <Sprite
+              url={opponent?.species?.sprite}
+              size={132}
+              alt={opponent?.species?.name ?? "opponent"}
+            />
           </div>
           <div className="absolute -bottom-1.5 left-[58px] flex h-[154px] w-[154px] items-end justify-center">
             <img
@@ -138,18 +177,31 @@ export function BattleTab({
             <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
               {mine.nickname ?? cap(mine.species?.name)}
             </div>
-            <div className="font-vt text-[21px] leading-none text-text-muted">Lv {mine.level}</div>
+            <div className="font-vt text-[20px] leading-none text-text-muted">
+              Lv {mine.level}
+            </div>
             <div className="flex flex-wrap gap-1">
               {mineTypes.map((t) => (
                 <TypeBadge key={t} type={t} />
               ))}
             </div>
-            <Btn variant="secondary" full onClick={() => setPanel("levelup")} className="mt-auto" fontSize={8} minHeight={42}>
+            <Btn
+              variant="secondary"
+              full
+              onClick={() => setPanel("levelup")}
+              className="mt-auto"
+              fontSize={8}
+              minHeight={42}
+            >
               LEVEL UP
             </Btn>
           </Panel>
           <div className="flex w-[138px] flex-none flex-col gap-1.5">
-            <Btn variant="primary" onClick={() => setPanel("attack")} fontSize={8}>
+            <Btn
+              variant="primary"
+              onClick={() => setPanel("attack")}
+              fontSize={8}
+            >
               ATTACK
             </Btn>
             <Btn
@@ -160,7 +212,12 @@ export function BattleTab({
             >
               SWITCH POKEMON
             </Btn>
-            <Btn variant="ghost" onClick={() => setConfirm("flee")} className="bg-bg-alt text-text-muted" fontSize={8}>
+            <Btn
+              variant="ghost"
+              onClick={() => setConfirm("flee")}
+              className="bg-bg-alt text-text-muted"
+              fontSize={8}
+            >
               RUN
             </Btn>
           </div>
@@ -177,14 +234,23 @@ export function BattleTab({
             confirmLabel={confirm === "fainted" ? "YES, FAINTED" : "YES, RUN"}
             onCancel={() => setConfirm(null)}
             onConfirm={() => {
-              void battle.end(confirm === "fainted" ? "opponent_fainted" : "fled");
+              void battle.end(
+                confirm === "fainted" ? "opponent_fainted" : "fled",
+              );
               setConfirm(null);
             }}
           />
         ) : null}
       </div>
 
-      {panel === "attack" ? <AttackPanel mine={mine} oppTypes={oppTypes} chart={chart} onClose={() => setPanel(null)} /> : null}
+      {panel === "attack" ? (
+        <AttackPanel
+          mine={mine}
+          oppTypes={oppTypes}
+          chart={chart}
+          onClose={() => setPanel(null)}
+        />
+      ) : null}
       {panel === "opp" ? (
         <OpponentPanel
           dex={dex}
@@ -246,30 +312,51 @@ function AttackPanel({
     })),
   });
 
-  const rows: (MoveDTO & { effLabel: string; effClassName: string })[] = moveQueries
-    .map((q) => q.data)
-    .filter((mv): mv is MoveDTO => !!mv)
-    .map((mv) => {
-      if (mv.damageClass === "status" || mv.power === null) {
-        return { ...mv, effLabel: "STATUS", effClassName: "bg-border text-text-muted" };
-      }
-      const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
-      const badge = effectivenessBadge(v);
-      return { ...mv, effLabel: badge.label, effClassName: badge.className };
-    });
+  const rows: (MoveDTO & { effLabel: string; effClassName: string })[] =
+    moveQueries
+      .map((q) => q.data)
+      .filter((mv): mv is MoveDTO => !!mv)
+      .map((mv) => {
+        if (mv.damageClass === "status" || mv.power === null) {
+          return {
+            ...mv,
+            effLabel: "STATUS",
+            effClassName: "bg-border text-text-muted",
+          };
+        }
+        const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
+        const badge = effectivenessBadge(v);
+        return { ...mv, effLabel: badge.label, effClassName: badge.className };
+      });
 
   return (
     <PageShell title="MOVES" onBack={onClose}>
       <Panel>
-        <SectionLabel>{cap(mine.nickname ?? mine.species?.name)} MOVES</SectionLabel>
-        <Hint>Reference only. Effectiveness vs {cap(oppTypes.join("/") || "opponent")}:</Hint>
-        {rows.length === 0 ? <Hint>This pokemon has no registered moves.</Hint> : null}
+        <SectionLabel>
+          {cap(mine.nickname ?? mine.species?.name)} MOVES
+        </SectionLabel>
+        <Hint>
+          Reference only. Effectiveness vs{" "}
+          {cap(oppTypes.join("/") || "opponent")}:
+        </Hint>
+        {rows.length === 0 ? (
+          <Hint>This pokemon has no registered moves.</Hint>
+        ) : null}
         {rows.map((m) => (
-          <div key={m.name} className="flex min-h-13 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
-            <span className="flex-1 font-pix text-[8px] text-text">{cap(m.name)}</span>
+          <div
+            key={m.name}
+            className="flex min-h-13 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5"
+          >
+            <span className="flex-1 font-pix text-[8px] text-text">
+              {cap(m.name)}
+            </span>
             <TypeBadge type={m.type} size={6} />
-            <span className="font-vt text-[16px] whitespace-nowrap text-text">{m.power ? `PWR ${m.power}` : "—"}</span>
-            <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] whitespace-nowrap ${m.effClassName}`}>
+            <span className="font-vt text-[15px] whitespace-nowrap text-text">
+              {m.power ? `PWR ${m.power}` : "—"}
+            </span>
+            <span
+              className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] whitespace-nowrap ${m.effClassName}`}
+            >
               {m.effLabel}
             </span>
           </div>
@@ -294,7 +381,11 @@ function OpponentPanel({
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<GenerationSpeciesEntry | null>(null);
   const [level, setLevel] = useState(20);
-  const results = picked ? [] : dex.filter((e) => e.name.includes(query.trim().toLowerCase())).slice(0, 8);
+  const results = picked
+    ? []
+    : dex
+        .filter((e) => e.name.includes(query.trim().toLowerCase()))
+        .slice(0, 8);
 
   return (
     <PageShell title="SWITCH OPPONENT" onBack={onClose}>
@@ -334,14 +425,21 @@ function OpponentPanel({
                 }}
                 className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2 text-left"
               >
-                <span className="font-pix text-[8px] text-text">{cap(r.name)}</span>
+                <span className="font-pix text-[8px] text-text">
+                  {cap(r.name)}
+                </span>
               </button>
             ))}
           </div>
         ) : null}
         <SectionLabel>LEVEL *</SectionLabel>
         <Stepper value={level} onChange={setLevel} />
-        <Btn variant="primary" full disabled={!picked} onClick={() => picked && void onApply(picked.pokeApiId, level)}>
+        <Btn
+          variant="primary"
+          full
+          disabled={!picked}
+          onClick={() => picked && void onApply(picked.pokeApiId, level)}
+        >
           SET OPPONENT
         </Btn>
       </Panel>
@@ -382,9 +480,20 @@ function MatchupPanel({
         {(suggestions?.ranking ?? []).map((r, i) => {
           const active = r.pokemon.id === activeId;
           const gradeTier =
-            r.matchup.score >= 1.5 ? "great" : r.matchup.score > 0 ? "good" : r.matchup.score < 0 ? "bad" : "neutral";
+            r.matchup.score >= 1.5
+              ? "great"
+              : r.matchup.score > 0
+                ? "good"
+                : r.matchup.score < 0
+                  ? "bad"
+                  : "neutral";
           const grade = {
-            label: { great: "GREAT", good: "GOOD", bad: "BAD", neutral: "NEUTRAL" }[gradeTier],
+            label: {
+              great: "GREAT",
+              good: "GOOD",
+              bad: "BAD",
+              neutral: "NEUTRAL",
+            }[gradeTier],
             className: matchupGrade({ tier: gradeTier }),
           };
           return (
@@ -396,14 +505,21 @@ function MatchupPanel({
               }`}
             >
               <div className="flex size-[54px] flex-none items-center justify-center border-2 border-ink bg-frame">
-                <Sprite url={r.pokemon.species?.sprite} size={46} alt={r.pokemon.nickname ?? undefined} />
+                <Sprite
+                  url={r.pokemon.species?.sprite}
+                  size={46}
+                  alt={r.pokemon.nickname ?? undefined}
+                />
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-[5px]">
                 <div className="font-pix text-[8px] text-text">
                   {i + 1}. {r.pokemon.nickname ?? cap(r.pokemon.species?.name)}
                 </div>
-                <div className="font-vt text-[16px] text-text-muted">
-                  Lv {r.pokemon.level} {active ? "· ON FIELD" : `· slot ${r.pokemon.slotPosition ?? "-"}`}
+                <div className="font-pix text-[16px] text-text-muted">
+                  Lv {r.pokemon.level}{" "}
+                  {active
+                    ? "· ON FIELD"
+                    : `· slot ${r.pokemon.slotPosition ?? "-"}`}
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {(r.pokemon.species?.types ?? []).map((t) => (
@@ -412,11 +528,14 @@ function MatchupPanel({
                 </div>
               </div>
               <div className="flex flex-none flex-col items-end gap-1">
-                <span className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${grade.className}`}>
+                <span
+                  className={`border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${grade.className}`}
+                >
                   {grade.label}
                 </span>
-                <span className="font-vt text-[15px] text-text-muted">
-                  deals x{r.matchup.offensiveMultiplier} / takes x{r.matchup.defensiveMultiplier}
+                <span className="font-pix text-[15px] text-text-muted">
+                  deals x{r.matchup.offensiveMultiplier} / takes x
+                  {r.matchup.defensiveMultiplier}
                 </span>
               </div>
             </button>
@@ -445,7 +564,10 @@ function LevelUpPanel({
   };
   onClose: () => void;
   onFlash: (msg: string) => void;
-  onApply: (level: number, moveName?: string) => Promise<LearnMoveResult | undefined>;
+  onApply: (
+    level: number,
+    moveName?: string,
+  ) => Promise<LearnMoveResult | undefined>;
 }) {
   const [level, setLevel] = useState(Math.min(100, mine.level + 1));
   const [query, setQuery] = useState("");
@@ -461,7 +583,8 @@ function LevelUpPanel({
   const results = move ? [] : pool.filter((m) => m.includes(q)).slice(0, 8);
 
   const ask = () => {
-    if (level < mine.level) return onFlash(`Level up cannot be lower than ${mine.level}.`);
+    if (level < mine.level)
+      return onFlash(`Level up cannot be lower than ${mine.level}.`);
     setAsking(true);
   };
 
@@ -472,7 +595,11 @@ function LevelUpPanel({
       setAsking(false);
       return;
     }
-    onFlash(move ? `Reached Lv ${level} and learned ${cap(move)}.` : `Now Lv ${level}.`);
+    onFlash(
+      move
+        ? `Reached Lv ${level} and learned ${cap(move)}.`
+        : `Now Lv ${level}.`,
+    );
     onClose();
   };
 
@@ -491,7 +618,10 @@ function LevelUpPanel({
       <PageShell title="LOG LEVEL UP" onBack={onClose}>
         <Panel className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
-          <Hint>Suggestion: replace {cap(result.suggestedReplacement)} (weakest). Tap the move that should go.</Hint>
+          <Hint>
+            Suggestion: replace {cap(result.suggestedReplacement)} (weakest).
+            Tap the move that should go.
+          </Hint>
           {result.comparisons.map((c) => (
             <button
               key={c.moveB.move}
@@ -500,11 +630,20 @@ function LevelUpPanel({
                 c.moveB.move === replace ? "bg-green-soft" : "bg-panel"
               }`}
             >
-              <span className="flex-1 font-pix text-[8px] text-text">{cap(c.moveB.move)}</span>
-              <span className="font-vt text-[15px] text-text-muted">score {c.moveB.score}</span>
+              <span className="flex-1 font-pix text-[8px] text-text">
+                {cap(c.moveB.move)}
+              </span>
+              <span className="font-pix text-[15px] text-text-muted">
+                score {c.moveB.score}
+              </span>
             </button>
           ))}
-          <Btn variant="primary" full disabled={!replace} onClick={() => void applyReplacement()}>
+          <Btn
+            variant="primary"
+            full
+            disabled={!replace}
+            onClick={() => void applyReplacement()}
+          >
             CONFIRM REPLACEMENT
           </Btn>
         </Panel>
@@ -515,7 +654,9 @@ function LevelUpPanel({
   return (
     <PageShell title="LOG LEVEL UP" onBack={onClose}>
       <Panel>
-        <SectionLabel>NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}</SectionLabel>
+        <SectionLabel>
+          NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}
+        </SectionLabel>
         <Hint>
           Current level: {mine.level} · {mine.moves.length}/4 moves
         </Hint>
@@ -550,7 +691,9 @@ function LevelUpPanel({
                 }}
                 className="flex min-h-12 items-center gap-2 border-0 border-b-2 border-frame-alt bg-transparent p-2.5 text-left"
               >
-                <span className="flex-1 font-pix text-[8px] text-text">{cap(m)}</span>
+                <span className="flex-1 font-pix text-[8px] text-text">
+                  {cap(m)}
+                </span>
               </button>
             ))}
           </div>
@@ -559,10 +702,14 @@ function LevelUpPanel({
         {move ? (
           <div className="flex flex-col gap-2 border-2 border-ink bg-panel-alt p-2.5">
             <div className="font-pix text-[8px] text-text-muted">
-              {mine.moves.length >= 4 ? "MUST REPLACE A MOVE" : "GOES INTO A FREE SLOT"}
+              {mine.moves.length >= 4
+                ? "MUST REPLACE A MOVE"
+                : "GOES INTO A FREE SLOT"}
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex-1 font-pix text-[8px] text-text">{cap(move)}</span>
+              <span className="flex-1 font-pix text-[8px] text-text">
+                {cap(move)}
+              </span>
             </div>
             <Btn
               variant="danger"

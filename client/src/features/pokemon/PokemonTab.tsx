@@ -7,7 +7,15 @@ function nameOf(p: PokemonDTO): string {
   return p.nickname ?? (p.species ? p.species.name.toUpperCase() : "UNKNOWN");
 }
 
-function PartyCell({ pokemon, slot, onClick }: { pokemon: PokemonDTO | undefined; slot: number; onClick: () => void }) {
+function PartyCell({
+  pokemon,
+  slot,
+  onClick,
+}: {
+  pokemon: PokemonDTO | undefined;
+  slot: number;
+  onClick: () => void;
+}) {
   if (!pokemon) {
     return (
       <button
@@ -31,13 +39,25 @@ function PartyCell({ pokemon, slot, onClick }: { pokemon: PokemonDTO | undefined
       <div className="font-pix text-[8px] text-blue">SLOT {slot}</div>
       <div className="flex flex-1 items-center gap-[7px]">
         <div className="flex size-19 flex-none items-center justify-center border-2 border-ink bg-frame">
-          <Sprite url={pokemon.species?.sprite} size={68} alt={nameOf(pokemon)} />
+          <Sprite
+            url={pokemon.species?.sprite}
+            size={68}
+            alt={nameOf(pokemon)}
+          />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-[5px]">
-          <div className="font-pix text-[8px] leading-[1.4] break-words text-text">{nameOf(pokemon)}</div>
-          <div className="font-vt text-[20px] leading-none text-text-muted">Lv {pokemon.level}</div>
+          <div className="font-pix text-[8px] leading-[1.4] break-words text-text">
+            {nameOf(pokemon)}
+          </div>
+          <div className="font-vt text-[20px] leading-none text-text-muted">
+            Lv {pokemon.level}
+          </div>
           <div className="flex flex-col items-start gap-[3px]">
-            {types.length ? types.map((t) => <TypeBadge key={t} type={t} />) : <TypeBadge type="unknown" />}
+            {types.length ? (
+              types.map((t) => <TypeBadge key={t} type={t} />)
+            ) : (
+              <TypeBadge type="unknown" />
+            )}
           </div>
         </div>
       </div>
@@ -45,19 +65,40 @@ function PartyCell({ pokemon, slot, onClick }: { pokemon: PokemonDTO | undefined
   );
 }
 
-export function PartyView({ party, onOpenDetail, onOpenAdd }: { party: PokemonDTO[]; onOpenDetail: (id: string) => void; onOpenAdd: () => void }) {
+export function PartyView({
+  party,
+  onOpenDetail,
+  onOpenAdd,
+}: {
+  party: PokemonDTO[];
+  onOpenDetail: (id: string) => void;
+  onOpenAdd: () => void;
+}) {
   const slots = Array.from({ length: 6 }, (_, i) => i + 1);
   return (
     <div className="grid grid-cols-2 gap-2">
       {slots.map((slot) => {
         const found = party.find((p) => p.slotPosition === slot);
-        return <PartyCell key={slot} pokemon={found} slot={slot} onClick={() => (found ? onOpenDetail(found.id) : onOpenAdd())} />;
+        return (
+          <PartyCell
+            key={slot}
+            pokemon={found}
+            slot={slot}
+            onClick={() => (found ? onOpenDetail(found.id) : onOpenAdd())}
+          />
+        );
       })}
     </div>
   );
 }
 
-function PcCell({ pokemon, onClick }: { pokemon: PokemonDTO; onClick: () => void }) {
+function PcCell({
+  pokemon,
+  onClick,
+}: {
+  pokemon: PokemonDTO;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
@@ -66,22 +107,34 @@ function PcCell({ pokemon, onClick }: { pokemon: PokemonDTO; onClick: () => void
       <div className="flex h-14 items-center justify-center">
         <Sprite url={pokemon.species?.sprite} size={48} alt={nameOf(pokemon)} />
       </div>
-      <div className="max-w-full overflow-hidden font-vt text-[15px] leading-none text-ellipsis whitespace-nowrap text-text">
+      <div className="max-w-full overflow-hidden font-pix text-[15px] leading-none text-ellipsis whitespace-nowrap text-text">
         {nameOf(pokemon)}
       </div>
-      <div className="font-vt text-[14px] leading-none text-text-muted">Lv {pokemon.level}</div>
+      <div className="font-vt text-[15px] leading-none text-text-muted">
+        Lv {pokemon.level}
+      </div>
     </button>
   );
 }
 
-export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOpenDetail: (id: string) => void; onOpenAdd: () => void }) {
+export function PcView({
+  pc,
+  onOpenDetail,
+  onOpenAdd,
+}: {
+  pc: PokemonDTO[];
+  onOpenDetail: (id: string) => void;
+  onOpenAdd: () => void;
+}) {
   const [filter, setFilter] = useState("");
   const types = useMemo(() => {
     const set = new Set<string>();
     pc.forEach((p) => p.species?.types.forEach((t) => set.add(t)));
     return [...set];
   }, [pc]);
-  const shown = filter ? pc.filter((p) => p.species?.types.includes(filter)) : pc;
+  const shown = filter
+    ? pc.filter((p) => p.species?.types.includes(filter))
+    : pc;
 
   return (
     <div className="flex flex-col gap-2">
@@ -89,7 +142,9 @@ export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOp
         <button
           onClick={() => setFilter("")}
           className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
-            filter === "" ? "bg-navy text-white" : "bg-panel-alt text-text-muted"
+            filter === ""
+              ? "bg-navy text-white"
+              : "bg-panel-alt text-text-muted"
           }`}
         >
           ALL
@@ -99,7 +154,9 @@ export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOp
             key={t}
             onClick={() => setFilter(t)}
             className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
-              filter === t ? "bg-navy text-white" : "bg-panel-alt text-text-muted"
+              filter === t
+                ? "bg-navy text-white"
+                : "bg-panel-alt text-text-muted"
             }`}
           >
             {t.toUpperCase()}
@@ -108,11 +165,15 @@ export function PcView({ pc, onOpenDetail, onOpenAdd }: { pc: PokemonDTO[]; onOp
       </div>
       <div className="grid grid-cols-3 gap-[5px] border-[3px] border-ink bg-frame-alt p-1.5">
         {shown.length === 0 ? (
-          <div className="col-span-full p-2.5 font-vt text-[18px] text-text-muted">
-            {pc.length === 0 ? "No pokemon in the PC yet." : "No pokemon match this filter."}
+          <div className="col-span-full p-2.5 font-vt text-[20px] text-text-muted">
+            {pc.length === 0
+              ? "No pokemon in the PC yet."
+              : "No pokemon match this filter."}
           </div>
         ) : (
-          shown.map((p) => <PcCell key={p.id} pokemon={p} onClick={() => onOpenDetail(p.id)} />)
+          shown.map((p) => (
+            <PcCell key={p.id} pokemon={p} onClick={() => onOpenDetail(p.id)} />
+          ))
         )}
       </div>
       <Btn variant="primary" full onClick={onOpenAdd}>
@@ -149,9 +210,17 @@ export function SearchView({
           className="w-full border-2 border-ink bg-white p-[11px] text-[21px] text-ink"
         />
       </div>
-      <Hint>{!q ? "Type a species name to search the dex." : results.length ? `${results.length} species` : `No species found for "${query}".`}</Hint>
+      <Hint>
+        {!q
+          ? "Type a species name to search the dex."
+          : results.length
+            ? `${results.length} species`
+            : `No species found for "${query}".`}
+      </Hint>
       {results.map((entry) => {
-        const owned = [...party, ...pc].filter((p) => p.pokeApiId === entry.pokeApiId);
+        const owned = [...party, ...pc].filter(
+          (p) => p.pokeApiId === entry.pokeApiId,
+        );
         const inParty = owned.filter((p) => p.location === "PARTY");
         const inPc = owned.filter((p) => p.location === "PC");
         let status = "NOT REGISTERED";
@@ -178,12 +247,18 @@ export function SearchView({
               />
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-[5px]">
-              <div className="font-pix text-[8px] text-text">{entry.name.toUpperCase()}</div>
-              <div className="font-vt text-[16px] text-text-muted">
-                #{entry.pokeApiId}
-                {owned.length ? ` · ${owned.map((p) => `Lv ${p.level}`).join(", ")}` : " · tap to register"}
+              <div className="font-pix text-[8px] text-text">
+                {entry.name.toUpperCase()}
               </div>
-              <span className={`self-start border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${statusClass}`}>
+              <div className="font-vt text-[15px] text-text-muted">
+                #{entry.pokeApiId}
+                {owned.length
+                  ? ` · ${owned.map((p) => `Lv ${p.level}`).join(", ")}`
+                  : " · tap to register"}
+              </div>
+              <span
+                className={`self-start border-2 border-ink px-[5px] py-1 font-pix text-[8px] ${statusClass}`}
+              >
                 {status}
               </span>
             </div>
