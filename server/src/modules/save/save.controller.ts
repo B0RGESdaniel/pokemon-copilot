@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createSave, getSaveOrThrow, listSaves } from "./save.service.js";
+import { createSave, deleteSave, getSaveOrThrow, listSaves } from "./save.service.js";
 import { createSaveSchema } from "./save.types.js";
 
 export async function listSavesHandler(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
@@ -19,4 +19,12 @@ export async function createSaveHandler(request: FastifyRequest, reply: FastifyR
   const input = createSaveSchema.parse(request.body);
   const save = await createSave(input);
   reply.status(201).send(save);
+}
+
+export async function deleteSaveHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  await deleteSave(request.params.id);
+  reply.status(204).send();
 }

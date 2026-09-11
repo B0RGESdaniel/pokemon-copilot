@@ -7,6 +7,7 @@ import { DetailFlow } from "../features/pokemon/pages/DetailFlow";
 import { PartyView } from "../features/pokemon/PartyView";
 import { PcView } from "../features/pokemon/PcView";
 import { SearchView } from "../features/pokemon/SearchView";
+import { ManageSavesPage } from "../features/saves/pages/ManageSavesPage";
 import { useGenerationDex, usePc, useParty, useSaves } from "../hooks/data";
 import { useBattle } from "../hooks/useBattle";
 import { useFlash } from "../hooks/useFlash";
@@ -31,6 +32,7 @@ function MainApp({
   saves,
   onSelectSave,
   onCreateSave,
+  onDeleteSave,
 }: {
   save: Save;
   saves: Save[];
@@ -40,6 +42,7 @@ function MainApp({
     game: string;
     generation: number;
   }) => Promise<Save>;
+  onDeleteSave: (id: string) => Promise<void>;
 }) {
   const { party } = useParty(save.id);
   const { pc } = usePc(save.id);
@@ -51,6 +54,7 @@ function MainApp({
   const [sub, setSub] = useState<"party" | "pc" | "search">("party");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState<AddState>(null);
+  const [managingSaves, setManagingSaves] = useState(false);
 
   const allPokemon = [...party, ...pc];
   const detailPokemon = detailId
@@ -72,6 +76,7 @@ function MainApp({
         selectedSave={save}
         onSelectSave={onSelectSave}
         onCreateSave={onCreateSave}
+        onManageSaves={() => setManagingSaves(true)}
       />
       {tab === "pokemons" ? <Subnav sub={sub} onChange={setSub} /> : null}
       <FlashMessage message={message} />
@@ -139,12 +144,23 @@ function MainApp({
           onFlash={flash}
         />
       ) : null}
+
+      {managingSaves ? (
+        <ManageSavesPage
+          saves={saves}
+          selectedSaveId={save.id}
+          onBack={() => setManagingSaves(false)}
+          onCreate={onCreateSave}
+          onDelete={onDeleteSave}
+          onFlash={flash}
+        />
+      ) : null}
     </div>
   );
 }
 
 export function App() {
-  const { saves, loading, selected, select, create } = useSaves();
+  const { saves, loading, selected, select, create, remove } = useSaves();
 
   if (loading) return <LoadingScreen />;
   if (!saves || saves.length === 0) return <CreateSaveForm onCreate={create} />;
@@ -156,6 +172,7 @@ export function App() {
       saves={saves}
       onSelectSave={select}
       onCreateSave={create}
+      onDeleteSave={remove}
     />
   );
 }

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { queryKeys } from "../api/queryKeys";
-import { createSave, listSaves } from "../api/saves";
+import { createSave, deleteSave, listSaves } from "../api/saves";
 import { getParty, getPc } from "../api/pokemon";
 import { getSpeciesByGeneration, getTypeChart } from "../api/species";
 import type { Save } from "../types/saves";
@@ -26,6 +26,13 @@ export function useSaves() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteSave,
+    onSuccess: (_, deletedId) => {
+      queryClient.setQueryData<Save[]>(queryKeys.saves, (prev) => prev?.filter((s) => s.id !== deletedId) ?? []);
+    },
+  });
+
   const selected = saves?.find((s) => s.id === selectedId) ?? saves?.[0] ?? null;
 
   useEffect(() => {
@@ -38,6 +45,7 @@ export function useSaves() {
     selected,
     select,
     create: createMutation.mutateAsync,
+    remove: deleteMutation.mutateAsync,
   };
 }
 

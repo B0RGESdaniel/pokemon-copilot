@@ -25,7 +25,7 @@ model Save {
 model Pokemon {
   id           String   @id @default(cuid())
   saveId       String
-  save         Save     @relation(fields: [saveId], references: [id])
+  save         Save     @relation(fields: [saveId], references: [id], onDelete: Cascade)
   pokeApiId    Int
   nickname     String?
   level        Int
@@ -50,9 +50,9 @@ model Pokemon {
 model BattleSession {
   id                String    @id @default(cuid())
   saveId            String    @unique
-  save              Save      @relation(fields: [saveId], references: [id])
+  save              Save      @relation(fields: [saveId], references: [id], onDelete: Cascade)
   activePokemonId   String
-  activePokemon     Pokemon   @relation(fields: [activePokemonId], references: [id])
+  activePokemon     Pokemon   @relation(fields: [activePokemonId], references: [id], onDelete: Cascade)
   opponentPokeApiId Int?
   opponentLevel     Int?
   status            String    @default("active")

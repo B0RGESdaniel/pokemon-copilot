@@ -17,3 +17,8 @@ export async function getSaveOrThrow(id: string): Promise<SaveDTO> {
   }
   return save;
 }
+
+export async function deleteSave(id: string): Promise<void> {
+  await getSaveOrThrow(id);
+  await prisma.save.delete({ where: { id } });
+}
