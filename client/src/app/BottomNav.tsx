@@ -37,7 +37,7 @@ export function BottomNav({
         })}
       >
         <TabIcon src="/pokeball-icon.svg" className={pokemonNav.icon()} />
-        POKEMON
+        POKEMONS
       </button>
       <button onClick={() => onChange("battle")} className={battleNav.button()}>
         <TabIcon src="/battle-icon.svg" className={battleNav.icon()} />

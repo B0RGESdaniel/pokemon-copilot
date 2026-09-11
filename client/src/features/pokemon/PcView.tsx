@@ -19,13 +19,13 @@ function PcCell({
       onClick={onClick}
       className="flex min-h-24 flex-col items-center justify-center gap-0.5 border-2 border-ink bg-panel p-1 shadow-[inset_0_2px_0_#ffffff]"
     >
-      <div className="flex h-14 items-center justify-center">
+      <div className="flex h-14 items-center justify-center gap">
         <Sprite url={pokemon.species?.sprite} size={48} alt={nameOf(pokemon)} />
       </div>
-      <div className="max-w-full overflow-hidden font-pix text-[8px] leading-none text-ellipsis whitespace-nowrap text-text">
+      <div className="max-w-full overflow-hidden font-pix text-[8px] leading-none text-ellipsis whitespace-nowrap text-text mb-0.5">
         {nameOf(pokemon)}
       </div>
-      <div className="font-vt text-[16px] leading-none text-text-muted">
+      <div className="font-pix text-[8px] leading-none text-text-muted">
         Lv {pokemon.level}
       </div>
     </button>

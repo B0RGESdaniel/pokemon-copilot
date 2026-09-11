@@ -28,7 +28,7 @@ export function SearchView({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="search species..."
-          className="w-full border-2 border-ink bg-white p-2.75 text-[21px] text-ink"
+          className="w-full border-2 border-ink bg-white p-2.75 text-[16px] text-ink"
         />
       </div>
       <Hint>

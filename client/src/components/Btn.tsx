@@ -10,7 +10,7 @@ const btn = tv({
       secondary:
         "border-[3px] border-ink bg-blue-soft text-ink shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]",
       danger:
-        "border-2 border-ink bg-red text-white [text-shadow:1px_1px_0_var(--color-ink)]",
+        "border-2 border-ink bg-red text-white [text-shadow:1px_1px_0_var(--color-ink)] shadow-[3px_3px_0_var(--color-ink)]",
       outlineDanger:
         "border-[3px] border-red bg-bg text-red shadow-[3px_3px_0_var(--color-ink)]",
       ghost:

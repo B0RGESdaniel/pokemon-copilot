@@ -127,15 +127,17 @@ export function BattleTab({
           </div>
           <Panel className="min-w-0 flex-1">
             <div className="font-pix text-[8px] text-red">OPPONENT</div>
-            <div className="font-pix text-[8px] leading-[1.4] wrap-break-word text-text">
-              {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
-            </div>
-            <div className="font-vt text-[16px] leading-none text-text-muted">
-              {opponent ? `Lv ${opponent.level}` : "not set"}
+            <div className="flex items-baseline gap-2">
+              <div className="min-w-0 flex-1 font-vt text-[16px] leading-[1.4] wrap-break-word text-text">
+                {opponent ? cap(opponent.species?.name ?? "unknown") : "NONE"}
+              </div>
+              <div className="flex-none font-vt text-[14px] leading-none text-text-muted">
+                {opponent ? `Lv ${opponent.level}` : "not set"}
+              </div>
             </div>
             <div className="flex flex-wrap gap-1">
               {oppTypes.map((t) => (
-                <TypeBadge key={t} type={t} />
+                <TypeBadge size={8} key={t} type={t} />
               ))}
             </div>
           </Panel>
@@ -149,14 +151,14 @@ export function BattleTab({
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute bottom-1 left-[12%] aspect-square w-[32%] max-w-38.5">
+          <div className="absolute bottom-1 left-[12%] aspect-square w-[38%] max-w-38.5">
             <img
               src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
               className={`h-full w-full object-contain object-bottom ${mineBackSprite ? "" : "-scale-x-100"}`}
             />
           </div>
-          <div className="absolute right-2 bottom-1.5 font-vt text-[16px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">
+          <div className="absolute right-2 bottom-1.5 font-vt text-[12px] text-white [text-shadow:1px_1px_0_var(--color-ink)]">
             reference only · no damage math
           </div>
         </div>
@@ -164,15 +166,17 @@ export function BattleTab({
         <div className="flex items-stretch gap-2">
           <Panel className="min-w-0 flex-1 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]">
             <div className="font-pix text-[8px] text-blue">ON FIELD</div>
-            <div className="font-pix text-[8px] leading-[1.4] wrap-break-word text-text">
-              {mine.nickname ?? cap(mine.species?.name)}
-            </div>
-            <div className="font-vt text-[16px] leading-none text-text-muted">
-              Lv {mine.level}
+            <div className="flex items-baseline gap-2">
+              <div className="min-w-0 flex-1 font-vt text-[16px] leading-[1.4] wrap-break-word text-text">
+                {mine.nickname ?? cap(mine.species?.name)}
+              </div>
+              <div className="flex-none font-vt text-[14px] leading-none text-text-muted">
+                Lv {mine.level}
+              </div>
             </div>
             <div className="flex flex-wrap gap-1">
               {mineTypes.map((t) => (
-                <TypeBadge key={t} type={t} />
+                <TypeBadge size={8} key={t} type={t} />
               ))}
             </div>
             <Btn
