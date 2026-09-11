@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { tv } from "tailwind-variants";
-import { Btn, SearchInput, SectionLabel, Stepper } from "../components";
+import { Btn } from "../components/Btn";
+import { SearchInput } from "../components/SearchInput";
+import { SectionLabel } from "../components/SectionLabel";
+import { Stepper } from "../components/Stepper";
 import type { Save } from "../types/saves";
 
 export function Header({
@@ -133,92 +135,6 @@ function NewSaveInline({
           CREATE
         </Btn>
       </div>
-    </div>
-  );
-}
-
-const subnavTab = tv({
-  base: "min-h-11 flex-1 border-2 border-ink font-pix text-[8px]",
-  variants: {
-    active: {
-      true: "bg-navy text-white shadow-[inset_0_2px_0_var(--color-navy-light)]",
-      false: "bg-[#b8c1d2] text-[#7a8598] shadow-[inset_0_2px_0_#c7cfdd]",
-    },
-  },
-});
-
-export function Subnav({
-  sub,
-  onChange,
-}: {
-  sub: "party" | "pc" | "search";
-  onChange: (s: "party" | "pc" | "search") => void;
-}) {
-  const tabs: { key: "party" | "pc" | "search"; label: string }[] = [
-    { key: "party", label: "PARTY" },
-    { key: "pc", label: "PC" },
-    { key: "search", label: "SEARCH" },
-  ];
-  return (
-    <div className="flex flex-none gap-1.5 border-b-[3px] border-ink bg-bg-alt p-2">
-      {tabs.map((t) => {
-        const active = sub === t.key;
-        return (
-          <button
-            key={t.key}
-            onClick={() => onChange(t.key)}
-            className={subnavTab({ active })}
-          >
-            {t.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-const bottomNavItem = tv({
-  slots: {
-    button:
-      "flex min-h-16 flex-1 flex-col items-center justify-center gap-1.5 border-0 font-pix text-[8px]",
-    dot: "size-3 border-2 border-ink",
-  },
-  variants: {
-    active: {
-      true: { button: "bg-blue text-white", dot: "bg-white" },
-      false: {
-        button: "bg-navy-dark text-nav-inactive",
-        dot: "bg-nav-inactive",
-      },
-    },
-  },
-});
-
-export function BottomNav({
-  tab,
-  onChange,
-}: {
-  tab: "pokemons" | "battle";
-  onChange: (t: "pokemons" | "battle") => void;
-}) {
-  const isPokemons = tab === "pokemons";
-  const pokemonNav = bottomNavItem({ active: isPokemons });
-  const battleNav = bottomNavItem({ active: !isPokemons });
-  return (
-    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark">
-      <button
-        onClick={() => onChange("pokemons")}
-        className={pokemonNav.button({
-          className: "border-r-[3px] border-ink",
-        })}
-      >
-        <span className={pokemonNav.dot()} />
-        POKEMON
-      </button>
-      <button onClick={() => onChange("battle")} className={battleNav.button()}>
-        <span className={battleNav.dot()} />
-        BATTLE
-      </button>
     </div>
   );
 }

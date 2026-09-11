@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Btn, Panel, SearchInput, SectionLabel, Stepper } from "../../components";
+import { Btn } from "../../components/Btn";
+import { Panel } from "../../components/Panel";
+import { SearchInput } from "../../components/SearchInput";
+import { SectionLabel } from "../../components/SectionLabel";
+import { Stepper } from "../../components/Stepper";
 import type { Save } from "../../types/saves";
 
 export function CreateSaveForm({
@@ -30,9 +34,9 @@ export function CreateSaveForm({
   };
 
   return (
-    <div className="mx-auto flex h-screen w-full max-w-[480px] flex-col bg-bg">
+    <div className="mx-auto flex h-screen w-full max-w-120 flex-col bg-bg">
       <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 py-4 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
-        <img src="/pokeball.png" alt="Pokemon Copilot" className="size-[26px]" />
+        <img src="/pokeball.png" alt="Pokemon Copilot" className="size-6.5" />
         <div className="font-pix text-[8px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           POKEMON COPILOT
         </div>

@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { FlashMessage } from "../components";
+import { FlashMessage } from "../components/FlashMessage";
 import { BattleTab } from "../features/battle/BattleTab";
 import { CreateSaveForm } from "../features/saves/CreateSaveForm";
 import { AddPage } from "../features/pokemon/pages/AddPage";
-import { DetailFlow } from "../features/pokemon/pages/DetailPages";
-import { PartyView, PcView, SearchView } from "../features/pokemon/PokemonTab";
+import { DetailFlow } from "../features/pokemon/pages/DetailFlow";
+import { PartyView } from "../features/pokemon/PartyView";
+import { PcView } from "../features/pokemon/PcView";
+import { SearchView } from "../features/pokemon/SearchView";
 import { useGenerationDex, usePc, useParty, useSaves } from "../hooks/data";
 import { useBattle } from "../hooks/useBattle";
 import { useFlash } from "../hooks/useFlash";
-import { BottomNav, Header, Subnav } from "./Shell";
+import { BottomNav } from "./BottomNav";
+import { Header } from "./Header";
+import { Subnav } from "./Subnav";
 import type { GenerationSpeciesEntry } from "../types/species";
 import type { Save } from "../types/saves";
 

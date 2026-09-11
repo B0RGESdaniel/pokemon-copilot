@@ -5,16 +5,14 @@ import {
   useSearchItems,
   useSpecies,
 } from "../../../hooks/useSpecies";
-import {
-  Btn,
-  Hint,
-  PageShell,
-  Panel,
-  SearchInput,
-  SectionLabel,
-  Sprite,
-  Stepper,
-} from "../../../components";
+import { Btn } from "../../../components/Btn";
+import { Hint } from "../../../components/Hint";
+import { PageShell } from "../../../components/PageShell";
+import { Panel } from "../../../components/Panel";
+import { SearchInput } from "../../../components/SearchInput";
+import { SectionLabel } from "../../../components/SectionLabel";
+import { Sprite } from "../../../components/Sprite";
+import { Stepper } from "../../../components/Stepper";
 import { cap } from "../../../theme";
 import type { GenerationSpeciesEntry } from "../../../types/species";
 
@@ -130,7 +128,7 @@ export function AddPage({
           </div>
         </div>
         {speciesResults.length > 0 ? (
-          <div className="flex max-h-[190px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-47.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {speciesResults.map((r) => (
               <button
                 key={r.pokeApiId}
@@ -165,7 +163,7 @@ export function AddPage({
           placeholder="search item..."
         />
         {itemChoices.length > 0 ? (
-          <div className="flex max-h-[170px] flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-42.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
             {itemChoices.map((it) => (
               <button
                 key={it}
@@ -173,7 +171,7 @@ export function AddPage({
                   setItem(it);
                   setItemQuery(cap(it));
                 }}
-                className="flex min-h-[46px] items-center border-0 border-b-2 border-frame-alt bg-panel p-2.5 text-left font-pix text-[8px] text-text"
+                className="flex min-h-11.5 items-center border-0 border-b-2 border-frame-alt bg-panel p-2.5 text-left font-pix text-[8px] text-text"
               >
                 {cap(it)}
               </button>
@@ -209,7 +207,7 @@ export function AddPage({
               onChange={setMoveQuery}
               placeholder="search moves..."
             />
-            <div className="flex max-h-[240px] flex-col gap-1.5 overflow-y-auto">
+            <div className="flex max-h-60 flex-col gap-1.5 overflow-y-auto">
               {shownMoves.length === 0 ? (
                 <Hint>No learnable move matches "{moveQuery}".</Hint>
               ) : (

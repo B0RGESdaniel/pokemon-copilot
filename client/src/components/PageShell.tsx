@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Btn } from "./primitives";
+import { Btn } from "./Btn";
 
 export function PageShell({
   title,
@@ -26,18 +26,9 @@ export function PageShell({
           {title}
         </div>
       </div>
-      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-2.5 pt-2.5 pb-[22px]">
+      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-2.5 pt-2.5 pb-5.5">
         {children}
       </div>
-    </div>
-  );
-}
-
-export function FlashMessage({ message }: { message: string | null }) {
-  if (!message) return null;
-  return (
-    <div className="flex-none border-b-[3px] border-ink bg-[#f5e6a8] px-3 py-2 font-vt text-[24px] text-navy">
-      &gt; {message}
     </div>
   );
 }
