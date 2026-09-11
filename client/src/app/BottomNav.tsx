@@ -1,17 +1,18 @@
 import { tv } from "tailwind-variants";
+import { TabIcon } from "../components/TabIcon";
 
 const bottomNavItem = tv({
   slots: {
     button:
-      "flex min-h-16 flex-1 flex-col items-center justify-center gap-1.5 border-0 font-pix text-[8px]",
-    dot: "size-3 border-2 border-ink",
+      "flex min-h-16 flex-1 flex-row items-center justify-center gap-2.5 border-0 font-pix text-[8px]",
+    icon: "size-6",
   },
   variants: {
     active: {
-      true: { button: "bg-blue text-white", dot: "bg-white" },
+      true: { button: "bg-blue text-white", icon: "bg-white" },
       false: {
         button: "bg-navy-dark text-nav-inactive",
-        dot: "bg-nav-inactive",
+        icon: "bg-nav-inactive",
       },
     },
   },
@@ -35,11 +36,11 @@ export function BottomNav({
           className: "border-r-[3px] border-ink",
         })}
       >
-        <span className={pokemonNav.dot()} />
+        <TabIcon src="/pokeball-icon.svg" className={pokemonNav.icon()} />
         POKEMON
       </button>
       <button onClick={() => onChange("battle")} className={battleNav.button()}>
-        <span className={battleNav.dot()} />
+        <TabIcon src="/battle-icon.svg" className={battleNav.icon()} />
         BATTLE
       </button>
     </div>
