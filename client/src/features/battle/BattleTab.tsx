@@ -151,7 +151,7 @@ export function BattleTab({
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute bottom-1 left-[12%] aspect-square w-[38%] max-w-38.5">
+          <div className="absolute -bottom-2.5 left-[12%] aspect-square w-[38%] max-w-38.5">
             <img
               src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
