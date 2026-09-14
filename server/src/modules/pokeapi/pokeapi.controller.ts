@@ -77,7 +77,16 @@ export async function getLegalMovesHandler(
   const save = await getSaveOrThrow(request.params.saveId);
   const versionGroup = await getVersionGroupForGame(save.game);
   const learnable = await getLearnableMovesInVersionGroup(pokeApiId, versionGroup);
-  reply.send([...learnable].sort());
+
+  const moves = await Promise.all(
+    [...learnable].map(async (name) => {
+      const move = await getMove(name);
+      return { name: move.name, type: move.type };
+    }),
+  );
+  moves.sort((a, b) => a.name.localeCompare(b.name));
+
+  reply.send(moves);
 }
 
 export async function getMoveHandler(

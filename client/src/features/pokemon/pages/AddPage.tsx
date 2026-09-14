@@ -13,6 +13,7 @@ import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Sprite } from "../../../components/Sprite";
 import { Stepper } from "../../../components/Stepper";
+import { TypeBadge } from "../../../components/TypeBadge";
 import { cap } from "../../../theme";
 import type { GenerationSpeciesEntry } from "../../../types/species";
 
@@ -61,7 +62,7 @@ export function AddPage({
 
   const trimmedMoveQuery = moveQuery.trim().toLowerCase();
   const shownMoves = trimmedMoveQuery
-    ? legalMoves.filter((m) => m.includes(trimmedMoveQuery))
+    ? legalMoves.filter((m) => m.name.includes(trimmedMoveQuery))
     : legalMoves;
 
   const trimmedSpeciesQuery = speciesQuery.trim().toLowerCase();
@@ -212,11 +213,11 @@ export function AddPage({
                 <Hint>No learnable move matches "{moveQuery}".</Hint>
               ) : (
                 shownMoves.map((m) => {
-                  const checked = moves.includes(m);
+                  const checked = moves.includes(m.name);
                   return (
                     <button
-                      key={m}
-                      onClick={() => toggleMove(m)}
+                      key={m.name}
+                      onClick={() => toggleMove(m.name)}
                       className={`flex min-h-12 flex-none items-center gap-2 border-2 border-ink p-2.5 text-left ${
                         checked ? "bg-green-soft" : "bg-panel"
                       }`}
@@ -225,8 +226,9 @@ export function AddPage({
                         className={`size-3.5 flex-none border-2 border-ink ${checked ? "bg-red" : "bg-white"}`}
                       />
                       <span className="flex-1 font-pix text-[8px] text-text">
-                        {cap(m)}
+                        {cap(m.name)}
                       </span>
+                      <TypeBadge type={m.type} />
                     </button>
                   );
                 })

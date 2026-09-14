@@ -4,7 +4,7 @@ import {
   useMovePokemon,
   useUpdatePokemon,
 } from "../../../hooks/usePokemonMutations";
-import { useEvolutions } from "../../../hooks/useSpecies";
+import { useEvolutions, useMoveTypes } from "../../../hooks/useSpecies";
 import { Btn } from "../../../components/Btn";
 import { ConfirmBar } from "../../../components/ConfirmBar";
 import { Hint } from "../../../components/Hint";
@@ -50,6 +50,7 @@ export function DetailFlow({
   const [confirming, setConfirming] = useState(false);
   const [evoInfo, setEvoInfo] = useState(false);
   const { evolutions } = useEvolutions(pokemon.pokeApiId);
+  const moveTypes = useMoveTypes(pokemon.moves);
   const updatePokemon = useUpdatePokemon();
   const movePokemon = useMovePokemon();
   const deletePokemon = useDeletePokemon();
@@ -182,6 +183,7 @@ export function DetailFlow({
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(m)}
               </span>
+              <TypeBadge type={moveTypes[m] ?? "unknown"} />
             </div>
           ))
         )}

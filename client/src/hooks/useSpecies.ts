@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../api/queryKeys";
 import { getEvolutions, getLegalMoves, getMove, getSpecies, searchItems } from "../api/species";
 
@@ -31,6 +31,25 @@ export function useMove(name: string | null) {
   });
 
   return data ?? null;
+}
+
+// Type por nome de move, pra badges em listas de moves que o pokémon já
+// conhece (poucas entradas, ≤4) — mesmo padrão do AttackPanel, mas
+// reutilizável pelas outras telas que só mostram nome + tipo.
+export function useMoveTypes(names: string[]): Record<string, string> {
+  const results = useQueries({
+    queries: names.map((name) => ({
+      queryKey: queryKeys.move(name),
+      queryFn: () => getMove(name),
+      staleTime: Infinity,
+    })),
+  });
+
+  const types: Record<string, string> = {};
+  for (const r of results) {
+    if (r.data) types[r.data.name] = r.data.type;
+  }
+  return types;
 }
 
 export function useSearchItems(search: string) {

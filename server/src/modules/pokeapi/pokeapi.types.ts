@@ -151,6 +151,14 @@ export type MoveDTO = {
   statChanges: { change: number; stat: string }[];
 };
 
+// Versão enxuta de MoveDTO pra listas de legal moves — só o suficiente pra
+// mostrar um badge de tipo ao lado do nome sem carregar power/accuracy/etc
+// que essas telas não usam.
+export type LegalMoveDTO = {
+  name: string;
+  type: string;
+};
+
 export type ItemDTO = {
   name: string;
   sprite: string | null;

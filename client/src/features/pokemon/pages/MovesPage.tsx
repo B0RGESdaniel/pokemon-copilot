@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { useLearnMove, useUpdatePokemon } from "../../../hooks/usePokemonMutations";
-import { useLegalMoves } from "../../../hooks/useSpecies";
+import {
+  useLearnMove,
+  useUpdatePokemon,
+} from "../../../hooks/usePokemonMutations";
+import { useLegalMoves, useMoveTypes } from "../../../hooks/useSpecies";
 import { Btn } from "../../../components/Btn";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
 import { Panel } from "../../../components/Panel";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
+import { TypeBadge } from "../../../components/TypeBadge";
 import { cap } from "../../../theme";
 import type { LearnMoveResult, PokemonDTO } from "../../../types/pokemon";
 
@@ -22,6 +26,7 @@ export function MovesPage({
   onFlash: (msg: string) => void;
 }) {
   const legalMoves = useLegalMoves(saveId, pokemon.pokeApiId);
+  const currentMoveTypes = useMoveTypes(pokemon.moves);
   const [suggestion, setSuggestion] = useState<LearnMoveResult | null>(null);
   const [moveQuery, setMoveQuery] = useState("");
   const updatePokemon = useUpdatePokemon();
@@ -61,10 +66,10 @@ export function MovesPage({
     onFlash(`${cap(move)} learned, replacing ${cap(replace)}.`);
   };
 
-  const learnable = legalMoves.filter((m) => !pokemon.moves.includes(m));
+  const learnable = legalMoves.filter((m) => !pokemon.moves.includes(m.name));
   const trimmedMoveQuery = moveQuery.trim().toLowerCase();
   const shownLearnable = trimmedMoveQuery
-    ? learnable.filter((m) => m.includes(trimmedMoveQuery))
+    ? learnable.filter((m) => m.name.includes(trimmedMoveQuery))
     : learnable;
 
   return (
@@ -82,6 +87,7 @@ export function MovesPage({
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(m)}
               </span>
+              <TypeBadge type={currentMoveTypes[m] ?? "unknown"} />
               <Btn
                 variant="danger"
                 onClick={() => void removeMove(m)}
@@ -119,7 +125,8 @@ export function MovesPage({
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(c.moveB.move)}
               </span>
-              <span className="font-pix text-[16px] text-text-muted">
+              <TypeBadge type={c.moveB.type} />
+              <span className="font-vt text-[20px] text-text-muted">
                 score {c.moveB.score}
               </span>
             </button>
@@ -152,13 +159,14 @@ export function MovesPage({
               ) : (
                 shownLearnable.map((m) => (
                   <button
-                    key={m}
-                    onClick={() => void addMove(m)}
+                    key={m.name}
+                    onClick={() => void addMove(m.name)}
                     className="flex min-h-12 flex-none items-center gap-2 border-2 border-ink bg-panel p-2.5 text-left"
                   >
                     <span className="flex-1 font-pix text-[8px] text-text">
-                      {cap(m)}
+                      {cap(m.name)}
                     </span>
+                    <TypeBadge type={m.type} />
                   </button>
                 ))
               )}

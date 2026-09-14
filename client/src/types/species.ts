@@ -28,6 +28,11 @@ export type MoveDTO = {
   statChanges: { change: number; stat: string }[];
 };
 
+export type LegalMoveDTO = {
+  name: string;
+  type: string;
+};
+
 export type ItemDTO = {
   name: string;
   sprite: string | null;
