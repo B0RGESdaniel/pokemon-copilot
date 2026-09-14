@@ -7,12 +7,14 @@ import {
   movePokemonHandler,
   patchPokemon,
   removePokemon,
+  reorderPartyHandler,
 } from "./pokemon.controller.js";
 
 export async function pokemonRoutes(app: FastifyInstance): Promise<void> {
   app.get("/party", listParty);
   app.get("/pc", listPC);
   app.post("/party", createPartyPokemon);
+  app.post("/party/reorder", reorderPartyHandler);
   app.post("/pc", createPcPokemon);
   app.patch("/pokemon/:id", patchPokemon);
   app.delete("/pokemon/:id", removePokemon);

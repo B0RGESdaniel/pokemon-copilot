@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import { TabIcon } from "../components/TabIcon";
+import { Icon } from "../components/Icon";
 
 const bottomNavItem = tv({
   slots: {
@@ -36,11 +36,11 @@ export function BottomNav({
           className: "border-r-[3px] border-ink",
         })}
       >
-        <TabIcon src="/pokeball-icon.svg" className={pokemonNav.icon()} />
+        <Icon src="/pokeball-icon.svg" className={pokemonNav.icon()} />
         POKEMONS
       </button>
       <button onClick={() => onChange("battle")} className={battleNav.button()}>
-        <TabIcon src="/battle-icon.svg" className={battleNav.icon()} />
+        <Icon src="/battle-icon.svg" className={battleNav.icon()} />
         BATTLE
       </button>
     </div>

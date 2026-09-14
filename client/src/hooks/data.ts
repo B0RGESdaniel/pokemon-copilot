@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { queryKeys } from "../api/queryKeys";
 import { createSave, deleteSave, listSaves } from "../api/saves";
-import { getParty, getPc } from "../api/pokemon";
+import { getParty, getPc, reorderParty } from "../api/pokemon";
 import { getSpeciesByGeneration, getTypeChart } from "../api/species";
 import type { Save } from "../types/saves";
 
@@ -57,6 +57,19 @@ export function useParty(saveId: string | null) {
   });
 
   return { party: data ?? [], loading: isLoading };
+}
+
+export function useReorderParty(saveId: string | null) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (order: string[]) => reorderParty(saveId as string, order),
+    onSuccess: (party) => {
+      queryClient.setQueryData(queryKeys.party(saveId ?? ""), party);
+    },
+  });
+
+  return mutation.mutateAsync;
 }
 
 export function usePc(saveId: string | null) {

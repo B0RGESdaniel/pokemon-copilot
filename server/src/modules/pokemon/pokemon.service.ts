@@ -11,6 +11,7 @@ import {
   type MovePokemonInput,
   type PokemonDTO,
   type PokemonLocation,
+  type ReorderPartyInput,
   type UpdatePokemonInput,
 } from "./pokemon.types.js";
 
@@ -181,6 +182,40 @@ export async function movePokemon(id: string, input: MovePokemonInput): Promise<
     }
     throw err;
   }
+}
+
+// `order[i]` must be exactly the current party (same ids, any order) — slot
+// 1..N is derived from array index. Reassigns in two passes inside one
+// transaction: negative temp positions first, then the final 1..N values,
+// since SQLite checks the (saveId, location, slotPosition) unique constraint
+// per-statement (no deferred constraints), so writing final values directly
+// would collide with whichever pokemon currently holds that slot.
+export async function reorderParty(input: ReorderPartyInput): Promise<PokemonDTO[]> {
+  await getSaveOrThrow(input.saveId);
+
+  const current = await prisma.pokemon.findMany({
+    where: { saveId: input.saveId, location: "PARTY" },
+    select: { id: true },
+  });
+  const currentIds = new Set(current.map((p) => p.id));
+
+  if (
+    input.order.length !== currentIds.size ||
+    !input.order.every((id) => currentIds.has(id))
+  ) {
+    throw new HttpError(400, "order must contain exactly the current party pokemon");
+  }
+
+  await prisma.$transaction([
+    ...input.order.map((id, index) =>
+      prisma.pokemon.update({ where: { id }, data: { slotPosition: -(index + 1) } }),
+    ),
+    ...input.order.map((id, index) =>
+      prisma.pokemon.update({ where: { id }, data: { slotPosition: index + 1 } }),
+    ),
+  ]);
+
+  return getParty(input.saveId);
 }
 
 export async function deletePokemon(id: string): Promise<void> {

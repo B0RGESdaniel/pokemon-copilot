@@ -49,6 +49,16 @@ export const movePokemonSchema = z.object({
 
 export type MovePokemonInput = z.infer<typeof movePokemonSchema>;
 
+// `order` is the full list of party pokemon ids in their new top-to-bottom
+// order — slot 1..N is derived from array index, so there's no way to
+// express gaps (matches the "only occupied slots reorder" product decision).
+export const reorderPartySchema = z.object({
+  saveId: z.string().min(1),
+  order: z.array(z.string().min(1)).min(1).max(MAX_PARTY_SIZE),
+});
+
+export type ReorderPartyInput = z.infer<typeof reorderPartySchema>;
+
 export const listBySaveSchema = z.object({
   saveId: z.string().min(1),
 });

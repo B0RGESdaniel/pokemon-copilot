@@ -1,3 +1,5 @@
+import { Btn } from "../../components/Btn";
+import { Icon } from "../../components/Icon";
 import { Sprite } from "../../components/Sprite";
 import { TypeBadge } from "../../components/TypeBadge";
 import type { PokemonDTO } from "../../types/pokemon";
@@ -64,14 +66,24 @@ export function PartyView({
   party,
   onOpenDetail,
   onOpenAdd,
+  onOpenReorder,
 }: {
   party: PokemonDTO[];
   onOpenDetail: (id: string) => void;
   onOpenAdd: () => void;
+  onOpenReorder: () => void;
 }) {
   const slots = Array.from({ length: 6 }, (_, i) => i + 1);
   return (
     <div className="flex flex-col gap-2">
+      {party.length > 1 ? (
+        <Btn variant="ghost" full fontSize={8} onClick={onOpenReorder}>
+          <span className="flex items-center justify-center gap-2">
+            <Icon src="/reorder-icon.svg" className="size-4 bg-ink" />
+            REORDER
+          </span>
+        </Btn>
+      ) : null}
       {slots.map((slot) => {
         const found = party.find((p) => p.slotPosition === slot);
         return (

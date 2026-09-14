@@ -1,4 +1,4 @@
-export function TabIcon({ src, className }: { src: string; className: string }) {
+export function Icon({ src, className }: { src: string; className: string }) {
   return (
     <span
       className={className}

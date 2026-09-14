@@ -6,6 +6,7 @@ import { AddPage } from "../features/pokemon/pages/AddPage";
 import { DetailFlow } from "../features/pokemon/pages/DetailFlow";
 import { PartyView } from "../features/pokemon/PartyView";
 import { PcView } from "../features/pokemon/PcView";
+import { ReorderPartyPage } from "../features/pokemon/pages/ReorderPartyPage";
 import { SearchView } from "../features/pokemon/SearchView";
 import { ManageSavesPage } from "../features/saves/pages/ManageSavesPage";
 import { useGenerationDex, usePc, useParty, useSaves } from "../hooks/data";
@@ -55,6 +56,7 @@ function MainApp({
   const [detailId, setDetailId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState<AddState>(null);
   const [managingSaves, setManagingSaves] = useState(false);
+  const [reordering, setReordering] = useState(false);
 
   const allPokemon = [...party, ...pc];
   const detailPokemon = detailId
@@ -93,6 +95,7 @@ function MainApp({
             party={party}
             onOpenDetail={setDetailId}
             onOpenAdd={() => setAddOpen("blank")}
+            onOpenReorder={() => setReordering(true)}
           />
         ) : null}
         {tab === "pokemons" && sub === "pc" ? (
@@ -141,6 +144,15 @@ function MainApp({
           dex={dex}
           onBack={() => setAddOpen(null)}
           onDone={() => setAddOpen(null)}
+          onFlash={flash}
+        />
+      ) : null}
+
+      {reordering ? (
+        <ReorderPartyPage
+          saveId={save.id}
+          party={party}
+          onBack={() => setReordering(false)}
           onFlash={flash}
         />
       ) : null}

@@ -14,6 +14,8 @@ export type CreatePokemonInput = {
   slotPosition?: number;
 };
 export const addToParty = (input: CreatePokemonInput) => post<PokemonDTO>("/party", input);
+export const reorderParty = (saveId: string, order: string[]) =>
+  post<PokemonDTO[]>("/party/reorder", { saveId, order });
 export const addToPc = (input: Omit<CreatePokemonInput, "slotPosition">) => post<PokemonDTO>("/pc", input);
 
 export type UpdatePokemonInput = Partial<{
