@@ -70,6 +70,7 @@ function toMoveDTO(raw: RawMove): MoveDTO {
     power: raw.power,
     accuracy: raw.accuracy,
     pp: raw.pp,
+    priority: raw.priority,
     damageClass: raw.damage_class?.name ?? null,
     category: raw.meta?.category.name ?? null,
     ailment: raw.meta?.ailment.name === "none" ? null : (raw.meta?.ailment.name ?? null),

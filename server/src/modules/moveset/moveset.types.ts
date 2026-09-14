@@ -55,7 +55,10 @@ export type MoveComparisonDTO = {
 // "learned_directly": menos de 4 moves, sem decisão a fazer — já grava no
 // Pokémon. "suggested_replacement": já tem 4, só sugere (moveA nas
 // comparisons é sempre o move novo) — quem decide aplicar é o usuário via
-// PATCH /pokemon/:id existente.
+// PATCH /pokemon/:id existente. `suggestedReplacement` é null quando o move
+// novo não supera nenhum dos 4 atuais (mais fraco que o moveset inteiro) —
+// nesse caso não há troca recomendada, mas `comparisons` continua completo
+// pro usuário decidir forçar manualmente se quiser.
 export type LearnMoveResultDTO =
   | {
       outcome: "learned_directly";
@@ -66,5 +69,5 @@ export type LearnMoveResultDTO =
       outcome: "suggested_replacement";
       newMove: MoveScoreDTO;
       comparisons: MoveComparisonDTO[];
-      suggestedReplacement: string;
+      suggestedReplacement: string | null;
     };

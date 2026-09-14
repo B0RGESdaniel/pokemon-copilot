@@ -5,6 +5,7 @@ import { Btn } from "../../../components/Btn";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
 import { Panel } from "../../../components/Panel";
+import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { cap } from "../../../theme";
 import type { LearnMoveResult, PokemonDTO } from "../../../types/pokemon";
@@ -22,6 +23,7 @@ export function MovesPage({
 }) {
   const legalMoves = useLegalMoves(saveId, pokemon.pokeApiId);
   const [suggestion, setSuggestion] = useState<LearnMoveResult | null>(null);
+  const [moveQuery, setMoveQuery] = useState("");
   const updatePokemon = useUpdatePokemon();
   const learnMove = useLearnMove();
 
@@ -60,6 +62,10 @@ export function MovesPage({
   };
 
   const learnable = legalMoves.filter((m) => !pokemon.moves.includes(m));
+  const trimmedMoveQuery = moveQuery.trim().toLowerCase();
+  const shownLearnable = trimmedMoveQuery
+    ? learnable.filter((m) => m.includes(trimmedMoveQuery))
+    : learnable;
 
   return (
     <PageShell title="CHANGE MOVES" onBack={onBack}>
@@ -94,8 +100,9 @@ export function MovesPage({
         <Panel className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
           <Hint>
-            Suggestion: replace {cap(suggestion.suggestedReplacement)}{" "}
-            (weakest). Tap the move that should go.
+            {suggestion.suggestedReplacement
+              ? `Suggestion: replace ${cap(suggestion.suggestedReplacement)} (weakest). Tap the move that should go.`
+              : "This move isn't better than anything you currently have — not recommended. Tap a move below to replace it anyway."}
           </Hint>
           {suggestion.comparisons.map((c) => (
             <button
@@ -117,6 +124,14 @@ export function MovesPage({
               </span>
             </button>
           ))}
+          <Btn
+            variant="ghost"
+            full
+            fontSize={8}
+            onClick={() => setSuggestion(null)}
+          >
+            CLOSE
+          </Btn>
         </Panel>
       ) : null}
 
@@ -124,18 +139,32 @@ export function MovesPage({
         <SectionLabel>LEARNABLE</SectionLabel>
         {learnable.length === 0 ? (
           <Hint>No more legal moves to learn for this game.</Hint>
-        ) : null}
-        {learnable.map((m) => (
-          <button
-            key={m}
-            onClick={() => void addMove(m)}
-            className="flex min-h-12 items-center gap-2 border-2 border-ink bg-panel p-2.5 text-left"
-          >
-            <span className="flex-1 font-pix text-[8px] text-text">
-              {cap(m)}
-            </span>
-          </button>
-        ))}
+        ) : (
+          <>
+            <SearchInput
+              value={moveQuery}
+              onChange={setMoveQuery}
+              placeholder="search moves..."
+            />
+            <div className="flex max-h-60 flex-col gap-1.5 overflow-y-auto">
+              {shownLearnable.length === 0 ? (
+                <Hint>No learnable move matches "{moveQuery}".</Hint>
+              ) : (
+                shownLearnable.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => void addMove(m)}
+                    className="flex min-h-12 flex-none items-center gap-2 border-2 border-ink bg-panel p-2.5 text-left"
+                  >
+                    <span className="flex-1 font-pix text-[8px] text-text">
+                      {cap(m)}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </Panel>
     </PageShell>
   );

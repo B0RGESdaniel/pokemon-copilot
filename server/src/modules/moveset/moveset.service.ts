@@ -16,6 +16,26 @@ const BASELINE_POWER = 40;
 
 const STAB_MULTIPLIER = 1.5;
 
+// Prioridade vale mais pra pokémon lentos, que são quem mais se beneficia de
+// agir antes independente do Speed. `SPEED_FLOOR` evita explodir o fator pra
+// espécies com Speed muito baixo (ex: Shuckle).
+const PRIORITY_BASE_BONUS = 12;
+const SPEED_FLOOR = 20;
+const SLOWNESS_MIN = 0.5;
+const SLOWNESS_MAX = 2.5;
+
+// Fator de "cobertura de dano": um move de status vale o valor cheio só
+// quando o resto do set já tem pelo menos COVERAGE_FULL_AT moves de dano;
+// com 0 ao redor, fica no piso COVERAGE_FLOOR — o suficiente pra nunca
+// vencer um move de dano real, mesmo fraco (ver moveset.service.ts nos
+// comentários de scoreMove pra o raciocínio completo).
+const COVERAGE_FULL_AT = 2;
+const COVERAGE_FLOOR = 0.25;
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 // O split físico/especial por MOVE só existe a partir da Gen 4. Antes
 // disso, a categoria era determinada pelo TIPO do move — a PokeAPI não
 // guarda isso historicamente (damage_class é sempre a classificação
@@ -78,7 +98,33 @@ function resolveDamageClass(rawDamageClass: string | null, moveType: string, gen
   return (rawDamageClass ?? "status") as DamageClass;
 }
 
-export async function scoreMove(pokeApiId: number, moveName: string, generation: number): Promise<MoveScoreDTO> {
+function accuracyFactor(move: MoveDTO): number {
+  return (move.accuracy ?? 100) / 100;
+}
+
+function slownessFactor(speed: number): number {
+  return clamp(100 / Math.max(speed, SPEED_FLOOR), SLOWNESS_MIN, SLOWNESS_MAX);
+}
+
+// Quantos dos moves em `contextMoveNames` são de dano (não-status) nessa
+// geração — usado só pra pontuar status (ver `coverage` em scoreMove).
+// `generation` importa aqui pelo mesmo motivo de resolveDamageClass: a
+// classificação físico/especial pré-Gen4 depende do tipo, não do move.
+async function countDamageMoves(contextMoveNames: string[], generation: number): Promise<number> {
+  if (contextMoveNames.length === 0) return 0;
+  const moves = await Promise.all(contextMoveNames.map((name) => getMove(name)));
+  return moves.filter((m) => resolveDamageClass(m.damageClass, m.type, generation) !== "status").length;
+}
+
+// `contextMoveNames` são os OUTROS moves do set final (não inclui o próprio
+// `moveName`) — só afeta o score de moves de status, através do fator de
+// cobertura: sem contexto (lista vazia), status fica no piso de cobertura.
+export async function scoreMove(
+  pokeApiId: number,
+  moveName: string,
+  generation: number,
+  contextMoveNames: string[] = [],
+): Promise<MoveScoreDTO> {
   const [species, move] = await Promise.all([getSpecies(pokeApiId), getMove(moveName)]);
 
   const damageClass = resolveDamageClass(move.damageClass, move.type, generation);
@@ -91,7 +137,18 @@ export async function scoreMove(pokeApiId: number, moveName: string, generation:
   const power = isStatus ? BASELINE_POWER + statusMoveBonus(move) : (move.power ?? BASELINE_POWER);
   const relevantStat = damageClass === "special" ? species.baseStats.specialAttack : species.baseStats.attack;
   const statWeight = isStatus ? 1 : relevantStat / 100;
-  const score = Math.round(power * stabMultiplier * statWeight * 100) / 100;
+  const accFactor = accuracyFactor(move);
+
+  let coverage = 1;
+  if (isStatus) {
+    const otherMoves = contextMoveNames.filter((n) => n.toLowerCase() !== moveName.toLowerCase());
+    const damageMoveCount = await countDamageMoves(otherMoves, generation);
+    coverage = clamp(damageMoveCount / COVERAGE_FULL_AT, COVERAGE_FLOOR, 1);
+  }
+
+  const slowness = slownessFactor(species.baseStats.speed);
+  const prioBonus = move.priority > 0 ? PRIORITY_BASE_BONUS * move.priority * slowness : 0;
+  const score = Math.round((power * stabMultiplier * statWeight * accFactor * coverage + prioBonus) * 100) / 100;
 
   const reasons: string[] = [damageClass === "physical" ? "físico" : damageClass === "special" ? "especial" : "status"];
   if (stab) reasons.push("STAB");
@@ -112,45 +169,55 @@ export async function scoreMove(pokeApiId: number, moveName: string, generation:
       const netChange = move.statChanges.reduce((sum, sc) => sum + sc.change, 0);
       reasons.push(netChange > 0 ? "melhora stats próprios" : "reduz stats do oponente");
     }
+    if (coverage < 1) {
+      reasons.push(`pouca cobertura de dano no time: status descontado (${Math.round(coverage * 100)}%)`);
+    }
+  }
+  if (accFactor < 1) {
+    reasons.push(`precisão ${move.accuracy}%: penalizado`);
+  }
+  if (prioBonus > 0) {
+    const speedNote = slowness > 1 ? "Speed baixo: bônus alto" : "Speed já alto: bônus menor";
+    reasons.push(`prioridade +${move.priority} (${speedNote})`);
   }
 
   return { move: move.name, type: move.type, damageClass, power, stab, statWeight, score, reasons };
 }
 
-// Greedy: pega o melhor score, depois o melhor score seguinte cujo tipo
-// ainda não esteja no set (evita repetir tipo). Se não sobrar tipo novo
-// antes de completar 4 (movepool pequeno/pouco diverso), relaxa a
-// restrição e completa com os melhores scores restantes, repetindo tipo
-// se precisar. Se a espécie souber menos de 4 moves no jogo do save,
-// devolve só o que existe — não há o que inventar.
+// Greedy iterativo: a cada passo, repontua todos os candidatos restantes
+// usando os moves JÁ escolhidos como contexto (essencial pro fator de
+// cobertura de status fazer sentido — sem isso, um status ficaria preso ao
+// piso de cobertura mesmo quando os outros 3 escolhidos já são dano). Dentro
+// de cada passo, prefere um tipo ainda não usado; se não sobrar tipo novo
+// (movepool pequeno/pouco diverso), relaxa e permite repetir. Se a espécie
+// souber menos de 4 moves no jogo do save, devolve só o que existe — não há
+// o que inventar.
 export async function buildMoveset(saveId: string, pokeApiId: number): Promise<MoveScoreDTO[]> {
   const save = await getSaveOrThrow(saveId);
   const versionGroup = await getVersionGroupForGame(save.game);
-  const learnable = await getLearnableMovesInVersionGroup(pokeApiId, versionGroup);
-
-  const scored = await Promise.all(
-    [...learnable].map((moveName) => scoreMove(pokeApiId, moveName, save.generation)),
-  );
-  scored.sort((a, b) => b.score - a.score || a.move.localeCompare(b.move));
+  const learnable = [...(await getLearnableMovesInVersionGroup(pokeApiId, versionGroup))];
 
   const chosen: MoveScoreDTO[] = [];
   const usedTypes = new Set<string>();
+  let remaining = learnable;
 
-  for (const candidate of scored) {
-    if (chosen.length >= MOVESET_SIZE) break;
-    if (!usedTypes.has(candidate.type)) {
-      chosen.push(candidate);
-      usedTypes.add(candidate.type);
-    }
-  }
+  while (chosen.length < MOVESET_SIZE && remaining.length > 0) {
+    const context = chosen.map((c) => c.move);
+    const scored = await Promise.all(
+      remaining.map((moveName) => scoreMove(pokeApiId, moveName, save.generation, context)),
+    );
 
-  if (chosen.length < MOVESET_SIZE) {
-    for (const candidate of scored) {
-      if (chosen.length >= MOVESET_SIZE) break;
-      if (!chosen.includes(candidate)) {
-        chosen.push(candidate);
-      }
-    }
+    const diverse = scored.filter((m) => !usedTypes.has(m.type));
+    const pool = diverse.length > 0 ? diverse : scored;
+    const pick = pool.reduce((best, candidate) =>
+      candidate.score > best.score || (candidate.score === best.score && candidate.move < best.move)
+        ? candidate
+        : best,
+    );
+
+    chosen.push(pick);
+    usedTypes.add(pick.type);
+    remaining = remaining.filter((name) => name !== pick.move);
   }
 
   return chosen;
@@ -158,17 +225,20 @@ export async function buildMoveset(saveId: string, pokeApiId: number): Promise<M
 
 // Reusa scoreMove pra decidir, entre dois moves específicos, qual pontua
 // melhor pra essa espécie/geração — pensado pro fluxo de "aprendeu um move
-// novo, troca por qual dos atuais?" (próximo prompt, level up). Nenhuma
-// integração com level up é feita aqui, só a função pronta.
+// novo, troca por qual dos atuais?" (usado por evaluateNewMove, tanto na
+// tela de Mudar Moves quanto no level up em batalha). `contextMoveNames`
+// deve ser os OUTROS moves que permaneceriam no set independente de quem
+// vencer essa comparação — ver evaluateNewMove pra como isso é montado.
 export async function compareMoves(
   pokeApiId: number,
   moveNameA: string,
   moveNameB: string,
   generation: number,
+  contextMoveNames: string[] = [],
 ): Promise<MoveComparisonDTO> {
   const [moveA, moveB] = await Promise.all([
-    scoreMove(pokeApiId, moveNameA, generation),
-    scoreMove(pokeApiId, moveNameB, generation),
+    scoreMove(pokeApiId, moveNameA, generation, contextMoveNames),
+    scoreMove(pokeApiId, moveNameB, generation, contextMoveNames),
   ]);
 
   const winner = moveA.score === moveB.score ? null : moveA.score > moveB.score ? moveA.move : moveB.move;
@@ -199,23 +269,41 @@ export async function evaluateNewMove(pokemonId: string, moveName: string): Prom
   }
 
   if (pokemon.moves.length < MOVESET_SIZE) {
-    const learnedMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation);
+    // Nada sai do set aqui — o contexto pro fator de cobertura é o moveset
+    // atual inteiro.
+    const learnedMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation, pokemon.moves);
     const updated = await updatePokemon(pokemonId, { moves: [...pokemon.moves, learnedMove.move] });
     return { outcome: "learned_directly", pokemon: updated, learnedMove };
   }
 
-  const newMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation);
+  // Score "de vitrine" pro move novo, calculado com o moveset atual como
+  // contexto — só informativo. A decisão de fato usa `comparisons` abaixo,
+  // onde cada par é pontuado com o contexto que RESULTARIA da troca (os
+  // outros 3 moves, excluindo o candidato à saída) — é isso que faz um
+  // status não vencer o único move de dano do set.
+  const newMove = await scoreMove(pokemon.pokeApiId, normalizedMoveName, save.generation, pokemon.moves);
   const comparisons = await Promise.all(
-    pokemon.moves.map((currentMove) =>
-      compareMoves(pokemon.pokeApiId, normalizedMoveName, currentMove, save.generation),
-    ),
+    pokemon.moves.map((currentMove) => {
+      const context = pokemon.moves.filter((m) => m !== currentMove);
+      return compareMoves(pokemon.pokeApiId, normalizedMoveName, currentMove, save.generation, context);
+    }),
   );
-  const weakest = comparisons.reduce((min, c) => (c.moveB.score < min.moveB.score ? c : min));
+  // Só sugere trocar um move que o novo de fato supera na comparação (não
+  // só "o mais fraco dos 4 por score bruto" — como cada comparação usa um
+  // contexto ligeiramente diferente, moveA.score varia entre elas). Se o
+  // novo move não vence nenhuma, ele é mais fraco que o moveset inteiro e
+  // não há sugestão de troca — mas o usuário ainda pode forçar manualmente
+  // tocando em qualquer move na lista (comparisons continua completo).
+  const beatable = comparisons.filter((c) => c.winner === newMove.move);
+  const weakest =
+    beatable.length > 0
+      ? beatable.reduce((min, c) => (c.moveB.score < min.moveB.score ? c : min))
+      : null;
 
   return {
     outcome: "suggested_replacement",
     newMove,
     comparisons,
-    suggestedReplacement: weakest.moveB.move,
+    suggestedReplacement: weakest?.moveB.move ?? null,
   };
 }

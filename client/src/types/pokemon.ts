@@ -28,5 +28,5 @@ export type LearnMoveResult =
       outcome: "suggested_replacement";
       newMove: MoveScoreDTO;
       comparisons: MoveComparisonDTO[];
-      suggestedReplacement: string;
+      suggestedReplacement: string | null;
     };

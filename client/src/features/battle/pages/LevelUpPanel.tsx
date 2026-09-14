@@ -86,8 +86,9 @@ export function LevelUpPanel({
         <Panel className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
           <Hint>
-            Suggestion: replace {cap(result.suggestedReplacement)} (weakest).
-            Tap the move that should go.
+            {result.suggestedReplacement
+              ? `Suggestion: replace ${cap(result.suggestedReplacement)} (weakest). Tap the move that should go.`
+              : "This move isn't better than anything it currently has — not recommended. Tap a move below to replace it anyway."}
           </Hint>
           {result.comparisons.map((c) => (
             <button
@@ -112,6 +113,17 @@ export function LevelUpPanel({
             onClick={() => void applyReplacement()}
           >
             CONFIRM REPLACEMENT
+          </Btn>
+          <Btn
+            variant="ghost"
+            full
+            fontSize={8}
+            onClick={() => {
+              setResult(null);
+              setReplace(null);
+            }}
+          >
+            CLOSE
           </Btn>
         </Panel>
       </PageShell>

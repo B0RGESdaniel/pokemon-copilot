@@ -61,6 +61,10 @@ export type RawMove = {
   power: number | null;
   accuracy: number | null;
   pp: number | null;
+  // Sinal positivo = age antes (Quick Attack=1, Extreme Speed=2); negativo =
+  // age depois (Counter=-5). Usado em moveset.service.ts pra bonificar moves
+  // que ajudam pokémon lentos a sair na frente — ver scoreMove.
+  priority: number;
   damage_class: { name: string } | null;
   // Sinal útil pra pontuar moves de status (sem power real) — ver
   // moveset.service.ts. `meta` é null em pouquíssimos moves obscuros.
@@ -139,6 +143,7 @@ export type MoveDTO = {
   power: number | null;
   accuracy: number | null;
   pp: number | null;
+  priority: number;
   damageClass: string | null;
   category: string | null;
   ailment: string | null;
