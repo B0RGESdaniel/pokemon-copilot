@@ -15,7 +15,7 @@
   --color-frame: #d5dded;
   --color-frame-alt: #b3c1d8;
   --color-slot-empty: #bcc6d8;
-  --color-border: #e4e9f2;
+  --color-highlight: #e4e9f2;
   --color-text: #0b1120;
   --color-text-muted: #3c4a66;
   --color-text-faint: #6a768c;
@@ -76,6 +76,25 @@
   --color-type-stellar-fg: #0b1120;
   --color-type-unknown: #8b96ab;
   --color-type-unknown-fg: #f2f6ff;
+
+  /* shadcn/neobrutalism structural tokens — remapped onto the palette above
+     instead of the lib's default theme, so migrated components keep this
+     app's pixel-art navy/blue identity. Component source (installed via the
+     shadcn CLI into components/ui) references these exact class names
+     (bg-main, border-border, shadow-shadow, rounded-base, ...), so don't
+     rename them without also touching every installed component. */
+  --color-background: var(--color-bg);
+  --color-secondary-background: var(--color-panel);
+  --color-foreground: var(--color-text);
+  --color-main: var(--color-blue);
+  --color-main-foreground: var(--color-white);
+  --color-border: var(--color-ink);
+  --color-ring: var(--color-blue-light);
+  --color-overlay: rgb(11 17 32 / 0.7);
+
+  --radius-base: 0px;
+
+  --shadow-shadow: 3px 3px 0 var(--color-ink);
 }
 
 * {

@@ -17,6 +17,11 @@
     "jsx": "react-jsx",
     "strict": true,
 
+    /* Path aliases (used by shadcn/neobrutalism components under src/components/ui) */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,

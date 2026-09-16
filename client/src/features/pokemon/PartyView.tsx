@@ -21,7 +21,7 @@ function PartyCell({
     return (
       <button
         onClick={onClick}
-        className="flex min-h-16 items-center gap-2 border-[3px] border-ink bg-slot-empty p-2 text-left shadow-[inset_0_3px_0_var(--color-border),3px_3px_0_var(--color-ink)]"
+        className="flex min-h-16 items-center gap-2 border-[3px] border-ink bg-slot-empty p-2 text-left shadow-[inset_0_3px_0_var(--color-highlight),3px_3px_0_var(--color-ink)]"
       >
         <div className="flex size-12 flex-none items-center justify-center border-2 border-ink bg-frame">
           <span className="font-pix text-[16px] text-text-dim">+</span>
