@@ -6,7 +6,7 @@ import {
 } from "../../../hooks/usePokemonMutations";
 import { useEvolutions, useMoveTypes } from "../../../hooks/useSpecies";
 import { Button } from "../../../components/ui/button";
-import { ConfirmBar } from "../../../components/ConfirmBar";
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
 import { Card } from "../../../components/ui/card";
@@ -258,19 +258,17 @@ export function DetailFlow({
         {pokemon.location === "PARTY" ? "MOVE TO PC" : "MOVE TO PARTY"}
       </Button>
 
-      {!confirming ? (
-        <Button variant="outlineDanger" full onClick={() => setConfirming(true)}>
-          DELETE
-        </Button>
-      ) : (
-        <ConfirmBar
-          danger
-          text={`Delete ${nameOf(pokemon)} forever? This cannot be undone.`}
-          confirmLabel="YES, DELETE"
-          onCancel={() => setConfirming(false)}
-          onConfirm={() => void confirmDelete()}
-        />
-      )}
+      <Button variant="outlineDanger" full onClick={() => setConfirming(true)}>
+        DELETE
+      </Button>
+      <ConfirmDialog
+        open={confirming}
+        danger
+        text={`Delete ${nameOf(pokemon)} forever? This cannot be undone.`}
+        confirmLabel="YES, DELETE"
+        onCancel={() => setConfirming(false)}
+        onConfirm={() => void confirmDelete()}
+      />
     </PageShell>
   );
 }

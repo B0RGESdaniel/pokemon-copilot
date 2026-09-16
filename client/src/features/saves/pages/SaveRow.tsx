@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../../components/ui/button";
-import { ConfirmBar } from "../../../components/ConfirmBar";
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { Card } from "../../../components/ui/card";
 import type { Save } from "../../../types/saves";
 
@@ -15,21 +15,6 @@ export function SaveRow({
 }) {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
-
-  if (confirming) {
-    return (
-      <ConfirmBar
-        danger
-        text={`Excluir "${save.name}"? Isso remove permanentemente os Pokémon e a batalha desse save. Essa ação não pode ser desfeita.`}
-        confirmLabel={busy ? "EXCLUINDO..." : "SIM, EXCLUIR"}
-        onCancel={() => setConfirming(false)}
-        onConfirm={() => {
-          setBusy(true);
-          void onDelete().finally(() => setBusy(false));
-        }}
-      />
-    );
-  }
 
   return (
     <Card>
@@ -52,6 +37,17 @@ export function SaveRow({
           DELETE
         </Button>
       </div>
+      <ConfirmDialog
+        open={confirming}
+        danger
+        text={`Excluir "${save.name}"? Isso remove permanentemente os Pokémon e a batalha desse save. Essa ação não pode ser desfeita.`}
+        confirmLabel={busy ? "EXCLUINDO..." : "SIM, EXCLUIR"}
+        onCancel={() => setConfirming(false)}
+        onConfirm={() => {
+          setBusy(true);
+          void onDelete().finally(() => setBusy(false));
+        }}
+      />
     </Card>
   );
 }

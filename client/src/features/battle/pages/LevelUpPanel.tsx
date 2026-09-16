@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../../components/ui/button";
-import { ConfirmBar } from "../../../components/ConfirmBar";
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
 import { Card } from "../../../components/ui/card";
@@ -227,24 +227,22 @@ export function LevelUpPanel({
         </Card>
       ) : null}
 
-      {asking ? (
-        <ConfirmBar
-          text={
-            move && replace
-              ? `Go to level ${level} and learn ${cap(move)}, replacing ${cap(replace)}?`
-              : move
-                ? `Learn ${cap(move)} and go to level ${level}?`
-                : `Update ${cap(mine.nickname ?? mine.species?.name)} to level ${level}?`
-          }
-          confirmLabel="CONFIRM"
-          onCancel={() => setAsking(false)}
-          onConfirm={() => void apply()}
-        />
-      ) : (
-        <Button variant="primary" full onClick={ask}>
-          SAVE LEVEL UP
-        </Button>
-      )}
+      <Button variant="primary" full onClick={ask}>
+        SAVE LEVEL UP
+      </Button>
+      <ConfirmDialog
+        open={asking}
+        text={
+          move && replace
+            ? `Go to level ${level} and learn ${cap(move)}, replacing ${cap(replace)}?`
+            : move
+              ? `Learn ${cap(move)} and go to level ${level}?`
+              : `Update ${cap(mine.nickname ?? mine.species?.name)} to level ${level}?`
+        }
+        confirmLabel="CONFIRM"
+        onCancel={() => setAsking(false)}
+        onConfirm={() => void apply()}
+      />
     </PageShell>
   );
 }

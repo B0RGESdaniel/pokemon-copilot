@@ -1,19 +1,11 @@
-import { tv } from "tailwind-variants";
+import { Badge } from "./ui/badge";
 
-const typeBadge = tv({
-  base: "font-pix border-2 border-ink px-1.25 py-1",
-  variants: {
-    size: {
-      6: "text-[6px]",
-      7: "text-[7px]",
-      8: "text-[8px]",
-      16: "text-[16px]",
-    },
-  },
-  defaultVariants: {
-    size: 7,
-  },
-});
+const sizeClass: Record<number, string> = {
+  6: "text-[6px]",
+  7: "text-[7px]",
+  8: "text-[8px]",
+  16: "text-[16px]",
+};
 
 const typeClass: Record<string, string> = {
   fire: "bg-type-fire text-type-fire-fg",
@@ -40,19 +32,16 @@ const typeClass: Record<string, string> = {
 
 export function TypeBadge({
   type,
-  size,
+  size = 7,
 }: {
   type: string;
   size?: 6 | 7 | 8 | 16;
 }) {
   return (
-    <span
-      className={typeBadge({
-        size,
-        className: typeClass[type] ?? typeClass.unknown,
-      })}
+    <Badge
+      className={`px-1.25 py-1 font-pix ${sizeClass[size]} ${typeClass[type] ?? typeClass.unknown}`}
     >
       {type === "unknown" ? "???" : type.toUpperCase()}
-    </span>
+    </Badge>
   );
 }

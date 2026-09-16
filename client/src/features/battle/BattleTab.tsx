@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../components/ui/button";
-import { ConfirmBar } from "../../components/ConfirmBar";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Hint } from "../../components/Hint";
 import { Card } from "../../components/ui/card";
 import { Sprite } from "../../components/Sprite";
@@ -218,24 +218,23 @@ export function BattleTab({
           </div>
         </div>
 
-        {confirm ? (
-          <ConfirmBar
-            danger
-            text={
-              confirm === "fainted"
-                ? `Mark ${cap(opponent?.species?.name)} as fainted and end the battle? This cannot be undone.`
-                : "Run and end the battle without marking anything as fainted?"
-            }
-            confirmLabel={confirm === "fainted" ? "YES, FAINTED" : "YES, RUN"}
-            onCancel={() => setConfirm(null)}
-            onConfirm={() => {
-              void battle.end(
-                confirm === "fainted" ? "opponent_fainted" : "fled",
-              );
-              setConfirm(null);
-            }}
-          />
-        ) : null}
+        <ConfirmDialog
+          open={confirm !== null}
+          danger
+          text={
+            confirm === "fainted"
+              ? `Mark ${cap(opponent?.species?.name)} as fainted and end the battle? This cannot be undone.`
+              : "Run and end the battle without marking anything as fainted?"
+          }
+          confirmLabel={confirm === "fainted" ? "YES, FAINTED" : "YES, RUN"}
+          onCancel={() => setConfirm(null)}
+          onConfirm={() => {
+            void battle.end(
+              confirm === "fainted" ? "opponent_fainted" : "fled",
+            );
+            setConfirm(null);
+          }}
+        />
       </div>
 
       {panel === "attack" ? (
