@@ -37,7 +37,9 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon className="shrink-0 text-text-faint">▾</SelectPrimitive.Icon>
+      <SelectPrimitive.Icon className="shrink-0 text-text-faint">
+        ▾
+      </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
 }
@@ -67,7 +69,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
-            "max-h-[min(20rem,var(--available-height))] min-w-(--anchor-width) overflow-y-auto rounded-base border-[3px] border-ink bg-panel p-1 shadow-[3px_3px_0_var(--color-ink)] outline-none",
+            "max-h-[min(20rem,var(--available-height))] min-w-(--anchor-width) overflow-y-auto rounded-base border-[3px] border-ink bg-panel p-1 shadow-shadow outline-none",
             className,
           )}
           {...props}

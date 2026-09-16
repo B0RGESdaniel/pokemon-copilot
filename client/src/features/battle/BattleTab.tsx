@@ -143,15 +143,15 @@ export function BattleTab({
           </Card>
         </div>
 
-        <div className="relative h-54 overflow-hidden rounded-base border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-[3px_3px_0_var(--color-ink)]">
-          <div className="absolute top-6.5 right-[16%] aspect-square w-[29%] max-w-33">
+        <div className="relative h-54 overflow-hidden rounded-base border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-shadow">
+          <div className="absolute top-6.5 right-[16%] aspect-square w-[29%] max-w-33 animate-in slide-in-from-right fade-in duration-500">
             <Sprite
               url={opponent?.species?.sprite}
               size="fill"
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute -bottom-2.5 left-[12%] aspect-square w-[38%] max-w-38.5">
+          <div className="absolute -bottom-2.5 left-[12%] aspect-square w-[38%] max-w-38.5 animate-in slide-in-from-left fade-in duration-500">
             <img
               src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}

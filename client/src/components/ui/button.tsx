@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 // sites migrate with a straight import swap. Restyled to reuse this app's
 // pixel-art tokens instead of the library's own default theme.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-base px-3 py-2 font-base transition-[opacity,transform,box-shadow] active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-base px-3 py-2 font-base transition-[opacity,transform,box-shadow] duration-500 active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -20,7 +20,8 @@ const buttonVariants = cva(
           "border-2 border-border bg-red text-white shadow-shadow [text-shadow:1px_1px_0_var(--color-ink)]",
         outlineDanger:
           "border-[3px] border-red bg-background text-red shadow-shadow",
-        ghost: "border-2 border-border bg-secondary-background text-foreground shadow-shadow",
+        ghost:
+          "border-2 border-border bg-secondary-background text-foreground shadow-shadow",
       },
       fontSize: {
         7: "text-[7px]",
@@ -63,7 +64,9 @@ function Button({
   return (
     <ButtonPrimitive
       data-slot="button"
-      className={cn(buttonVariants({ variant, fontSize, minHeight, full, className }))}
+      className={cn(
+        buttonVariants({ variant, fontSize, minHeight, full, className }),
+      )}
       {...props}
     />
   );

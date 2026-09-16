@@ -1,19 +1,11 @@
 import { tv } from "tailwind-variants";
-import { Icon } from "../components/Icon";
 
 const bottomNavItem = tv({
-  slots: {
-    button:
-      "flex min-h-16 flex-1 flex-row items-center justify-center gap-2.5 border-0 font-pix text-[8px]",
-    icon: "size-6",
-  },
+  base: "flex min-h-16 flex-1 flex-row items-center justify-center gap-2.5 border-0 font-pix text-[16px]",
   variants: {
     active: {
-      true: { button: "bg-blue text-white", icon: "bg-white" },
-      false: {
-        button: "bg-navy-dark text-nav-inactive",
-        icon: "bg-nav-inactive",
-      },
+      true: "bg-blue text-white",
+      false: "bg-navy-dark text-nav-inactive",
     },
   },
 });
@@ -26,21 +18,21 @@ export function BottomNav({
   onChange: (t: "pokemons" | "battle") => void;
 }) {
   const isPokemons = tab === "pokemons";
-  const pokemonNav = bottomNavItem({ active: isPokemons });
-  const battleNav = bottomNavItem({ active: !isPokemons });
   return (
     <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark">
       <button
         onClick={() => onChange("pokemons")}
-        className={pokemonNav.button({
+        className={bottomNavItem({
+          active: isPokemons,
           className: "border-r-[3px] border-ink",
         })}
       >
-        <Icon src="/pokeball-icon.svg" className={pokemonNav.icon()} />
         POKEMONS
       </button>
-      <button onClick={() => onChange("battle")} className={battleNav.button()}>
-        <Icon src="/battle-icon.svg" className={battleNav.icon()} />
+      <button
+        onClick={() => onChange("battle")}
+        className={bottomNavItem({ active: !isPokemons })}
+      >
         BATTLE
       </button>
     </div>
