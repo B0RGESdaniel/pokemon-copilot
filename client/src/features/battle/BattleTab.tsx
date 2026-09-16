@@ -210,7 +210,7 @@ export function BattleTab({
             <Button
               variant="primary"
               onClick={() => setConfirm("flee")}
-              className="bg-blue-light shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]"
+              className="bg-blue shadow-[inset_0_3px_0_var(--color-blue-light),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               RUN
