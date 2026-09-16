@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown } from "pixelarticons/react";
 import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { SectionLabel } from "../components/SectionLabel";
 import { NewSaveDialog } from "../features/saves/NewSaveDialog";
 import type { Save } from "../types/saves";
@@ -49,7 +50,7 @@ export function Header({
       </div>
 
       {open ? (
-        <div className="absolute top-full right-2 z-10 flex w-65 flex-col gap-1.5 rounded-base border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]">
+        <Card className="absolute top-full right-2 z-10 w-65 gap-1.5">
           <SectionLabel>SAVES</SectionLabel>
           {saves.map((s) => (
             <button
@@ -92,7 +93,7 @@ export function Header({
           >
             MANAGE SAVES
           </Button>
-        </div>
+        </Card>
       ) : null}
 
       <NewSaveDialog

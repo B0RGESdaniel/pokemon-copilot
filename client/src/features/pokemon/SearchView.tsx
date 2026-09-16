@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Hint } from "../../components/Hint";
 import { Sprite } from "../../components/Sprite";
+import { Card } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import type { PokemonDTO } from "../../types/pokemon";
 import type { GenerationSpeciesEntry } from "../../types/species";
@@ -24,14 +25,14 @@ export function SearchView({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="rounded-base border-[3px] border-ink bg-panel p-2 shadow-[3px_3px_0_var(--color-ink)]">
+      <Card className="p-2">
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="search species..."
           className="p-2.75 text-[16px]"
         />
-      </div>
+      </Card>
       <Hint>
         {!q
           ? "Type a species name to search the dex."
