@@ -1,3 +1,5 @@
+import { Input } from "./ui/input";
+
 export function Stepper({
   value,
   onChange,
@@ -17,14 +19,14 @@ export function Stepper({
       >
         -
       </button>
-      <input
+      <Input
         value={String(value)}
         onChange={(e) => {
           const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 3);
           onChange(digits === "" ? min : Math.min(max, Number(digits)));
         }}
         inputMode="numeric"
-        className="min-w-0 flex-[1_1_auto] rounded-base border-2 border-ink bg-white p-2 text-center text-[24px] text-ink"
+        className="min-w-0 flex-[1_1_auto] p-2 text-center text-[24px]"
       />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}

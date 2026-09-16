@@ -1,3 +1,5 @@
+import { Input } from "./ui/input";
+
 export function SearchInput({
   value,
   onChange,
@@ -8,11 +10,11 @@ export function SearchInput({
   placeholder: string;
 }) {
   return (
-    <input
+    <Input
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-base border-2 border-ink bg-white p-2.75 text-[14px] text-ink"
+      className="p-2.75 text-[14px]"
     />
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlashMessage } from "../components/FlashMessage";
+import { Toaster } from "../components/ui/toast";
 import { BattleTab } from "../features/battle/BattleTab";
 import { CreateSaveForm } from "../features/saves/CreateSaveForm";
 import { AddPage } from "../features/pokemon/pages/AddPage";
@@ -49,7 +49,7 @@ function MainApp({
   const { pc } = usePc(save.id);
   const { dex } = useGenerationDex(save.generation);
   const battle = useBattle(save.id);
-  const { message, flash } = useFlash();
+  const { flash } = useFlash();
 
   const [tab, setTab] = useState<"pokemons" | "battle">("pokemons");
   const [sub, setSub] = useState<"party" | "pc" | "search">("party");
@@ -81,7 +81,7 @@ function MainApp({
         onManageSaves={() => setManagingSaves(true)}
       />
       {tab === "pokemons" ? <Subnav sub={sub} onChange={setSub} /> : null}
-      <FlashMessage message={message} />
+      <Toaster />
 
       <div
         className={`flex-1 ${

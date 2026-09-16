@@ -1,14 +1,10 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
+import { toast } from "../components/ui/toast";
 
 export function useFlash() {
-  const [message, setMessage] = useState<string | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
   const flash = useCallback((text: string) => {
-    setMessage(text);
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setMessage(null), 2800);
+    toast.add({ title: text, timeout: 2800 });
   }, []);
 
-  return { message, flash };
+  return { flash };
 }
