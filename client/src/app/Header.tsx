@@ -47,7 +47,7 @@ export function Header({
       </div>
 
       {open ? (
-        <div className="absolute top-full right-2 z-10 flex w-65 flex-col gap-1.5 border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]">
+        <div className="absolute top-full right-2 z-10 flex w-65 flex-col gap-1.5 rounded-base border-[3px] border-ink bg-panel p-2.5 shadow-[3px_3px_0_var(--color-ink)]">
           <SectionLabel>SAVES</SectionLabel>
           {saves.map((s) => (
             <button
@@ -56,7 +56,7 @@ export function Header({
                 onSelectSave(s.id);
                 setOpen(false);
               }}
-              className={`border-2 border-ink p-2 text-left font-pix text-[8px] ${
+              className={`rounded-base border-2 border-ink p-2 text-left font-pix text-[8px] ${
                 s.id === selectedSave.id
                   ? "bg-navy text-white"
                   : "bg-panel-alt text-text"

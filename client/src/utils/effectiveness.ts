@@ -23,7 +23,7 @@ const effectivenessTier = tv({
     tier: {
       immune: "bg-text-muted text-white",
       resisted: "bg-red text-white",
-      neutral: "bg-border text-text-muted",
+      neutral: "bg-highlight text-text-muted",
       superEffective: "bg-green-soft text-ink",
       veryEffective: "bg-green text-ink",
     },

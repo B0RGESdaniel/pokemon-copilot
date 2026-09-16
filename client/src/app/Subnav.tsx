@@ -1,7 +1,7 @@
 import { tv } from "tailwind-variants";
 
 const subnavTab = tv({
-  base: "min-h-11 flex-1 border-2 border-ink font-pix text-[8px]",
+  base: "min-h-11 flex-1 rounded-base border-2 border-ink font-pix text-[8px]",
   variants: {
     active: {
       true: "bg-navy text-white shadow-[inset_0_2px_0_var(--color-navy-light)]",

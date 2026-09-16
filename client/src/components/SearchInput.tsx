@@ -12,7 +12,7 @@ export function SearchInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full border-2 border-ink bg-white p-2.75 text-[14px] text-ink"
+      className="w-full rounded-base border-2 border-ink bg-white p-2.75 text-[14px] text-ink"
     />
   );
 }

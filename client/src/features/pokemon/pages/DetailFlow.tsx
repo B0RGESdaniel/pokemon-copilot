@@ -119,7 +119,7 @@ export function DetailFlow({
       onBack={onBack}
     >
       <Card className="items-center">
-        <div className="flex size-33 items-center justify-center border-[3px] border-ink bg-frame">
+        <div className="flex size-33 items-center justify-center rounded-base border-[3px] border-ink bg-frame">
           <Sprite url={sp?.sprite} size={120} alt={nameOf(pokemon)} />
         </div>
         <div className="text-center font-pix text-[16px] text-text">
@@ -153,7 +153,7 @@ export function DetailFlow({
                 <div className="w-15.5 flex-none font-pix text-[8px] text-text-muted">
                   {st.label}
                 </div>
-                <div className="h-4.5 flex-1 border-2 border-ink bg-frame p-0.5">
+                <div className="h-4.5 flex-1 overflow-hidden rounded-base border-2 border-ink bg-frame p-0.5">
                   <div
                     className="h-full"
                     style={{ width: `${pct}%`, background: st.color }}
@@ -178,7 +178,7 @@ export function DetailFlow({
           pokemon.moves.map((m) => (
             <div
               key={m}
-              className="flex min-h-11.5 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5"
+              className="flex min-h-11.5 items-center gap-2 rounded-base border-2 border-ink bg-panel-alt p-2.5"
             >
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(m)}
@@ -194,7 +194,7 @@ export function DetailFlow({
 
       <Card>
         <SectionLabel>HELD ITEM</SectionLabel>
-        <div className="flex min-h-11.5 items-center border-2 border-ink bg-panel-alt p-2.5 font-vt text-[16px] text-text">
+        <div className="flex min-h-11.5 items-center rounded-base border-2 border-ink bg-panel-alt p-2.5 font-vt text-[16px] text-text">
           {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
         </div>
         <Button variant="secondary" full onClick={() => setPage("item")}>
@@ -225,7 +225,7 @@ export function DetailFlow({
           </Button>
         </div>
         {evoInfo ? (
-          <div className="flex flex-col gap-1.5 border-2 border-ink bg-panel-alt p-2.5">
+          <div className="flex flex-col gap-1.5 rounded-base border-2 border-ink bg-panel-alt p-2.5">
             <div className="font-pix text-[8px] text-text-muted">
               EVOLUTION METHOD
             </div>

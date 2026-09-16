@@ -21,9 +21,9 @@ function PartyCell({
     return (
       <button
         onClick={onClick}
-        className="flex min-h-16 items-center gap-2 border-[3px] border-ink bg-slot-empty p-2 text-left shadow-[inset_0_3px_0_var(--color-highlight),3px_3px_0_var(--color-ink)]"
+        className="flex min-h-16 items-center gap-2 rounded-base border-[3px] border-ink bg-slot-empty p-2 text-left shadow-[inset_0_3px_0_var(--color-highlight),3px_3px_0_var(--color-ink)]"
       >
-        <div className="flex size-12 flex-none items-center justify-center border-2 border-ink bg-frame">
+        <div className="flex size-12 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
           <span className="font-pix text-[16px] text-text-dim">+</span>
         </div>
         <div className="font-pix text-[8px] text-text-faint">SLOT {slot}</div>
@@ -35,9 +35,9 @@ function PartyCell({
   return (
     <button
       onClick={onClick}
-      className="flex min-h-16 items-center gap-2 border-[3px] border-ink bg-panel p-2 text-left shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]"
+      className="flex min-h-16 items-center gap-2 rounded-base border-[3px] border-ink bg-panel p-2 text-left shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]"
     >
-      <div className="flex size-12 flex-none items-center justify-center border-2 border-ink bg-frame">
+      <div className="flex size-12 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
         <Sprite url={pokemon.species?.sprite} size={44} alt={nameOf(pokemon)} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-0.75">

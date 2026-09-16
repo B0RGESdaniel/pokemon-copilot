@@ -50,9 +50,9 @@ export function EvolvePage({
             <button
               key={o.pokeApiId}
               onClick={() => void pick(o)}
-              className="flex min-h-38.5 flex-col items-center gap-1.5 border-[3px] border-ink bg-panel p-2 text-center shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]"
+              className="flex min-h-38.5 flex-col items-center gap-1.5 rounded-base border-[3px] border-ink bg-panel p-2 text-center shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]"
             >
-              <div className="flex size-18 items-center justify-center border-2 border-ink bg-frame">
+              <div className="flex size-18 items-center justify-center rounded-base border-2 border-ink bg-frame">
                 <Sprite
                   url={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${o.pokeApiId}.png`}
                   size={64}

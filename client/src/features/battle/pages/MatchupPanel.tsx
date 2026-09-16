@@ -14,7 +14,7 @@ const matchupGrade = tv({
       great: "bg-green text-ink",
       good: "bg-green-soft text-ink",
       bad: "bg-red text-white",
-      neutral: "bg-border text-text-muted",
+      neutral: "bg-highlight text-text-muted",
     },
   },
 });
@@ -69,14 +69,14 @@ export function MatchupPanel({
             <button
               key={r.pokemon.id}
               onClick={() => (active ? undefined : void onPick(r.pokemon.id))}
-              className={`flex w-full flex-col gap-2 border-[3px] p-2.5 text-left ${
+              className={`flex w-full flex-col gap-2 rounded-base border-[3px] p-2.5 text-left ${
                 active
                   ? "border-blue bg-blue-soft shadow-[inset_0_3px_0_var(--color-blue-softer)]"
                   : "border-ink bg-panel shadow-[3px_3px_0_var(--color-ink)]"
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <div className="flex size-13.5 flex-none items-center justify-center border-2 border-ink bg-frame">
+                <div className="flex size-13.5 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
                   <Sprite
                     url={r.pokemon.species?.sprite}
                     size={46}
@@ -101,7 +101,7 @@ export function MatchupPanel({
                   </div>
                 </div>
                 <span
-                  className={`flex-none border-2 border-ink px-1.5 py-1 font-pix text-[8px] whitespace-nowrap ${grade.className}`}
+                  className={`flex-none rounded-base border-2 border-ink px-1.5 py-1 font-pix text-[8px] whitespace-nowrap ${grade.className}`}
                 >
                   {grade.label}
                 </span>
@@ -112,7 +112,7 @@ export function MatchupPanel({
                   ATK
                 </span>
                 <span
-                  className={`border-2 border-ink px-1.25 py-0.75 font-pix text-[8px] ${atkBadge.className}`}
+                  className={`rounded-base border-2 border-ink px-1.25 py-0.75 font-pix text-[8px] ${atkBadge.className}`}
                 >
                   {atkBadge.label}
                 </span>
@@ -120,7 +120,7 @@ export function MatchupPanel({
                   DEF
                 </span>
                 <span
-                  className={`border-2 border-ink px-1.25 py-0.75 font-pix text-[8px] ${defBadge.className}`}
+                  className={`rounded-base border-2 border-ink px-1.25 py-0.75 font-pix text-[8px] ${defBadge.className}`}
                 >
                   {defBadge.label}
                 </span>

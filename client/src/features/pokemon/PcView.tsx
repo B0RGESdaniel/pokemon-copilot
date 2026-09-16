@@ -17,7 +17,7 @@ function PcCell({
   return (
     <button
       onClick={onClick}
-      className="flex min-h-24 flex-col items-center justify-center gap-0.5 border-2 border-ink bg-panel p-1 shadow-[inset_0_2px_0_#ffffff]"
+      className="flex min-h-24 flex-col items-center justify-center gap-0.5 rounded-base border-2 border-ink bg-panel p-1 shadow-[inset_0_2px_0_#ffffff]"
     >
       <div className="flex h-14 items-center justify-center gap">
         <Sprite url={pokemon.species?.sprite} size={48} alt={nameOf(pokemon)} />
@@ -56,7 +56,7 @@ export function PcView({
       <div className="flex gap-1.25 overflow-x-auto pb-0.5">
         <button
           onClick={() => setFilter("")}
-          className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
+          className={`min-h-9 flex-none rounded-base border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
             filter === ""
               ? "bg-navy text-white"
               : "bg-panel-alt text-text-muted"
@@ -68,7 +68,7 @@ export function PcView({
           <button
             key={t}
             onClick={() => setFilter(t)}
-            className={`min-h-9 flex-none border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
+            className={`min-h-9 flex-none rounded-base border-2 border-ink p-2 font-pix text-[8px] whitespace-nowrap ${
               filter === t
                 ? "bg-navy text-white"
                 : "bg-panel-alt text-text-muted"
@@ -78,7 +78,7 @@ export function PcView({
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-1.25 border-[3px] border-ink bg-frame-alt p-1.5">
+      <div className="grid grid-cols-3 gap-1.25 rounded-base border-[3px] border-ink bg-frame-alt p-1.5">
         {shown.length === 0 ? (
           <div className="col-span-full p-2.5 font-vt text-[16px] text-text-muted">
             {pc.length === 0

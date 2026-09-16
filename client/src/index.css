@@ -93,7 +93,7 @@
   --color-ring: var(--color-blue-light);
   --color-overlay: rgb(11 17 32 / 0.7);
 
-  --radius-base: 0px;
+  --radius-base: 4px;
 
   --shadow-shadow: 3px 3px 0 var(--color-ink);
 

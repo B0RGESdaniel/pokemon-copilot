@@ -23,12 +23,12 @@ export function SearchView({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="border-[3px] border-ink bg-panel p-2 shadow-[3px_3px_0_var(--color-ink)]">
+      <div className="rounded-base border-[3px] border-ink bg-panel p-2 shadow-[3px_3px_0_var(--color-ink)]">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="search species..."
-          className="w-full border-2 border-ink bg-white p-2.75 text-[16px] text-ink"
+          className="w-full rounded-base border-2 border-ink bg-white p-2.75 text-[16px] text-ink"
         />
       </div>
       <Hint>
@@ -45,7 +45,7 @@ export function SearchView({
         const inParty = owned.filter((p) => p.location === "PARTY");
         const inPc = owned.filter((p) => p.location === "PC");
         let status = "NOT REGISTERED";
-        let statusClass = "bg-border text-text-faint";
+        let statusClass = "bg-highlight text-text-faint";
         if (inParty.length) {
           status = `IN PARTY · SLOT ${inParty.map((p) => p.slotPosition ?? "-").join(",")}`;
           statusClass = "bg-navy text-white";
@@ -58,9 +58,9 @@ export function SearchView({
           <button
             key={entry.pokeApiId}
             onClick={() => (first ? onOpenDetail(first.id) : onOpenAdd(entry))}
-            className="mb-2 flex min-h-16.5 w-full items-center gap-2.5 border-[3px] border-ink bg-panel p-2 text-left shadow-[3px_3px_0_var(--color-ink)]"
+            className="mb-2 flex min-h-16.5 w-full items-center gap-2.5 rounded-base border-[3px] border-ink bg-panel p-2 text-left shadow-[3px_3px_0_var(--color-ink)]"
           >
-            <div className="flex size-13.5 flex-none items-center justify-center border-2 border-ink bg-frame">
+            <div className="flex size-13.5 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
               <Sprite
                 url={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${entry.pokeApiId}.png`}
                 size={46}
@@ -78,7 +78,7 @@ export function SearchView({
                   : " · tap to register"}
               </div>
               <span
-                className={`self-start border-2 border-ink px-1.25 py-1 font-pix text-[8px] ${statusClass}`}
+                className={`self-start rounded-base border-2 border-ink px-1.25 py-1 font-pix text-[8px] ${statusClass}`}
               >
                 {status}
               </span>

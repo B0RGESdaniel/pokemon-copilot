@@ -32,7 +32,7 @@ export function OpponentPanel({
       <Card>
         <SectionLabel>OPPONENT SPECIES *</SectionLabel>
         <div className="flex items-center gap-2">
-          <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
+          <div className="flex size-13 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
             <Sprite
               url={
                 picked
@@ -55,7 +55,7 @@ export function OpponentPanel({
           </div>
         </div>
         {results.length > 0 ? (
-          <div className="flex max-h-52.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-52.5 flex-col overflow-y-auto rounded-base border-2 border-ink bg-panel-alt">
             {results.map((r) => (
               <button
                 key={r.pokeApiId}

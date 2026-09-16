@@ -114,7 +114,7 @@ export function AddPage({
       <Card>
         <SectionLabel>SPECIES *</SectionLabel>
         <div className="flex items-center gap-2">
-          <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
+          <div className="flex size-13 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
             <Sprite url={species?.sprite} size={44} alt="sprite" />
           </div>
           <div className="min-w-0 flex-1">
@@ -129,7 +129,7 @@ export function AddPage({
           </div>
         </div>
         {speciesResults.length > 0 ? (
-          <div className="flex max-h-47.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-47.5 flex-col overflow-y-auto rounded-base border-2 border-ink bg-panel-alt">
             {speciesResults.map((r) => (
               <button
                 key={r.pokeApiId}
@@ -164,7 +164,7 @@ export function AddPage({
           placeholder="search item..."
         />
         {itemChoices.length > 0 ? (
-          <div className="flex max-h-42.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-42.5 flex-col overflow-y-auto rounded-base border-2 border-ink bg-panel-alt">
             {itemChoices.map((it) => (
               <button
                 key={it}
@@ -218,12 +218,12 @@ export function AddPage({
                     <button
                       key={m.name}
                       onClick={() => toggleMove(m.name)}
-                      className={`flex min-h-12 flex-none items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                      className={`flex min-h-12 flex-none items-center gap-2 rounded-base border-2 border-ink p-2.5 text-left ${
                         checked ? "bg-green-soft" : "bg-panel"
                       }`}
                     >
                       <span
-                        className={`size-3.5 flex-none border-2 border-ink ${checked ? "bg-red" : "bg-white"}`}
+                        className={`size-3.5 flex-none rounded-base border-2 border-ink ${checked ? "bg-red" : "bg-white"}`}
                       />
                       <span className="flex-1 font-pix text-[8px] text-text">
                         {cap(m.name)}

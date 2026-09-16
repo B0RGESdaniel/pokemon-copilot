@@ -152,7 +152,7 @@ export function LevelUpPanel({
           placeholder="search learned move..."
         />
         {results.length > 0 ? (
-          <div className="flex max-h-50 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-50 flex-col overflow-y-auto rounded-base border-2 border-ink bg-panel-alt">
             {results.map((m) => (
               <button
                 key={m.name}
@@ -169,7 +169,7 @@ export function LevelUpPanel({
         ) : null}
         {!move ? <Hint>Leave blank to just update the level.</Hint> : null}
         {move ? (
-          <div className="flex flex-col gap-2 border-2 border-ink bg-panel-alt p-2.5">
+          <div className="flex flex-col gap-2 rounded-base border-2 border-ink bg-panel-alt p-2.5">
             <div className="font-pix text-[8px] text-text-muted">
               {needsReplacement
                 ? "MUST REPLACE A MOVE"
@@ -209,7 +209,7 @@ export function LevelUpPanel({
                 <button
                   key={c.moveB.move}
                   onClick={() => setReplace(c.moveB.move)}
-                  className={`flex min-h-13 items-center gap-2 border-2 border-ink p-2.5 text-left ${
+                  className={`flex min-h-13 items-center gap-2 rounded-base border-2 border-ink p-2.5 text-left ${
                     c.moveB.move === replace ? "bg-green-soft" : "bg-panel"
                   }`}
                 >

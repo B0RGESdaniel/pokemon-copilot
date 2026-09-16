@@ -44,7 +44,7 @@ export function ItemPage({
     <PageShell title="HELD ITEM" onBack={onBack}>
       <Card>
         <SectionLabel>CURRENT ITEM</SectionLabel>
-        <div className="flex min-h-11.5 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
+        <div className="flex min-h-11.5 items-center gap-2 rounded-base border-2 border-ink bg-panel-alt p-2.5">
           <span className="flex-1 font-pix text-[16px] text-text">
             {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
           </span>
@@ -65,7 +65,7 @@ export function ItemPage({
           placeholder="search item..."
         />
         {choices.length > 0 ? (
-          <div className="flex max-h-57.5 flex-col overflow-y-auto border-2 border-ink bg-panel-alt">
+          <div className="flex max-h-57.5 flex-col overflow-y-auto rounded-base border-2 border-ink bg-panel-alt">
             {choices.map((it) => (
               <button
                 key={it}

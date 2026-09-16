@@ -82,7 +82,7 @@ export function MovesPage({
           pokemon.moves.map((m) => (
             <div
               key={m}
-              className="flex min-h-11.5 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5"
+              className="flex min-h-11.5 items-center gap-2 rounded-base border-2 border-ink bg-panel-alt p-2.5"
             >
               <span className="flex-1 font-pix text-[8px] text-text">
                 {cap(m)}
@@ -116,7 +116,7 @@ export function MovesPage({
               onClick={() =>
                 void applyReplacement(c.moveB.move, suggestion.newMove.move)
               }
-              className={`flex min-h-13 items-center gap-2 border-2 border-ink p-2.5 text-left ${
+              className={`flex min-h-13 items-center gap-2 rounded-base border-2 border-ink p-2.5 text-left ${
                 c.moveB.move === suggestion.suggestedReplacement
                   ? "bg-yellow-soft"
                   : "bg-panel"
@@ -161,7 +161,7 @@ export function MovesPage({
                   <button
                     key={m.name}
                     onClick={() => void addMove(m.name)}
-                    className="flex min-h-12 flex-none items-center gap-2 border-2 border-ink bg-panel p-2.5 text-left"
+                    className="flex min-h-12 flex-none items-center gap-2 rounded-base border-2 border-ink bg-panel p-2.5 text-left"
                   >
                     <span className="flex-1 font-pix text-[8px] text-text">
                       {cap(m.name)}

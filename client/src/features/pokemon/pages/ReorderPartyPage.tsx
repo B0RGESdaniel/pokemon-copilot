@@ -37,7 +37,7 @@ function SortableRow({ pokemon, slot }: { pokemon: PokemonDTO; slot: number }) {
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex min-h-16 items-center gap-2 border-[3px] border-ink bg-panel p-2 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)] ${
+      className={`flex min-h-16 items-center gap-2 rounded-base border-[3px] border-ink bg-panel p-2 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)] ${
         isDragging ? "relative z-10 opacity-70" : ""
       }`}
     >
@@ -45,11 +45,11 @@ function SortableRow({ pokemon, slot }: { pokemon: PokemonDTO; slot: number }) {
         {...attributes}
         {...listeners}
         aria-label={`Drag ${nameOf(pokemon)}`}
-        className="flex size-11.5 flex-none touch-none items-center justify-center border-2 border-ink bg-frame"
+        className="flex size-11.5 flex-none touch-none items-center justify-center rounded-base border-2 border-ink bg-frame"
       >
         <Icon src="/drag-handle-icon.svg" className="size-5 bg-text-dim" />
       </button>
-      <div className="flex size-12 flex-none items-center justify-center border-2 border-ink bg-frame">
+      <div className="flex size-12 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
         <Sprite url={pokemon.species?.sprite} size={44} alt={nameOf(pokemon)} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-0.75">

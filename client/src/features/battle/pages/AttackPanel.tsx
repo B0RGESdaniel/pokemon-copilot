@@ -47,7 +47,7 @@ export function AttackPanel({
           return {
             ...mv,
             effLabel: "STATUS",
-            effClassName: "bg-border text-text-muted",
+            effClassName: "bg-highlight text-text-muted",
           };
         }
         const v = chart ? multiplierAgainst(mv.type, oppTypes, chart) : 1;
@@ -71,7 +71,7 @@ export function AttackPanel({
         {rows.map((m) => (
           <div
             key={m.name}
-            className="flex min-h-13 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5"
+            className="flex min-h-13 items-center gap-2 rounded-base border-2 border-ink bg-panel-alt p-2.5"
           >
             <span className="flex-1 font-pix text-[8px] text-text">
               {cap(m.name)}
@@ -81,7 +81,7 @@ export function AttackPanel({
               {m.power ? `PWR ${m.power}` : "—"}
             </span>
             <span
-              className={`border-2 border-ink px-1.25 py-1 font-pix text-[8px] whitespace-nowrap ${m.effClassName}`}
+              className={`rounded-base border-2 border-ink px-1.25 py-1 font-pix text-[8px] whitespace-nowrap ${m.effClassName}`}
             >
               {m.effLabel}
             </span>
