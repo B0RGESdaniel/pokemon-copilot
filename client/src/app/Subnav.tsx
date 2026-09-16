@@ -1,14 +1,4 @@
-import { tv } from "tailwind-variants";
-
-const subnavTab = tv({
-  base: "min-h-11 flex-1 rounded-base border-2 border-ink font-pix text-[8px]",
-  variants: {
-    active: {
-      true: "bg-navy text-white shadow-[inset_0_2px_0_var(--color-navy-light)]",
-      false: "bg-[#b8c1d2] text-[#7a8598] shadow-[inset_0_2px_0_#c7cfdd]",
-    },
-  },
-});
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 
 export function Subnav({
   sub,
@@ -23,19 +13,19 @@ export function Subnav({
     { key: "search", label: "SEARCH" },
   ];
   return (
-    <div className="flex flex-none gap-1.5 border-b-[3px] border-ink bg-bg-alt p-2">
-      {tabs.map((t) => {
-        const active = sub === t.key;
-        return (
-          <button
-            key={t.key}
-            onClick={() => onChange(t.key)}
-            className={subnavTab({ active })}
-          >
-            {t.label}
-          </button>
-        );
-      })}
+    <div className="flex-none border-b-[3px] border-ink bg-bg-alt p-2">
+      <Tabs
+        value={sub}
+        onValueChange={(v) => onChange(v as "party" | "pc" | "search")}
+      >
+        <TabsList>
+          {tabs.map((t) => (
+            <TabsTrigger key={t.key} value={t.key}>
+              {t.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 }
