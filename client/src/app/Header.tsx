@@ -1,4 +1,6 @@
 import { useState } from "react";
+import chevronDownIcon from "pixelarticons/svg/chevron-down.svg?raw";
+import { Icon } from "../components/Icon";
 import { Button } from "../components/ui/button";
 import { SectionLabel } from "../components/SectionLabel";
 import { NewSaveDialog } from "../features/saves/NewSaveDialog";
@@ -40,9 +42,10 @@ export function Header({
         </div>
         <button
           onClick={() => setOpen((v) => !v)}
-          className="ml-auto min-w-0 truncate border-0 bg-transparent font-vt text-[8px] text-header-hint"
+          className="ml-auto flex min-w-0 items-center gap-1 border-0 bg-transparent font-vt text-[8px] text-header-hint"
         >
-          {headerMeta} ▾
+          <span className="min-w-0 truncate">{headerMeta}</span>
+          <Icon svg={chevronDownIcon} className="size-3 shrink-0 text-header-hint" />
         </button>
       </div>
 

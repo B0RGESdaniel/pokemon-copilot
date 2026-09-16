@@ -15,6 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import dragHandleIcon from "pixelarticons/svg/drag-and-drop.svg?raw";
 import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { Icon } from "../../../components/Icon";
@@ -47,7 +48,7 @@ function SortableRow({ pokemon, slot }: { pokemon: PokemonDTO; slot: number }) {
         aria-label={`Drag ${nameOf(pokemon)}`}
         className="flex size-11.5 flex-none touch-none items-center justify-center rounded-base border-2 border-ink bg-frame"
       >
-        <Icon src="/drag-handle-icon.svg" className="size-5 bg-text-dim" />
+        <Icon svg={dragHandleIcon} className="size-5 text-text-dim" />
       </button>
       <div className="flex size-12 flex-none items-center justify-center rounded-base border-2 border-ink bg-frame">
         <Sprite url={pokemon.species?.sprite} size={44} alt={nameOf(pokemon)} />

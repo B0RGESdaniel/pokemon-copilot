@@ -1,3 +1,4 @@
+import sortIcon from "pixelarticons/svg/sort-vertical.svg?raw";
 import { Button } from "../../components/ui/button";
 import { Icon } from "../../components/Icon";
 import { Sprite } from "../../components/Sprite";
@@ -79,7 +80,7 @@ export function PartyView({
       {party.length > 1 ? (
         <Button variant="ghost" full fontSize={8} onClick={onOpenReorder}>
           <span className="flex items-center justify-center gap-2">
-            <Icon src="/reorder-icon.svg" className="size-4 bg-ink" />
+            <Icon svg={sortIcon} className="size-4 text-ink" />
             REORDER
           </span>
         </Button>

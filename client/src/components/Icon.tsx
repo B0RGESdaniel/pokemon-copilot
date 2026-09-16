@@ -1,17 +1,12 @@
-export function Icon({ src, className }: { src: string; className: string }) {
+// pixelarticons ships raw SVGs with fill="currentColor" — rendered inline
+// (not as a mask-image url()) so currentColor actually inherits this
+// element's `color` via normal CSS inheritance. Recolor with text-*, not bg-*.
+export function Icon({ svg, className }: { svg: string; className?: string }) {
   return (
     <span
-      className={className}
-      style={{
-        WebkitMaskImage: `url(${src})`,
-        maskImage: `url(${src})`,
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-      }}
+      aria-hidden="true"
+      className={`inline-block [&>svg]:block [&>svg]:size-full ${className ?? ""}`}
+      dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 }

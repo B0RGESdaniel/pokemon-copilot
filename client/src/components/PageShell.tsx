@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import chevronLeftIcon from "pixelarticons/svg/chevron-left.svg?raw";
+import { Icon } from "./Icon";
 import { Button } from "./ui/button";
 
 export function PageShell({
@@ -18,9 +20,10 @@ export function PageShell({
           onClick={onBack}
           minHeight={44}
           fontSize={8}
-          className="py-2.5"
+          className="gap-1.5 py-2.5"
         >
-          &lt; BACK
+          <Icon svg={chevronLeftIcon} className="size-3.5 text-ink" />
+          BACK
         </Button>
         <div className="ml-auto text-right font-pix text-[8px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           {title}
