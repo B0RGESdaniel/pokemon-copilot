@@ -1,10 +1,10 @@
 import { useQueries } from "@tanstack/react-query";
 import { getMove } from "../../../api/species";
 import { queryKeys } from "../../../api/queryKeys";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { TypeBadge } from "../../../components/TypeBadge";
 import {
@@ -57,7 +57,7 @@ export function AttackPanel({
 
   return (
     <PageShell title="MOVES" onBack={onClose}>
-      <Panel>
+      <Card>
         <SectionLabel>
           {cap(mine.nickname ?? mine.species?.name)} MOVES
         </SectionLabel>
@@ -87,10 +87,10 @@ export function AttackPanel({
             </span>
           </div>
         ))}
-        <Btn variant="secondary" full onClick={onClose}>
+        <Button variant="secondary" full onClick={onClose}>
           CLOSE
-        </Btn>
-      </Panel>
+        </Button>
+      </Card>
     </PageShell>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { ConfirmBar } from "../../../components/ConfirmBar";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import type { Save } from "../../../types/saves";
 
 export function SaveRow({
@@ -32,7 +32,7 @@ export function SaveRow({
   }
 
   return (
-    <Panel>
+    <Card>
       <div className="flex items-center gap-2">
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="font-pix text-[8px] leading-[1.4] wrap-break-word text-text">
@@ -43,15 +43,15 @@ export function SaveRow({
             {save.game.toUpperCase()} · GEN {save.generation}
           </div>
         </div>
-        <Btn
+        <Button
           variant="outlineDanger"
           fontSize={7}
           minHeight={36}
           onClick={() => setConfirming(true)}
         >
           DELETE
-        </Btn>
+        </Button>
       </div>
-    </Panel>
+    </Card>
   );
 }

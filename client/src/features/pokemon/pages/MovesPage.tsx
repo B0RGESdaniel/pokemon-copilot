@@ -4,10 +4,10 @@ import {
   useUpdatePokemon,
 } from "../../../hooks/usePokemonMutations";
 import { useLegalMoves, useMoveTypes } from "../../../hooks/useSpecies";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { TypeBadge } from "../../../components/TypeBadge";
@@ -74,7 +74,7 @@ export function MovesPage({
 
   return (
     <PageShell title="CHANGE MOVES" onBack={onBack}>
-      <Panel>
+      <Card>
         <SectionLabel>CURRENT MOVES ({pokemon.moves.length}/4)</SectionLabel>
         {pokemon.moves.length === 0 ? (
           <Hint>No moves. Pick some below.</Hint>
@@ -88,7 +88,7 @@ export function MovesPage({
                 {cap(m)}
               </span>
               <TypeBadge type={currentMoveTypes[m] ?? "unknown"} />
-              <Btn
+              <Button
                 variant="danger"
                 onClick={() => void removeMove(m)}
                 minHeight={40}
@@ -96,14 +96,14 @@ export function MovesPage({
                 fontSize={8}
               >
                 X
-              </Btn>
+              </Button>
             </div>
           ))
         )}
-      </Panel>
+      </Card>
 
       {suggestion?.outcome === "suggested_replacement" ? (
-        <Panel className="border-[3px] border-yellow bg-yellow-soft">
+        <Card className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>ALREADY HAS 4 MOVES</SectionLabel>
           <Hint>
             {suggestion.suggestedReplacement
@@ -131,18 +131,18 @@ export function MovesPage({
               </span>
             </button>
           ))}
-          <Btn
+          <Button
             variant="ghost"
             full
             fontSize={8}
             onClick={() => setSuggestion(null)}
           >
             CLOSE
-          </Btn>
-        </Panel>
+          </Button>
+        </Card>
       ) : null}
 
-      <Panel>
+      <Card>
         <SectionLabel>LEARNABLE</SectionLabel>
         {learnable.length === 0 ? (
           <Hint>No more legal moves to learn for this game.</Hint>
@@ -173,7 +173,7 @@ export function MovesPage({
             </div>
           </>
         )}
-      </Panel>
+      </Card>
     </PageShell>
   );
 }

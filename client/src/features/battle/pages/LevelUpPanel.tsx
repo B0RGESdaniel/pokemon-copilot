@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { ConfirmBar } from "../../../components/ConfirmBar";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Stepper } from "../../../components/Stepper";
@@ -122,7 +122,7 @@ export function LevelUpPanel({
 
   return (
     <PageShell title="LOG LEVEL UP" onBack={onClose}>
-      <Panel>
+      <Card>
         <SectionLabel>
           NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}
         </SectionLabel>
@@ -136,9 +136,9 @@ export function LevelUpPanel({
             setAsking(false);
           }}
         />
-      </Panel>
+      </Card>
 
-      <Panel>
+      <Card>
         <SectionLabel>NEW MOVE (OPTIONAL)</SectionLabel>
         <SearchInput
           value={query}
@@ -180,7 +180,7 @@ export function LevelUpPanel({
                 {cap(move)}
               </span>
             </div>
-            <Btn
+            <Button
               variant="danger"
               onClick={clearMove}
               minHeight={40}
@@ -188,13 +188,13 @@ export function LevelUpPanel({
               className="self-start"
             >
               X CLEAR MOVE
-            </Btn>
+            </Button>
           </div>
         ) : null}
-      </Panel>
+      </Card>
 
       {move && needsReplacement ? (
-        <Panel className="border-[3px] border-yellow bg-yellow-soft">
+        <Card className="border-[3px] border-yellow bg-yellow-soft">
           <SectionLabel>PICK A MOVE TO REPLACE</SectionLabel>
           {learnMove.isPending && !preview ? (
             <Hint>Checking...</Hint>
@@ -224,7 +224,7 @@ export function LevelUpPanel({
               ))}
             </>
           ) : null}
-        </Panel>
+        </Card>
       ) : null}
 
       {asking ? (
@@ -241,9 +241,9 @@ export function LevelUpPanel({
           onConfirm={() => void apply()}
         />
       ) : (
-        <Btn variant="primary" full onClick={ask}>
+        <Button variant="primary" full onClick={ask}>
           SAVE LEVEL UP
-        </Btn>
+        </Button>
       )}
     </PageShell>
   );

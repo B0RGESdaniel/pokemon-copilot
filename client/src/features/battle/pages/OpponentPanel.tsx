@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Sprite } from "../../../components/Sprite";
@@ -29,7 +29,7 @@ export function OpponentPanel({
 
   return (
     <PageShell title="SWITCH OPPONENT" onBack={onClose}>
-      <Panel>
+      <Card>
         <SectionLabel>OPPONENT SPECIES *</SectionLabel>
         <div className="flex items-center gap-2">
           <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
@@ -74,15 +74,15 @@ export function OpponentPanel({
         ) : null}
         <SectionLabel>LEVEL *</SectionLabel>
         <Stepper value={level} onChange={setLevel} />
-        <Btn
+        <Button
           variant="primary"
           full
           disabled={!picked}
           onClick={() => picked && void onApply(picked.pokeApiId, level)}
         >
           SET OPPONENT
-        </Btn>
-      </Panel>
+        </Button>
+      </Card>
     </PageShell>
   );
 }

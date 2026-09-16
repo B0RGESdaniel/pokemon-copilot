@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Btn } from "../../components/Btn";
+import { Button } from "../../components/ui/button";
 import { SearchInput } from "../../components/SearchInput";
 import { Stepper } from "../../components/Stepper";
 
@@ -27,7 +27,7 @@ export function NewSaveInline({
       />
       <Stepper value={generation} onChange={setGeneration} min={1} max={9} />
       <div className="flex gap-1.5">
-        <Btn
+        <Button
           variant="ghost"
           full
           fontSize={7}
@@ -35,8 +35,8 @@ export function NewSaveInline({
           onClick={onCancel}
         >
           CANCEL
-        </Btn>
-        <Btn
+        </Button>
+        <Button
           variant="primary"
           full
           fontSize={7}
@@ -46,7 +46,7 @@ export function NewSaveInline({
           }
         >
           CREATE
-        </Btn>
+        </Button>
       </div>
     </div>
   );

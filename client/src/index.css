@@ -95,6 +95,21 @@
   --radius-base: 0px;
 
   --shadow-shadow: 3px 3px 0 var(--color-ink);
+
+  /* Offset used by the library's "press" hover effect (translate toward the
+     shadow, drop it, to read as a pushed-in button) — kept in sync with
+     shadow-shadow's 3px offset above. */
+  --spacing-boxShadowX: 3px;
+  --spacing-boxShadowY: 3px;
+  --spacing-reverseBoxShadowX: -3px;
+  --spacing-reverseBoxShadowY: -3px;
+
+  /* Press Start 2P only ships weight 400 (see button/ghost text below and
+     the .font-pix rule) — base/heading weights stay at 400 to avoid
+     faux-bold blurring its blocky glyphs, unlike the lib's own default
+     (500/700) which assumes a variable-weight font. */
+  --font-weight-base: 400;
+  --font-weight-heading: 400;
 }
 
 * {

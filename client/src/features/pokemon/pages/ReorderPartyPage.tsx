@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { Icon } from "../../../components/Icon";
 import { PageShell } from "../../../components/PageShell";
@@ -143,14 +143,14 @@ export function ReorderPartyPage({
           </div>
         </SortableContext>
       </DndContext>
-      <Btn
+      <Button
         variant="primary"
         full
         disabled={!dirty || saving}
         onClick={() => void save()}
       >
         {saving ? "SAVING..." : "SAVE ORDER"}
-      </Btn>
+      </Button>
     </PageShell>
   );
 }

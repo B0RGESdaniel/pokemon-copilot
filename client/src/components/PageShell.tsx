@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Btn } from "./Btn";
+import { Button } from "./ui/button";
 
 export function PageShell({
   title,
@@ -13,7 +13,7 @@ export function PageShell({
   return (
     <div className="absolute inset-0 flex flex-col bg-bg">
       <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy p-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
-        <Btn
+        <Button
           variant="secondary"
           onClick={onBack}
           minHeight={44}
@@ -21,7 +21,7 @@ export function PageShell({
           className="py-2.5"
         >
           &lt; BACK
-        </Btn>
+        </Button>
         <div className="ml-auto text-right font-pix text-[8px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           {title}
         </div>

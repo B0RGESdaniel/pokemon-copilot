@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Btn } from "../../components/Btn";
-import { Panel } from "../../components/Panel";
+import { Button } from "../../components/ui/button";
+import { Card } from "../../components/ui/card";
 import { SearchInput } from "../../components/SearchInput";
 import { SectionLabel } from "../../components/SectionLabel";
 import { Stepper } from "../../components/Stepper";
@@ -54,7 +54,7 @@ export function CreateSaveForm({
           Nenhum save encontrado. Crie o primeiro pra começar a registrar
           Pokémon.
         </div>
-        <Panel>
+        <Card>
           <SectionLabel>NOME DO SAVE *</SectionLabel>
           <SearchInput
             value={name}
@@ -77,15 +77,15 @@ export function CreateSaveForm({
           {error ? (
             <div className="font-vt text-[16px] text-red">{error}</div>
           ) : null}
-          <Btn
+          <Button
             variant="primary"
             full
             disabled={busy}
             onClick={() => void submit()}
           >
             {busy ? "CREATING..." : "CREATE SAVE"}
-          </Btn>
-        </Panel>
+          </Button>
+        </Card>
       </div>
     </div>
   );

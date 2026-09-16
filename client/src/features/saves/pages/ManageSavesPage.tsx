@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { PageShell } from "../../../components/PageShell";
 import type { Save } from "../../../types/saves";
 import { NewSaveInline } from "../NewSaveInline";
@@ -53,9 +53,9 @@ export function ManageSavesPage({
           }}
         />
       ) : (
-        <Btn variant="primary" full onClick={() => setCreating(true)}>
+        <Button variant="primary" full onClick={() => setCreating(true)}>
           + NEW SAVE
-        </Btn>
+        </Button>
       )}
     </PageShell>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Btn } from "../components/Btn";
+import { Button } from "../components/ui/button";
 import { SectionLabel } from "../components/SectionLabel";
 import { NewSaveInline } from "../features/saves/NewSaveInline";
 import type { Save } from "../types/saves";
@@ -76,7 +76,7 @@ export function Header({
             />
           ) : (
             <>
-              <Btn
+              <Button
                 variant="primary"
                 full
                 onClick={() => setCreating(true)}
@@ -84,8 +84,8 @@ export function Header({
                 minHeight={40}
               >
                 + NEW SAVE
-              </Btn>
-              <Btn
+              </Button>
+              <Button
                 variant="ghost"
                 className="bg-bg-alt"
                 full
@@ -97,7 +97,7 @@ export function Header({
                 minHeight={40}
               >
                 MANAGE SAVES
-              </Btn>
+              </Button>
             </>
           )}
         </div>

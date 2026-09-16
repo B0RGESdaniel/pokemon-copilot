@@ -1,7 +1,7 @@
 import { useUpdatePokemon } from "../../../hooks/usePokemonMutations";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Sprite } from "../../../components/Sprite";
 import { cap } from "../../../theme";
@@ -38,7 +38,7 @@ export function EvolvePage({
 
   return (
     <PageShell title="EVOLVE" onBack={onBack}>
-      <Panel>
+      <Card>
         <SectionLabel>POSSIBLE EVOLUTIONS</SectionLabel>
         <Hint>
           {evolutions.length > 1
@@ -66,7 +66,7 @@ export function EvolvePage({
             </button>
           ))}
         </div>
-      </Panel>
+      </Card>
     </PageShell>
   );
 }

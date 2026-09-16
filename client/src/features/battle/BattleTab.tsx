@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Btn } from "../../components/Btn";
+import { Button } from "../../components/ui/button";
 import { ConfirmBar } from "../../components/ConfirmBar";
 import { Hint } from "../../components/Hint";
-import { Panel } from "../../components/Panel";
+import { Card } from "../../components/ui/card";
 import { Sprite } from "../../components/Sprite";
 import { TypeBadge } from "../../components/TypeBadge";
 import type { useBattle } from "../../hooks/useBattle";
@@ -46,10 +46,10 @@ export function BattleTab({
   if (status.status === "not_started") {
     return (
       <div className="p-2.5">
-        <Panel className="items-center text-center">
+        <Card className="items-center text-center">
           <div className="font-pix text-[8px] text-text">NO BATTLE YET</div>
           <Hint>Start a battle to bring out your slot 1 pokemon.</Hint>
-          <Btn
+          <Button
             variant="primary"
             full
             onClick={() =>
@@ -60,8 +60,8 @@ export function BattleTab({
             }
           >
             START BATTLE
-          </Btn>
-        </Panel>
+          </Button>
+        </Card>
       </div>
     );
   }
@@ -73,10 +73,10 @@ export function BattleTab({
         : "You ran from the battle. Nothing was marked as fainted.";
     return (
       <div className="p-2.5">
-        <Panel className="items-center text-center">
+        <Card className="items-center text-center">
           <div className="font-pix text-[8px] text-text">BATTLE OVER</div>
           <Hint>{text}</Hint>
-          <Btn
+          <Button
             variant="primary"
             full
             onClick={() =>
@@ -87,8 +87,8 @@ export function BattleTab({
             }
           >
             FIND NEW OPPONENT
-          </Btn>
-        </Panel>
+          </Button>
+        </Card>
       </div>
     );
   }
@@ -108,24 +108,24 @@ export function BattleTab({
       <div className="flex flex-col gap-2 p-2.5">
         <div className="flex items-stretch gap-2">
           <div className="flex w-28 flex-none flex-col gap-1.5">
-            <Btn
+            <Button
               variant="outlineDanger"
               onClick={() => setConfirm("fainted")}
               className="flex-1"
               fontSize={8}
             >
               FAINTED
-            </Btn>
-            <Btn
+            </Button>
+            <Button
               variant="secondary"
               onClick={() => setPanel("opp")}
               className="flex-1"
               fontSize={8}
             >
               SWITCH
-            </Btn>
+            </Button>
           </div>
-          <Panel className="min-w-0 flex-1">
+          <Card className="min-w-0 flex-1">
             <div className="font-pix text-[8px] text-red">OPPONENT</div>
             <div className="flex items-baseline gap-2">
               <div className="min-w-0 flex-1 font-vt text-[16px] leading-[1.4] wrap-break-word text-text">
@@ -140,7 +140,7 @@ export function BattleTab({
                 <TypeBadge size={8} key={t} type={t} />
               ))}
             </div>
-          </Panel>
+          </Card>
         </div>
 
         <div className="relative h-54 overflow-hidden border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-[3px_3px_0_var(--color-ink)]">
@@ -164,7 +164,7 @@ export function BattleTab({
         </div>
 
         <div className="flex items-stretch gap-2">
-          <Panel className="min-w-0 flex-1 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]">
+          <Card className="min-w-0 flex-1 shadow-[inset_0_3px_0_#ffffff,3px_3px_0_var(--color-ink)]">
             <div className="font-pix text-[8px] text-blue">ON FIELD</div>
             <div className="flex items-baseline gap-2">
               <div className="min-w-0 flex-1 font-vt text-[16px] leading-[1.4] wrap-break-word text-text">
@@ -179,7 +179,7 @@ export function BattleTab({
                 <TypeBadge size={8} key={t} type={t} />
               ))}
             </div>
-            <Btn
+            <Button
               variant="secondary"
               full
               onClick={() => setPanel("levelup")}
@@ -188,33 +188,33 @@ export function BattleTab({
               minHeight={42}
             >
               LEVEL UP
-            </Btn>
-          </Panel>
+            </Button>
+          </Card>
           <div className="flex flex-none flex-col gap-2">
-            <Btn
+            <Button
               variant="primary"
               onClick={() => setPanel("attack")}
               className="bg-red shadow-[inset_0_3px_0_var(--color-red-light),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               ATTACK
-            </Btn>
-            <Btn
+            </Button>
+            <Button
               variant="primary"
               onClick={() => setPanel("matchup")}
               className="bg-green shadow-[inset_0_3px_0_var(--color-green-soft),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               SWITCH POKEMON
-            </Btn>
-            <Btn
+            </Button>
+            <Button
               variant="primary"
               onClick={() => setConfirm("flee")}
               className="bg-blue-light shadow-[inset_0_3px_0_var(--color-blue-softer),3px_3px_0_var(--color-ink)]"
               fontSize={8}
             >
               RUN
-            </Btn>
+            </Button>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Btn } from "../../components/Btn";
+import { Button } from "../../components/ui/button";
 import { Sprite } from "../../components/Sprite";
 import type { PokemonDTO } from "../../types/pokemon";
 
@@ -91,9 +91,9 @@ export function PcView({
           ))
         )}
       </div>
-      <Btn variant="primary" full onClick={onOpenAdd}>
+      <Button variant="primary" full onClick={onOpenAdd}>
         + REGISTER POKEMON
-      </Btn>
+      </Button>
     </div>
   );
 }

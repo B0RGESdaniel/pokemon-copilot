@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import { Btn } from "./Btn";
+import { Button } from "./ui/button";
 import { Hint } from "./Hint";
 
 const confirmBar = tv({
@@ -32,12 +32,12 @@ export function ConfirmBar({
     <div className={confirmBar({ danger })}>
       <Hint>{text}</Hint>
       <div className="flex gap-2">
-        <Btn variant="ghost" full onClick={onCancel}>
+        <Button variant="ghost" full onClick={onCancel}>
           CANCEL
-        </Btn>
-        <Btn variant={danger ? "danger" : "primary"} full onClick={onConfirm}>
+        </Button>
+        <Button variant={danger ? "danger" : "primary"} full onClick={onConfirm}>
           {confirmLabel}
-        </Btn>
+        </Button>
       </div>
     </div>
   );

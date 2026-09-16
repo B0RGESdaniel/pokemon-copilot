@@ -1,4 +1,4 @@
-import { Btn } from "../../components/Btn";
+import { Button } from "../../components/ui/button";
 import { Icon } from "../../components/Icon";
 import { Sprite } from "../../components/Sprite";
 import { TypeBadge } from "../../components/TypeBadge";
@@ -77,12 +77,12 @@ export function PartyView({
   return (
     <div className="flex flex-col gap-2">
       {party.length > 1 ? (
-        <Btn variant="ghost" full fontSize={8} onClick={onOpenReorder}>
+        <Button variant="ghost" full fontSize={8} onClick={onOpenReorder}>
           <span className="flex items-center justify-center gap-2">
             <Icon src="/reorder-icon.svg" className="size-4 bg-ink" />
             REORDER
           </span>
-        </Btn>
+        </Button>
       ) : null}
       {slots.map((slot) => {
         const found = party.find((p) => p.slotPosition === slot);

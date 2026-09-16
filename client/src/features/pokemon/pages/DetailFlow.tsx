@@ -5,11 +5,11 @@ import {
   useUpdatePokemon,
 } from "../../../hooks/usePokemonMutations";
 import { useEvolutions, useMoveTypes } from "../../../hooks/useSpecies";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { ConfirmBar } from "../../../components/ConfirmBar";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Sprite } from "../../../components/Sprite";
 import { Stepper } from "../../../components/Stepper";
@@ -118,7 +118,7 @@ export function DetailFlow({
       title={`${nameOf(pokemon)} · ${pokemon.location === "PARTY" ? `PARTY ${pokemon.slotPosition ?? "-"}` : "PC"}`}
       onBack={onBack}
     >
-      <Panel className="items-center">
+      <Card className="items-center">
         <div className="flex size-33 items-center justify-center border-[3px] border-ink bg-frame">
           <Sprite url={sp?.sprite} size={120} alt={nameOf(pokemon)} />
         </div>
@@ -135,14 +135,14 @@ export function DetailFlow({
             <TypeBadge key={t} type={t} size={8} />
           ))}
         </div>
-      </Panel>
+      </Card>
 
-      <Panel>
+      <Card>
         <SectionLabel>LEVEL</SectionLabel>
         <Stepper value={pokemon.level} onChange={(v) => void setLevel(v)} />
-      </Panel>
+      </Card>
 
-      <Panel>
+      <Card>
         <SectionLabel>BASE STATS</SectionLabel>
         {sp ? (
           STAT_DEFS.map((st) => {
@@ -168,9 +168,9 @@ export function DetailFlow({
         ) : (
           <Hint>Stats unavailable without species data.</Hint>
         )}
-      </Panel>
+      </Card>
 
-      <Panel>
+      <Card>
         <SectionLabel>MOVES ({pokemon.moves.length}/4)</SectionLabel>
         {pokemon.moves.length === 0 ? (
           <Hint>No moves registered.</Hint>
@@ -187,24 +187,24 @@ export function DetailFlow({
             </div>
           ))
         )}
-        <Btn variant="primary" full onClick={() => setPage("moves")}>
+        <Button variant="primary" full onClick={() => setPage("moves")}>
           CHANGE MOVES
-        </Btn>
-      </Panel>
+        </Button>
+      </Card>
 
-      <Panel>
+      <Card>
         <SectionLabel>HELD ITEM</SectionLabel>
         <div className="flex min-h-11.5 items-center border-2 border-ink bg-panel-alt p-2.5 font-vt text-[16px] text-text">
           {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
         </div>
-        <Btn variant="secondary" full onClick={() => setPage("item")}>
+        <Button variant="secondary" full onClick={() => setPage("item")}>
           {pokemon.heldItem ? "CHANGE / REMOVE ITEM" : "GIVE AN ITEM"}
-        </Btn>
-      </Panel>
+        </Button>
+      </Card>
 
-      <Panel>
+      <Card>
         <div className="flex gap-2">
-          <Btn
+          <Button
             variant={evolutions.length ? "secondary" : "ghost"}
             className={`flex-1 ${evolutions.length ? "bg-yellow" : "bg-bg-alt"}`}
             onClick={() =>
@@ -214,15 +214,15 @@ export function DetailFlow({
             }
           >
             {evolutions.length ? "EVOLVE" : "NO EVOLUTION"}
-          </Btn>
-          <Btn
+          </Button>
+          <Button
             variant={evoInfo ? "primary" : "ghost"}
             className="w-14 flex-none"
             onClick={() => setEvoInfo((v) => !v)}
             fontSize={16}
           >
             i
-          </Btn>
+          </Button>
         </div>
         {evoInfo ? (
           <div className="flex flex-col gap-1.5 border-2 border-ink bg-panel-alt p-2.5">
@@ -247,21 +247,21 @@ export function DetailFlow({
             )}
           </div>
         ) : null}
-      </Panel>
+      </Card>
 
-      <Btn
+      <Button
         variant="secondary"
         full
         onClick={() => void toggleLocation()}
         className="bg-navy text-white shadow-[inset_0_3px_0_var(--color-navy-light),3px_3px_0_var(--color-ink)] [text-shadow:1px_1px_0_var(--color-ink)]"
       >
         {pokemon.location === "PARTY" ? "MOVE TO PC" : "MOVE TO PARTY"}
-      </Btn>
+      </Button>
 
       {!confirming ? (
-        <Btn variant="outlineDanger" full onClick={() => setConfirming(true)}>
+        <Button variant="outlineDanger" full onClick={() => setConfirming(true)}>
           DELETE
-        </Btn>
+        </Button>
       ) : (
         <ConfirmBar
           danger

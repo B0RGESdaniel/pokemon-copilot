@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useUpdatePokemon } from "../../../hooks/usePokemonMutations";
 import { useSearchItems } from "../../../hooks/useSpecies";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { cap } from "../../../theme";
@@ -42,21 +42,21 @@ export function ItemPage({
 
   return (
     <PageShell title="HELD ITEM" onBack={onBack}>
-      <Panel>
+      <Card>
         <SectionLabel>CURRENT ITEM</SectionLabel>
         <div className="flex min-h-11.5 items-center gap-2 border-2 border-ink bg-panel-alt p-2.5">
           <span className="flex-1 font-pix text-[16px] text-text">
             {pokemon.heldItem ? cap(pokemon.heldItem) : "NONE"}
           </span>
           {pokemon.heldItem ? (
-            <Btn
+            <Button
               variant="danger"
               onClick={() => void remove()}
               minHeight={40}
               fontSize={8}
             >
               REMOVE
-            </Btn>
+            </Button>
           ) : null}
         </div>
         <SearchInput
@@ -81,7 +81,7 @@ export function ItemPage({
         ) : !query.trim() ? (
           <Hint>Type to search for an item.</Hint>
         ) : null}
-      </Panel>
+      </Card>
     </PageShell>
   );
 }

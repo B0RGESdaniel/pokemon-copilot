@@ -5,10 +5,10 @@ import {
   useSearchItems,
   useSpecies,
 } from "../../../hooks/useSpecies";
-import { Btn } from "../../../components/Btn";
+import { Button } from "../../../components/ui/button";
 import { Hint } from "../../../components/Hint";
 import { PageShell } from "../../../components/PageShell";
-import { Panel } from "../../../components/Panel";
+import { Card } from "../../../components/ui/card";
 import { SearchInput } from "../../../components/SearchInput";
 import { SectionLabel } from "../../../components/SectionLabel";
 import { Sprite } from "../../../components/Sprite";
@@ -111,7 +111,7 @@ export function AddPage({
 
   return (
     <PageShell title="NEW REGISTRATION" onBack={onBack}>
-      <Panel>
+      <Card>
         <SectionLabel>SPECIES *</SectionLabel>
         <div className="flex items-center gap-2">
           <div className="flex size-13 flex-none items-center justify-center border-2 border-ink bg-frame">
@@ -180,7 +180,7 @@ export function AddPage({
           </div>
         ) : null}
         {item ? (
-          <Btn
+          <Button
             variant="danger"
             onClick={() => {
               setItem(null);
@@ -190,11 +190,11 @@ export function AddPage({
             fontSize={8}
           >
             X CLEAR ITEM
-          </Btn>
+          </Button>
         ) : null}
-      </Panel>
+      </Card>
 
-      <Panel>
+      <Card>
         <div className="flex items-center justify-between">
           <SectionLabel>MOVES</SectionLabel>
           <div className="font-pix text-[16px] text-red">{moves.length}/4</div>
@@ -236,11 +236,11 @@ export function AddPage({
             </div>
           </>
         )}
-      </Panel>
+      </Card>
 
-      <Btn variant="primary" full disabled={busy} onClick={() => void submit()}>
+      <Button variant="primary" full disabled={busy} onClick={() => void submit()}>
         REGISTER POKEMON
-      </Btn>
+      </Button>
     </PageShell>
   );
 }
