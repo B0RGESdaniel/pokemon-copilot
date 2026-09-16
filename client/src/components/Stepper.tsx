@@ -1,6 +1,4 @@
-import minusIcon from "pixelarticons/svg/minus.svg?raw";
-import plusIcon from "pixelarticons/svg/plus.svg?raw";
-import { Icon } from "./Icon";
+import { Minus, Plus } from "pixelarticons/react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
@@ -22,7 +20,7 @@ export function Stepper({
         onClick={() => onChange(Math.max(min, value - 1))}
         className="h-13 w-13 p-0"
       >
-        <Icon svg={minusIcon} className="size-4 text-ink" />
+        <Minus className="size-4 text-ink" />
       </Button>
       <Input
         value={String(value)}
@@ -38,7 +36,7 @@ export function Stepper({
         onClick={() => onChange(Math.min(max, value + 1))}
         className="h-13 w-13 p-0"
       >
-        <Icon svg={plusIcon} className="size-4 text-ink" />
+        <Plus className="size-4 text-ink" />
       </Button>
     </div>
   );

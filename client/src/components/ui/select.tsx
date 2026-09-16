@@ -1,9 +1,7 @@
 import { Select as SelectPrimitive } from "@base-ui/react/select";
-import checkIcon from "pixelarticons/svg/check.svg?raw";
-import chevronDownIcon from "pixelarticons/svg/chevron-down.svg?raw";
+import { Check, ChevronDown } from "pixelarticons/react";
 import type * as React from "react";
 
-import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
 const Select = SelectPrimitive.Root;
@@ -41,7 +39,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon className="shrink-0">
-        <Icon svg={chevronDownIcon} className="size-3.5 text-text-faint" />
+        <ChevronDown className="size-3.5 text-text-faint" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -110,7 +108,7 @@ function SelectItem({
         data-slot="select-item-indicator"
         className="pointer-events-none absolute right-2 flex size-3.5 items-center justify-center"
       >
-        <Icon svg={checkIcon} className="size-3 text-ink" />
+        <Check className="size-3 text-ink" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );

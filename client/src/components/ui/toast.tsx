@@ -1,7 +1,6 @@
 import { Toast as ToastPrimitive } from "@base-ui/react/toast";
-import closeIcon from "pixelarticons/svg/close.svg?raw";
+import { Close } from "pixelarticons/react";
 
-import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -101,7 +100,7 @@ function ToastClose({
       className={cn("relative shrink-0 text-text-faint hover:opacity-70", className)}
       {...props}
     >
-      {children ?? <Icon svg={closeIcon} className="size-4 text-text-faint" />}
+      {children ?? <Close className="size-4 text-text-faint" />}
     </ToastPrimitive.Close>
   );
 }

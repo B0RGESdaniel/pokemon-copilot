@@ -1,8 +1,7 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import closeIcon from "pixelarticons/svg/close.svg?raw";
+import { Close } from "pixelarticons/react";
 import type * as React from "react";
 
-import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
 
 function Dialog({
@@ -68,7 +67,7 @@ function DialogContent({
               aria-label="Close"
               className="absolute top-3 right-3 focus-visible:outline-hidden"
             >
-              <Icon svg={closeIcon} className="size-4 text-text-faint" />
+              <Close className="size-4 text-text-faint" />
             </DialogPrimitive.Close>
           ) : null}
         </DialogPrimitive.Popup>

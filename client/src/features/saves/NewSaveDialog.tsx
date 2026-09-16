@@ -47,17 +47,19 @@ export function NewSaveDialog({
         <DialogHeader>
           <DialogTitle>NEW SAVE</DialogTitle>
         </DialogHeader>
-        <SaveFields
-          name={name}
-          onNameChange={setName}
-          game={game}
-          onGameChange={setGame}
-          generation={generation}
-          onGenerationChange={(g) => {
-            setGeneration(g);
-            setGame("");
-          }}
-        />
+        {open ? (
+          <SaveFields
+            name={name}
+            onNameChange={setName}
+            game={game}
+            onGameChange={setGame}
+            generation={generation}
+            onGenerationChange={(g) => {
+              setGeneration(g);
+              setGame("");
+            }}
+          />
+        ) : null}
         <DialogFooter>
           <Button
             variant="primary"

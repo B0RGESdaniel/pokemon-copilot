@@ -1,6 +1,5 @@
 import { useState } from "react";
-import chevronDownIcon from "pixelarticons/svg/chevron-down.svg?raw";
-import { Icon } from "../components/Icon";
+import { ChevronDown } from "pixelarticons/react";
 import { Button } from "../components/ui/button";
 import { SectionLabel } from "../components/SectionLabel";
 import { NewSaveDialog } from "../features/saves/NewSaveDialog";
@@ -45,7 +44,7 @@ export function Header({
           className="ml-auto flex min-w-0 items-center gap-1 border-0 bg-transparent font-vt text-[8px] text-header-hint"
         >
           <span className="min-w-0 truncate">{headerMeta}</span>
-          <Icon svg={chevronDownIcon} className="size-3 shrink-0 text-header-hint" />
+          <ChevronDown className="size-3 shrink-0 text-header-hint" />
         </button>
       </div>
 

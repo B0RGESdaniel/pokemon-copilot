@@ -1,6 +1,5 @@
-import sortIcon from "pixelarticons/svg/sort-vertical.svg?raw";
+import { SortVertical } from "pixelarticons/react";
 import { Button } from "../../components/ui/button";
-import { Icon } from "../../components/Icon";
 import { Sprite } from "../../components/Sprite";
 import { TypeBadge } from "../../components/TypeBadge";
 import type { PokemonDTO } from "../../types/pokemon";
@@ -80,7 +79,7 @@ export function PartyView({
       {party.length > 1 ? (
         <Button variant="ghost" full fontSize={8} onClick={onOpenReorder}>
           <span className="flex items-center justify-center gap-2">
-            <Icon svg={sortIcon} className="size-4 text-ink" />
+            <SortVertical className="size-4 text-ink" />
             REORDER
           </span>
         </Button>
