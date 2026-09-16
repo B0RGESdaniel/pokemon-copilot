@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
-import { SearchInput } from "../../components/SearchInput";
-import { SectionLabel } from "../../components/SectionLabel";
-import { Stepper } from "../../components/Stepper";
 import type { Save } from "../../types/saves";
+import { SaveFields } from "./SaveFields";
 
 export function CreateSaveForm({
   onCreate,
@@ -22,18 +20,14 @@ export function CreateSaveForm({
   const [error, setError] = useState<string | null>(null);
 
   const submit = async () => {
-    if (!name.trim() || !game.trim()) {
-      setError("Preencha nome e jogo.");
+    if (!name.trim() || !game) {
+      setError("Preencha nome, geração e jogo.");
       return;
     }
     setBusy(true);
     setError(null);
     try {
-      await onCreate({
-        name: name.trim(),
-        game: game.trim().toLowerCase(),
-        generation,
-      });
+      await onCreate({ name: name.trim(), game, generation });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to create save.");
     } finally {
@@ -55,24 +49,16 @@ export function CreateSaveForm({
           Pokémon.
         </div>
         <Card>
-          <SectionLabel>NOME DO SAVE *</SectionLabel>
-          <SearchInput
-            value={name}
-            onChange={setName}
-            placeholder="ex: Minha run de Platinum"
-          />
-          <SectionLabel>JOGO *</SectionLabel>
-          <SearchInput
-            value={game}
-            onChange={setGame}
-            placeholder="ex: platinum, black, scarlet..."
-          />
-          <SectionLabel>GERAÇÃO *</SectionLabel>
-          <Stepper
-            value={generation}
-            onChange={setGeneration}
-            min={1}
-            max={9}
+          <SaveFields
+            name={name}
+            onNameChange={setName}
+            game={game}
+            onGameChange={setGame}
+            generation={generation}
+            onGenerationChange={(g) => {
+              setGeneration(g);
+              setGame("");
+            }}
           />
           {error ? (
             <div className="font-vt text-[16px] text-red">{error}</div>

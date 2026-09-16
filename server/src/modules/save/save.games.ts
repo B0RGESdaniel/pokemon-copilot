@@ -1,15 +1,19 @@
-export type Save = {
-  id: string;
-  name: string;
-  game: string;
-  generation: number;
-  createdAt: string;
-};
-
-// Mirrors server/src/modules/save/save.games.ts — keep both in sync if this
-// list changes (see that file for why each generation's list looks the way
-// it does: excluded JP-only variants, spin-offs, DLC-only version groups,
-// and gen 9 games PokeAPI doesn't have moveset data for yet).
+// Curated by hand against the PokeAPI /generation and /version-group data
+// (checked 2026-09-16), not fetched live — past generations never change,
+// and this filters out entries that would silently break the app anyway:
+// - Japanese-exclusive version variants (red-green-japan, blue-japan):
+//   redundant with red/blue.
+// - Colosseum/XD (gen 3 console spin-offs): restricted roster, not a
+//   real "which game is this save" answer for a living-dex tracker.
+// - DLC-only version groups (the-isle-of-armor-*, the-crown-tundra-*,
+//   the-teal-mask-*, the-indigo-disk-*): not a distinct base game, the
+//   save is still "sword"/"shield" or "scarlet"/"violet".
+// - legends-za, mega-dimension (gen 9): PokeAPI has no move-learn-method
+//   data for them yet, so moveset suggestions would silently return
+//   nothing for every pokemon.
+// - champions (gen 9): has move data, but unclear if it's a mainline
+//   save-tracking game or a battle-facility spin-off — left out until
+//   confirmed.
 export const GENERATION_GAMES: Record<number, { value: string; label: string }[]> = {
   1: [
     { value: "red", label: "Red" },
@@ -67,3 +71,7 @@ export const GENERATION_GAMES: Record<number, { value: string; label: string }[]
     { value: "violet", label: "Violet" },
   ],
 };
+
+export function isValidGameForGeneration(game: string, generation: number): boolean {
+  return (GENERATION_GAMES[generation] ?? []).some((g) => g.value === game);
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { SectionLabel } from "../components/SectionLabel";
-import { NewSaveInline } from "../features/saves/NewSaveInline";
+import { NewSaveDialog } from "../features/saves/NewSaveDialog";
 import type { Save } from "../types/saves";
 
 export function Header({
@@ -65,43 +65,42 @@ export function Header({
               {s.name.toUpperCase()} · GEN {s.generation}
             </button>
           ))}
-          {creating ? (
-            <NewSaveInline
-              onCancel={() => setCreating(false)}
-              onCreate={async (input) => {
-                await onCreateSave(input);
-                setCreating(false);
-                setOpen(false);
-              }}
-            />
-          ) : (
-            <>
-              <Button
-                variant="primary"
-                full
-                onClick={() => setCreating(true)}
-                fontSize={8}
-                minHeight={40}
-              >
-                + NEW SAVE
-              </Button>
-              <Button
-                variant="ghost"
-                className="bg-bg-alt"
-                full
-                onClick={() => {
-                  setOpen(false);
-                  onManageSaves();
-                }}
-                fontSize={8}
-                minHeight={40}
-              >
-                MANAGE SAVES
-              </Button>
-            </>
-          )}
+          <Button
+            variant="primary"
+            full
+            onClick={() => {
+              setOpen(false);
+              setCreating(true);
+            }}
+            fontSize={8}
+            minHeight={40}
+          >
+            + NEW SAVE
+          </Button>
+          <Button
+            variant="ghost"
+            className="bg-bg-alt"
+            full
+            onClick={() => {
+              setOpen(false);
+              onManageSaves();
+            }}
+            fontSize={8}
+            minHeight={40}
+          >
+            MANAGE SAVES
+          </Button>
         </div>
       ) : null}
+
+      <NewSaveDialog
+        open={creating}
+        onOpenChange={setCreating}
+        onCreate={async (input) => {
+          await onCreateSave(input);
+          setCreating(false);
+        }}
+      />
     </div>
   );
 }

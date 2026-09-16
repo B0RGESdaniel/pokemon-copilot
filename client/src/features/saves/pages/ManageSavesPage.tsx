@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { PageShell } from "../../../components/PageShell";
 import type { Save } from "../../../types/saves";
-import { NewSaveInline } from "../NewSaveInline";
+import { NewSaveDialog } from "../NewSaveDialog";
 import { SaveRow } from "./SaveRow";
 
 export function ManageSavesPage({
@@ -44,19 +44,17 @@ export function ManageSavesPage({
         />
       ))}
 
-      {creating ? (
-        <NewSaveInline
-          onCancel={() => setCreating(false)}
-          onCreate={async (input) => {
-            await onCreate(input);
-            setCreating(false);
-          }}
-        />
-      ) : (
-        <Button variant="primary" full onClick={() => setCreating(true)}>
-          + NEW SAVE
-        </Button>
-      )}
+      <Button variant="primary" full onClick={() => setCreating(true)}>
+        + NEW SAVE
+      </Button>
+      <NewSaveDialog
+        open={creating}
+        onOpenChange={setCreating}
+        onCreate={async (input) => {
+          await onCreate(input);
+          setCreating(false);
+        }}
+      />
     </PageShell>
   );
 }
