@@ -11,12 +11,17 @@ import { validationRoutes } from "./modules/validation/validation.routes.js";
 
 export const app = Fastify({ logger: true });
 
-// Libera o dev server do Vite (frontend roda em porta separada da API).
-// methods precisa ser explícito — o default do @fastify/cors só inclui
-// GET/HEAD/POST, o que bloqueava silenciosamente PUT/PATCH/DELETE no
-// preflight (a API usa os quatro).
+// Libera o dev server do Vite (frontend roda em porta separada da API) e,
+// em produção, o domínio do client no Vercel via CORS_ORIGIN (lista
+// separada por vírgula). methods precisa ser explícito — o default do
+// @fastify/cors só inclui GET/HEAD/POST, o que bloqueava silenciosamente
+// PUT/PATCH/DELETE no preflight (a API usa os quatro).
+const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim());
+
 await app.register(cors, {
-  origin: ["http://localhost:5173"],
+  origin: allowedOrigins,
   methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 });
 

@@ -1,0 +1,29 @@
+app = "pokemon-copilot-api"
+primary_region = "gru"
+
+[build]
+
+[env]
+PORT = "3333"
+DATABASE_URL = "file:/data/prod.db"
+
+[[mounts]]
+source = "pokemon_copilot_data"
+destination = "/data"
+
+[http_service]
+internal_port = 3333
+force_https = true
+auto_stop_machines = "stop"
+auto_start_machines = true
+min_machines_running = 0
+
+[[http_service.checks]]
+path = "/health"
+interval = "30s"
+timeout = "5s"
+grace_period = "10s"
+method = "GET"
+
+[deploy]
+release_command = "npx prisma migrate deploy"
