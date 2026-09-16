@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 // sites migrate with a straight import swap. Restyled to reuse this app's
 // pixel-art tokens instead of the library's own default theme.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-base px-3 py-2 font-base transition-[opacity,transform,box-shadow] hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-base px-3 py-2 font-base transition-[opacity,transform,box-shadow] active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
