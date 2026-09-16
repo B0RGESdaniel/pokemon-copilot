@@ -50,14 +50,20 @@ function AlertDialogContent({
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
-      <AlertDialogPrimitive.Popup
-        data-slot="alert-dialog-content"
-        className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-base border-[3px] border-border bg-background p-4 shadow-shadow duration-200 outline-none data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 sm:max-w-sm",
-          className,
-        )}
-        {...props}
-      />
+      {/* Centers via flex on a fixed inset-0 box instead of fixed+top-1/2+translate —
+          that combo drifts on iPad/mobile Safari when the dynamic toolbar changes
+          the visual viewport height after layout; flex-centering a fixed inset-0
+          parent stays correct because it's recomputed against the real viewport. */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <AlertDialogPrimitive.Popup
+          data-slot="alert-dialog-content"
+          className={cn(
+            "grid w-full max-w-sm gap-4 rounded-base border-[3px] border-border bg-background p-4 shadow-shadow duration-200 outline-none data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95",
+            className,
+          )}
+          {...props}
+        />
+      </div>
     </AlertDialogPortal>
   );
 }
