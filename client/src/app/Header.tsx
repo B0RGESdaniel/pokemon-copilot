@@ -34,7 +34,7 @@ export function Header({
 
   return (
     <div className="relative flex-none">
-      <div className="flex items-center gap-2 border-b-[3px] border-ink bg-navy px-3 pt-3.5 pb-3 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+      <div className="flex items-center gap-2 border-b-[3px] border-ink bg-navy px-3 pt-[calc(0.875rem+env(safe-area-inset-top))] pb-3 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
         <img
           src="/pokemon-copilot-logo.svg"
           alt="Pokemon Copilot"

@@ -37,7 +37,7 @@ export function CreateSaveForm({
 
   return (
     <div className="mx-auto flex h-dvh w-full max-w-120 flex-col bg-bg">
-      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 py-4 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-3 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
         <img
           src="/pokemon-copilot-logo.svg"
           alt="Pokemon Copilot"

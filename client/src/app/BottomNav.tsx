@@ -17,7 +17,7 @@ export function BottomNav({
   onChange: (t: "pokemons" | "battle") => void;
 }) {
   return (
-    <div className="flex-none border-t-[3px] border-ink bg-navy-dark p-2">
+    <div className="flex-none border-t-[3px] border-ink bg-navy-dark px-2 pt-2 pb-4">
       <Tabs
         value={tab}
         onValueChange={(v) => onChange(v as "pokemons" | "battle")}

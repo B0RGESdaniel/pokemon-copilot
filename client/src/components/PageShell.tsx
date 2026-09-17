@@ -13,7 +13,7 @@ export function PageShell({
 }) {
   return (
     <div className="absolute inset-0 flex flex-col bg-bg">
-      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy p-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-2.5 pb-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
         <Button
           variant="secondary"
           onClick={onBack}
