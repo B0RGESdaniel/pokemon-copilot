@@ -98,10 +98,8 @@ function MainApp({
       <Toaster />
 
       <div
-        className={`flex-1 ${
-          tab === "pokemons"
-            ? "overflow-y-auto px-2.5 pt-2.5 pb-4.5"
-            : "overflow-y-auto"
+        className={`flex-1 overflow-y-auto ${
+          tab === "pokemons" ? "px-2.5 pt-2.5 pb-4.5" : ""
         }`}
       >
         {tab === "pokemons" && sub === "party" ? (
