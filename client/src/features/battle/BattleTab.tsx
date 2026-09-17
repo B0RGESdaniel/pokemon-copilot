@@ -120,6 +120,40 @@ export function BattleTab({
   // status.status === "active"
   const mine = status.activePokemon;
   const opponent = status.opponent;
+
+  // Starting a battle (or finding a new opponent after one ends) always
+  // clears the opponent server-side (see battle.service.ts::startBattle) —
+  // if the user backs out of OpponentPanel before picking one, the battle
+  // is left active with no opponent instead of crashing/showing stale data.
+  if (!opponent) {
+    return (
+      <div className="relative h-full">
+        <div className="p-2.5">
+          <Card className="items-center text-center">
+            <div className="font-pix text-[8px] text-text">
+              NO OPPONENT SET
+            </div>
+            <Hint>Pick an opponent to continue the battle.</Hint>
+            <Button variant="primary" full onClick={() => setPanel("opp")}>
+              FIND NEW OPPONENT
+            </Button>
+          </Card>
+        </div>
+        {panel === "opp" ? (
+          <OpponentPanel
+            dex={dex}
+            onClose={() => setPanel(null)}
+            onApply={async (pokeApiId, level) => {
+              await battle.setOpponent(pokeApiId, level);
+              setPanel(null);
+              onFlash("Opponent set.");
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  }
+
   const mineTypes = mine.species?.types ?? [];
   const oppTypes = opponent?.species?.types ?? [];
   // No official-artwork back view exists — fall back to mirroring the front
