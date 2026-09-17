@@ -60,7 +60,7 @@ export function EvolvePage({
                 />
               </div>
               <div className="font-pix text-[8px] text-text">{cap(o.name)}</div>
-              <div className="font-pix text-[16px] leading-[1.1] text-text-muted">
+              <div className="font-vt text-[16px] leading-[1.1] text-text-muted">
                 {o.method}
               </div>
             </button>
