@@ -17,20 +17,23 @@ export function BottomNav({
   onChange: (t: "pokemons" | "battle") => void;
 }) {
   return (
-    <div className="flex-none border-t-[3px] border-ink bg-navy-dark px-2 pt-2 pb-4">
-      <Tabs
-        value={tab}
-        onValueChange={(v) => onChange(v as "pokemons" | "battle")}
-      >
-        <TabsList className="gap-2">
-          <TabsTrigger value="pokemons" className={tabClass}>
-            POKEMONS
-          </TabsTrigger>
-          <TabsTrigger value="battle" className={tabClass}>
-            BATTLE
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+    <div className="flex-none border-t-[3px] border-ink bg-navy-dark">
+      <div className="p-2">
+        <Tabs
+          value={tab}
+          onValueChange={(v) => onChange(v as "pokemons" | "battle")}
+        >
+          <TabsList className="gap-2">
+            <TabsTrigger value="pokemons" className={tabClass}>
+              POKEMONS
+            </TabsTrigger>
+            <TabsTrigger value="battle" className={tabClass}>
+              BATTLE
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <div className="h-[env(safe-area-inset-bottom)]" aria-hidden="true" />
     </div>
   );
 }
