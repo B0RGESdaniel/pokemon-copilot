@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Hint } from "../../components/Hint";
@@ -34,6 +34,30 @@ export function BattleTab({
   const [confirm, setConfirm] = useState<"fainted" | "flee" | null>(null);
 
   const status = battle.status;
+
+  // Replays the sprite entrance animation exactly when the battlefield becomes
+  // visible (not while the full-screen OpponentPanel covers it) — a plain
+  // React `key` remount was tried first, but it raced against when the
+  // opponent mutation's cache update actually lands relative to the panel
+  // closing, so the animation sometimes started while still hidden. Toggling
+  // `style.animation` with a forced reflow restarts it deterministically,
+  // decoupled from that timing.
+  const oppSpriteRef = useRef<HTMLDivElement>(null);
+  const mineSpriteRef = useRef<HTMLDivElement>(null);
+  const revealKey =
+    status?.status === "active" && panel !== "opp"
+      ? `${status.activePokemon.id}:${status.opponent?.pokeApiId ?? "none"}`
+      : null;
+
+  useEffect(() => {
+    if (!revealKey) return;
+    for (const el of [oppSpriteRef.current, mineSpriteRef.current]) {
+      if (!el) continue;
+      el.style.animation = "none";
+      void el.offsetHeight;
+      el.style.animation = "";
+    }
+  }, [revealKey]);
 
   if (!status || battle.loading) {
     return (
@@ -144,14 +168,20 @@ export function BattleTab({
         </div>
 
         <div className="relative h-54 overflow-hidden rounded-base border-[3px] border-ink bg-[#2d4b34] bg-[url('/battle-background.webp')] bg-cover bg-center shadow-shadow">
-          <div className="absolute top-6.5 right-[16%] aspect-square w-[29%] max-w-33 animate-in slide-in-from-right fade-in duration-500">
+          <div
+            ref={oppSpriteRef}
+            className="absolute top-6.5 right-[16%] aspect-square w-[29%] max-w-33 animate-in slide-in-from-right fade-in duration-500"
+          >
             <Sprite
               url={opponent?.species?.sprite}
               size="fill"
               alt={opponent?.species?.name ?? "opponent"}
             />
           </div>
-          <div className="absolute -bottom-2.5 left-[12%] aspect-square w-[38%] max-w-38.5 animate-in slide-in-from-left fade-in duration-500">
+          <div
+            ref={mineSpriteRef}
+            className="absolute -bottom-2.5 left-[12%] aspect-square w-[38%] max-w-38.5 animate-in slide-in-from-left fade-in duration-500"
+          >
             <img
               src={mineSpriteUrl ?? undefined}
               alt={mine.nickname ?? mine.species?.name ?? "mine"}
