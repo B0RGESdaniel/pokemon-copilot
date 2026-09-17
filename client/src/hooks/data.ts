@@ -10,7 +10,12 @@ const SAVE_STORAGE_KEY = "pokemon-copilot:saveId";
 
 export function useSaves() {
   const queryClient = useQueryClient();
-  const { data: saves, isLoading } = useQuery({ queryKey: queryKeys.saves, queryFn: listSaves });
+  const {
+    data: saves,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({ queryKey: queryKeys.saves, queryFn: listSaves });
   const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem(SAVE_STORAGE_KEY));
 
   const select = useCallback((id: string) => {
@@ -42,6 +47,12 @@ export function useSaves() {
   return {
     saves: saves ?? null,
     loading: isLoading,
+    // `data` from an earlier successful fetch (fresh or restored from the
+    // persisted cache) sticks around even while a later background refetch
+    // is failing — only treat this as a hard error when there's truly
+    // nothing to fall back on.
+    error: isError && !saves,
+    retry: refetch,
     selected,
     select,
     create: createMutation.mutateAsync,

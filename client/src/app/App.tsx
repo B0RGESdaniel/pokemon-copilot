@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "../components/ui/button";
 import { Toaster } from "../components/ui/toast";
 import { BattleTab } from "../features/battle/BattleTab";
 import { CreateSaveForm } from "../features/saves/CreateSaveForm";
@@ -24,6 +25,19 @@ function LoadingScreen() {
   return (
     <div className="flex h-dvh items-center justify-center font-vt text-[24px] text-white">
       Loading...
+    </div>
+  );
+}
+
+function ErrorScreen({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="flex h-dvh flex-col items-center justify-center gap-4 p-5 text-center">
+      <div className="font-vt text-[20px] text-white">
+        Couldn't reach the server.
+      </div>
+      <Button variant="primary" onClick={onRetry}>
+        TRY AGAIN
+      </Button>
     </div>
   );
 }
@@ -172,9 +186,11 @@ function MainApp({
 }
 
 export function App() {
-  const { saves, loading, selected, select, create, remove } = useSaves();
+  const { saves, loading, error, retry, selected, select, create, remove } =
+    useSaves();
 
   if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen onRetry={() => void retry()} />;
   if (!saves || saves.length === 0) return <CreateSaveForm onCreate={create} />;
   if (!selected) return <LoadingScreen />;
 
