@@ -28,7 +28,7 @@ export function OpponentPanel({
       : dex.filter((e) => e.name.includes(trimmedQuery)).slice(0, 8);
 
   return (
-    <PageShell title="SWITCH OPPONENT" onBack={onClose}>
+    <PageShell title="SWITCH OPPONENT" onBack={onClose} insetTop={false}>
       <Card>
         <SectionLabel>OPPONENT SPECIES *</SectionLabel>
         <div className="flex items-center gap-2">

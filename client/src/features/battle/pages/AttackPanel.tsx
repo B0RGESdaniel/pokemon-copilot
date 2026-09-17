@@ -56,7 +56,7 @@ export function AttackPanel({
       });
 
   return (
-    <PageShell title="MOVES" onBack={onClose}>
+    <PageShell title="MOVES" onBack={onClose} insetTop={false}>
       <Card>
         <SectionLabel>
           {cap(mine.nickname ?? mine.species?.name)} MOVES

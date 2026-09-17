@@ -34,7 +34,7 @@ export function MatchupPanel({
   const oppName = suggestions ? cap(suggestions.opponent.species?.name) : "";
 
   return (
-    <PageShell title="TEAM MATCHUP" onBack={onClose}>
+    <PageShell title="TEAM MATCHUP" onBack={onClose} insetTop={false}>
       <div className="flex flex-col gap-1">
         <SectionLabel>
           MATCHUP VS <span className="text-red">{oppName}</span>

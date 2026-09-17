@@ -121,7 +121,7 @@ export function LevelUpPanel({
   };
 
   return (
-    <PageShell title="LOG LEVEL UP" onBack={onClose}>
+    <PageShell title="LOG LEVEL UP" onBack={onClose} insetTop={false}>
       <Card>
         <SectionLabel>
           NEW LEVEL FOR {cap(mine.nickname ?? mine.species?.name)}

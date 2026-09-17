@@ -6,14 +6,25 @@ export function PageShell({
   title,
   onBack,
   children,
+  insetTop = true,
 }: {
   title: string;
   onBack: () => void;
   children: ReactNode;
+  // False for panels nested inside another screen's own content area (e.g.
+  // BattleTab's AttackPanel/OpponentPanel/MatchupPanel/LevelUpPanel) — their
+  // `absolute inset-0` only spans that parent's content box, not the full
+  // app shell, and the outer Header stays visible above them. Adding the top
+  // safe-area padding there would double-reserve space Header already did.
+  insetTop?: boolean;
 }) {
   return (
     <div className="absolute inset-0 flex flex-col bg-bg">
-      <div className="flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-2.5 pb-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+      <div
+        className={`flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-2.5 pb-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)] ${
+          insetTop ? "pt-[calc(0.625rem+env(safe-area-inset-top))]" : "pt-2.5"
+        }`}
+      >
         <Button
           variant="secondary"
           onClick={onBack}
