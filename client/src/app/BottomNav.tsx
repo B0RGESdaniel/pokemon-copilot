@@ -19,7 +19,7 @@ export function BottomNav({
 }) {
   const isPokemons = tab === "pokemons";
   return (
-    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark">
+    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark pb-[env(safe-area-inset-bottom)]">
       <button
         onClick={() => onChange("pokemons")}
         className={bottomNavItem({

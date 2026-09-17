@@ -22,7 +22,7 @@ type AddState = GenerationSpeciesEntry | "blank" | null;
 
 function LoadingScreen() {
   return (
-    <div className="flex h-screen items-center justify-center font-vt text-[24px] text-white">
+    <div className="flex h-dvh items-center justify-center font-vt text-[24px] text-white">
       Loading...
     </div>
   );
@@ -71,7 +71,7 @@ function MainApp({
       : `${party.length}/6 party · ${pc.length} PC`;
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-120 flex-col overflow-hidden border-x-[3px] border-ink bg-bg">
+    <div className="relative mx-auto flex h-dvh w-full max-w-120 flex-col overflow-hidden border-x-[3px] border-ink bg-bg">
       <Header
         headerMeta={headerMeta}
         saves={saves}

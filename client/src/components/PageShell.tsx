@@ -18,8 +18,8 @@ export function PageShell({
           variant="secondary"
           onClick={onBack}
           minHeight={48}
-          fontSize={12}
-          className="gap-1.5 py-2.5 font-vt"
+          fontSize={8}
+          className="gap-1.5 py-2.5"
         >
           <ChevronLeft className="size-3.5 text-ink" />
           BACK
@@ -28,7 +28,7 @@ export function PageShell({
           {title}
         </div>
       </div>
-      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-2.5 pt-2.5 pb-5.5">
+      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-2.5 pt-2.5 pb-[calc(1.375rem+env(safe-area-inset-bottom))]">
         {children}
       </div>
     </div>
