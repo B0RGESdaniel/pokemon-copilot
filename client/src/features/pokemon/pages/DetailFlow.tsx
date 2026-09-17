@@ -230,7 +230,7 @@ export function DetailFlow({
               EVOLUTION METHOD
             </div>
             {evolutions.length === 0 ? (
-              <div className="font-pix text-[16px] text-text">
+              <div className="font-vt text-[16px] text-text">
                 {sp
                   ? `${cap(sp.name)} is in its final form.`
                   : "No species data."}
@@ -239,7 +239,7 @@ export function DetailFlow({
               evolutions.map((e) => (
                 <div
                   key={e.pokeApiId}
-                  className="font-pix text-[16px] text-text"
+                  className="font-vt text-[16px] text-text"
                 >
                   {cap(e.name)} — {e.method}
                 </div>

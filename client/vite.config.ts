@@ -12,7 +12,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['pokeball.png', 'apple-touch-icon.png'],
+      includeAssets: ['pokemon-copilot-logo.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Pokemon Copilot',
         short_name: 'PokeCopilot',

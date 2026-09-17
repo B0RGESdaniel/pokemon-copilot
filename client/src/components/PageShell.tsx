@@ -17,14 +17,14 @@ export function PageShell({
         <Button
           variant="secondary"
           onClick={onBack}
-          minHeight={44}
-          fontSize={8}
-          className="gap-1.5 py-2.5"
+          minHeight={48}
+          fontSize={12}
+          className="gap-1.5 py-2.5 font-vt"
         >
           <ChevronLeft className="size-3.5 text-ink" />
           BACK
         </Button>
-        <div className="ml-auto text-right font-pix text-[8px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
+        <div className="ml-auto text-right font-vt text-[13px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           {title}
         </div>
       </div>

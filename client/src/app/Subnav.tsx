@@ -13,7 +13,7 @@ export function Subnav({
     { key: "search", label: "SEARCH" },
   ];
   return (
-    <div className="flex-none border-b-[3px] border-ink bg-bg-alt p-2">
+    <div className="flex-none border-b-[3px] border-ink bg-bg-alt p-2.5">
       <Tabs
         value={sub}
         onValueChange={(v) => onChange(v as "party" | "pc" | "search")}

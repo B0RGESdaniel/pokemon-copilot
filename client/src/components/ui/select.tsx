@@ -32,7 +32,7 @@ function SelectTrigger({
         // bare `button { font-family: font-pix }` rule is unlayered — it beats any
         // Tailwind utility (including .font-vt) on specificity alone, since
         // Tailwind's utilities live inside @layer and unlayered CSS always wins.
-        "flex w-full items-center justify-between gap-2 rounded-base border-2 border-ink bg-white p-2.75 font-vt! text-[14px] text-ink antialiased! focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+        "flex w-full items-center justify-between gap-2 rounded-base border-2 border-ink bg-white p-2.75 font-vt text-[14px] text-ink antialiased focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}

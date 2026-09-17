@@ -30,22 +30,22 @@ export function Header({
 
   return (
     <div className="relative flex-none">
-      <div className="flex items-center gap-2 border-b-[3px] border-ink bg-navy px-3 pt-3 pb-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
+      <div className="flex items-center gap-2 border-b-[3px] border-ink bg-navy px-3 pt-3.5 pb-3 shadow-[inset_0_-4px_0_var(--color-navy-dark)]">
         <img
-          src="/pokeball.png"
+          src="/pokemon-copilot-logo.svg"
           alt="Pokemon Copilot"
-          className="size-6.5 shrink-0 object-contain"
+          className="size-8 shrink-0 object-contain"
         />
-        <div className="flex shrink-0 flex-col font-pix text-[8px] leading-[1.3] tracking-[1px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
+        <div className="flex shrink-0 flex-col font-vt text-[13px] leading-[1.2] tracking-[1px] text-white [text-shadow:2px_2px_0_var(--color-ink)]">
           <span>POKEMON</span>
           <span>COPILOT</span>
         </div>
         <button
           onClick={() => setOpen((v) => !v)}
-          className="ml-auto flex min-w-0 items-center gap-1 border-0 bg-transparent font-vt text-[8px] text-header-hint"
+          className="ml-auto flex min-w-0 items-center gap-1 border-0 bg-transparent font-vt text-[14px] text-header-hint"
         >
           <span className="min-w-0 truncate">{headerMeta}</span>
-          <ChevronDown className="size-3 shrink-0 text-header-hint" />
+          <ChevronDown className="size-3.5 shrink-0 text-header-hint" />
         </button>
       </div>
 

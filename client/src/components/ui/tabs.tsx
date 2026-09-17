@@ -8,7 +8,11 @@ function Tabs({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
-    <TabsPrimitive.Root data-slot="tabs" className={cn("w-full", className)} {...props} />
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn("w-full", className)}
+      {...props}
+    />
   );
 }
 
@@ -35,7 +39,7 @@ function TabsTrigger({
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(
-        "min-h-11 flex-1 rounded-base border-2 border-border bg-[#b8c1d2] font-pix text-[8px] text-[#7a8598] shadow-[inset_0_2px_0_#c7cfdd] data-active:bg-navy data-active:text-white data-active:shadow-[inset_0_2px_0_var(--color-navy-light)]",
+        "min-h-12 flex-1 rounded-base border-2 border-border bg-[#b8c1d2] font-vt text-[16px] text-[#7a8598] shadow-[inset_0_2px_0_#c7cfdd] data-active:bg-navy data-active:text-white data-active:shadow-[inset_0_2px_0_var(--color-navy-light)]",
         className,
       )}
       {...props}

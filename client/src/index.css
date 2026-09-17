@@ -117,10 +117,12 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: var(--color-ink);
-  font-family: var(--font-vt);
+@layer base {
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    font-family: var(--font-vt);
+  }
 }
 
 /* Bold by default for --font-vt (JetBrains Mono) — scoped here rather than
@@ -151,10 +153,12 @@ a:hover {
   color: var(--color-red);
 }
 
-button {
-  font-family: var(--font-pix);
-  -webkit-font-smoothing: none;
-  cursor: pointer;
+@layer base {
+  button {
+    font-family: var(--font-pix);
+    -webkit-font-smoothing: none;
+    cursor: pointer;
+  }
 }
 
 input {
