@@ -21,16 +21,16 @@ export function PageShell({
   return (
     <div className="absolute inset-0 flex flex-col bg-bg">
       <div
-        className={`flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-2.5 pb-2.5 shadow-[inset_0_-4px_0_var(--color-navy-dark)] ${
-          insetTop ? "pt-[calc(0.625rem+env(safe-area-inset-top))]" : "pt-2.5"
+        className={`flex flex-none items-center gap-2.5 border-b-[3px] border-ink bg-navy px-2.5 pb-2 shadow-[inset_0_-4px_0_var(--color-navy-dark)] ${
+          insetTop ? "pt-[calc(0.625rem+env(safe-area-inset-top))]" : "pt-2"
         }`}
       >
         <Button
           variant="secondary"
           onClick={onBack}
-          minHeight={48}
+          minHeight={44}
           fontSize={8}
-          className="gap-1.5 py-2.5"
+          className="gap-1.5 py-2"
         >
           <ChevronLeft className="size-3.5 text-ink" />
           BACK
