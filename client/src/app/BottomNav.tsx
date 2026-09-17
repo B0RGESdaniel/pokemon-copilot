@@ -1,7 +1,7 @@
 import { tv } from "tailwind-variants";
 
 const bottomNavItem = tv({
-  base: "flex min-h-16 flex-1 flex-row items-center justify-center gap-2.5 border-0 font-pix text-[16px]",
+  base: "flex min-h-16 flex-1 flex-row items-center justify-center gap-2.5 border-0 pb-[env(safe-area-inset-bottom)] font-pix text-[16px]",
   variants: {
     active: {
       true: "bg-blue text-white",
@@ -19,7 +19,7 @@ export function BottomNav({
 }) {
   const isPokemons = tab === "pokemons";
   return (
-    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark pb-[env(safe-area-inset-bottom)]">
+    <div className="flex flex-none border-t-[3px] border-ink bg-navy-dark">
       <button
         onClick={() => onChange("pokemons")}
         className={bottomNavItem({
